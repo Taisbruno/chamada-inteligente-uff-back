@@ -11,7 +11,22 @@ Versão atual: 1.0
 
 * Windows 10 ou 11.
   * [Python 3.11.3](https://www.python.org/downloads/)
-  * Django 4.2.6 `pip install django==4.2.6`
+  * Django 4.2.6 - `pip install django==4.2.6`
+  * psycopg2-binary 2.9.9 (PostgreSQL Driver) - `pip install psycopg2-binary==2.9.9`
+  * drf-yasg (Swagger) - `pip install -U drf-yasg`
 
 
+## 2. Instruções de construção, execução e uso da API
+
+Antes de executar, certifique-se de que o banco de dados PostgreSQL esteja em execução e de que as migrações das tabelas no banco foram devidamente realizadas a partir da seguinte linha de comando: 
+
+```
+python manage.py migrate
+```
+
+Recomenda-se utilizar este modo de compilação para implantar o back-end em ambientes externos de produção, desenvolvidmento, controle de qualidade e etc. A compilação do pacote pode ser feita através do comando:
+
+```
+python manage.py runserver
+```
 
