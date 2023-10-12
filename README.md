@@ -20,6 +20,8 @@ Versão atual: 1.0
 
 Antes de executar, certifique-se de que o banco de dados PostgreSQL esteja em execução e de que as migrações das tabelas no banco foram devidamente realizadas a partir da seguinte linha de comando: 
 
+
+Dentro da primeira pasta ```smart_roll```, execute o comando:
 ```
 python manage.py migrate
 ```
