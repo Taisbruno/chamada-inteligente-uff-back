@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Student
+from smart_roll.model.student import Student
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:

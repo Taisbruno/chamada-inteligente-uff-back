@@ -19,7 +19,7 @@ from django.urls import path, include, re_path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions 
-from .view import student_list_create_view, student_detail_view
+from smart_roll.view.student_view import *
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -36,6 +36,6 @@ urlpatterns = [
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('students/', views.student_list_create_view, name='student-list-create'),
-    path('students/<int:student_id>/', views.student_detail_view, name='student-detail'),
+    path('students/', student_list_create_view, name='student-list-create'),
+    path('students/<int:student_id>/', student_detail_view, name='student-detail'),
 ]

@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .model import Student
-from .serializers import StudentSerializer
-from .services import StudentService
+from smart_roll.model.student import Student
+from smart_roll.serializer.student_serializer import StudentSerializer
+from smart_roll.service.student_service import StudentService
 
 @api_view(['GET', 'POST'])
 def student_list_create_view(request):

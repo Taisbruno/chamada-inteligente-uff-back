@@ -1,5 +1,5 @@
 from django.contrib.auth.hashers import make_password
-from .models import Student
+from smart_roll.model.student import Student
 
 class StudentService:
 
