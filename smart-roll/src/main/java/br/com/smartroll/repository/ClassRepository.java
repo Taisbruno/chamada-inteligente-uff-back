@@ -1,10 +1,19 @@
 package br.com.smartroll.repository;
 
 import br.com.smartroll.repository.entity.ClassEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import br.com.smartroll.repository.interfaces.IClassRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Repository
-public interface ClassRepository extends JpaRepository<ClassEntity, Long> {
+import java.util.List;
+import java.util.Optional;
 
+public class ClassRepository {
+
+    @Autowired
+    private IClassRepository classRepository;
+
+
+    public List<ClassEntity> getAllClasses() {
+        return classRepository.findAll();
+    }
 }

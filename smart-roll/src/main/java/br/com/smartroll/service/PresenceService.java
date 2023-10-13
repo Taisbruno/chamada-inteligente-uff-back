@@ -1,6 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.repository.PresenceRepository;
+import br.com.smartroll.repository.interfaces.IPresenceRepository;
 import br.com.smartroll.repository.entity.PresenceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class PresenceService {
     @Autowired
-    private PresenceRepository presenceRepository;
+    private IPresenceRepository presenceRepository;
 
     public PresenceEntity createPresence(PresenceEntity presenceEntity) {
         return presenceRepository.save(presenceEntity);

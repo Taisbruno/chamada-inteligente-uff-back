@@ -12,8 +12,8 @@ public class ClassSubscriptionEntity {
     public String classCode;
     @Column(name = "student_registration", nullable = false, unique = true)
     public String studentRegistration;
-    @Column(name = "subscription_date", nullable = false)
-    public String subscriptionDate;
+    @Column(name = "semester", nullable = false)
+    public String semester;
 
     public ClassSubscriptionEntity() {
         // Construtor padrão
@@ -22,6 +22,6 @@ public class ClassSubscriptionEntity {
     public ClassSubscriptionEntity(String classCode, String studentRegistration, String subscriptionDate) {
         this.classCode = classCode;
         this.studentRegistration = studentRegistration;
-        this.subscriptionDate = subscriptionDate;
+        this.semester = subscriptionDate;
     }
 }

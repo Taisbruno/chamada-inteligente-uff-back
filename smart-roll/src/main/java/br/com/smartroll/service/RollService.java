@@ -1,6 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.repository.RollRepository;
+import br.com.smartroll.repository.interfaces.IRollRepository;
 import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class RollService {
     @Autowired
-    private RollRepository rollRepository;
+    private IRollRepository rollRepository;
 
     public RollEntity createRoll(RollEntity rollEntity) {
         return rollRepository.save(rollEntity);

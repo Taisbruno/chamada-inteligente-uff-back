@@ -1,6 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.repository.UserRepository;
+import br.com.smartroll.repository.interfaces.IUserRepository;
 import br.com.smartroll.repository.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
 
     public UserEntity createUser(UserEntity userEntity) {
         return userRepository.save(userEntity);
