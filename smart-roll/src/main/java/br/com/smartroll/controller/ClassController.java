@@ -12,12 +12,10 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +23,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/class")
+@Tag(name = "class-controller", description = "Controller responsável por requisições de turmas")
 public class ClassController {
 
     @Autowired
@@ -40,8 +39,8 @@ public class ClassController {
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
-    @GetMapping(value = "/enrolled/{disciplineCode}/{codeClass}/{semester}" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentsView getEnrolledStudentsInClass(@PathVariable String disciplineCode, @PathVariable String codeClass, @PathVariable String semester) {
+    @GetMapping(value = "/enrolled", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudentsView getEnrolledStudentsInClass(@RequestParam String disciplineCode, @RequestParam  String codeClass, @RequestParam  String semester) {
         List<StudentModel> students = service.getEnrolledStudentsByClassCode(disciplineCode, codeClass, semester);
         return new StudentsView(students);
     }
