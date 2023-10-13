@@ -3,7 +3,7 @@ package br.com.smartroll.repository.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user")
+@Table(name = "myuser")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
