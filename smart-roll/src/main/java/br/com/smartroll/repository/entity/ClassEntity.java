@@ -6,12 +6,11 @@ import javax.persistence.*;
 @Table(name = "class")
 public class ClassEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
-    public Long id;
+    @Column(name = "classCode", nullable = false, unique = true, length = 50)
+    public String classCode;
 
     @Column(name = "code", nullable = false, unique = true, length = 50)
-    public String code;
+    public String disciplineCode;
 
     @Column(name = "discipline", nullable = false, length = 100)
     public String discipline;
@@ -30,7 +29,7 @@ public class ClassEntity {
     }
 
     public ClassEntity(String code, String discipline, String teacher, String semester, int total) {
-        this.code = code;
+        this.disciplineCode = code;
         this.discipline = discipline;
         this.teacher = teacher;
         this.semester = semester;

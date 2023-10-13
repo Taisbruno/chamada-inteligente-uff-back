@@ -3,10 +3,12 @@ package br.com.smartroll.repository;
 import br.com.smartroll.repository.entity.ClassSubscriptionEntity;
 import br.com.smartroll.repository.interfaces.IClassSubscriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class ClassSubscriptionRepository {
 
     @Autowired
@@ -16,12 +18,12 @@ public class ClassSubscriptionRepository {
         return classSubscriptionRepository.findAll();
     }
 
-    public List<ClassSubscriptionEntity> getSubscriptionsByCodeAndSemester(long id, String code, String semester) {
+    public List<ClassSubscriptionEntity> getSubscriptionsByClassCodeAndSemester(String disciplineCode, String classCode, String semester) {
         List<ClassSubscriptionEntity> subscriptions = classSubscriptionRepository.findAll();
         List<ClassSubscriptionEntity> selectedSubscriptions = new ArrayList<>();
         for(ClassSubscriptionEntity subscription:  subscriptions){
 
-            if(subscription.semester.equals(semester) && subscription.classCode.equals(code)){
+            if(subscription.semester.equals(semester) && subscription.classCode.equals(classCode) && subscription.disciplineCode.equals(disciplineCode)){
                 selectedSubscriptions.add(subscription);
             }
         }

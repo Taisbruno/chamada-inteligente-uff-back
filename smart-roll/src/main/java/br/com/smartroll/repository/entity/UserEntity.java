@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name = "myuser")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "registration", nullable = false, unique = true)
     public String registration;
 

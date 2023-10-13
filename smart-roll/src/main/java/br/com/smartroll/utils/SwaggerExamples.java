@@ -16,4 +16,22 @@ public class SwaggerExamples {
             		</body>
             	</html>
             """;
+
+    public final static String GETENROLLEDSTUDENTS = """
+            {
+            	classmates : [
+            {
+            	“registration” : “11700830”,
+            	“name”: “Taís Bruno”
+            },
+            ...
+            {
+            	“registration” : “11700830”,
+            	“name”: “Natália Bruno”
+            }
+            ]
+            			
+            }
+                        
+            """;
 }

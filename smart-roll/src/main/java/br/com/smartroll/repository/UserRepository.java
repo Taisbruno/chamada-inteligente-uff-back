@@ -1,14 +1,14 @@
 package br.com.smartroll.repository;
 
-import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.UserEntity;
-import br.com.smartroll.repository.interfaces.IClassRepository;
 import br.com.smartroll.repository.interfaces.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class UserRepository {
     @Autowired
     private IUserRepository userRepository;
