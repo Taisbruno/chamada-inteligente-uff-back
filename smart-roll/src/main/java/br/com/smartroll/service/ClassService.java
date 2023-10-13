@@ -1,11 +1,10 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.model.StudentModel;
+import br.com.smartroll.model.ClassModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.ClassSubscriptionRepository;
-import br.com.smartroll.repository.UserRepository;
+import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.ClassSubscriptionEntity;
-import br.com.smartroll.repository.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,26 +13,25 @@ import java.util.List;
 
 @Service
 public class ClassService {
-    //@Autowired
-    //private ClassRepository classRepository;
+    @Autowired
+    private ClassRepository classRepository;
+
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
-    @Autowired
-    private UserRepository userRepository;
 
-    public List<StudentModel> getEnrolledStudentsByClassCode(String disciplineCode, String classCode, String semester){
-        List<StudentModel> studentsModel = new ArrayList<>();
-        List<ClassSubscriptionEntity> subscriptions = classSubRepository.getSubscriptionsByClassCodeAndSemester(disciplineCode, classCode, semester);
-        List<UserEntity> studentsEntity = userRepository.getAllStudents();
-        for(ClassSubscriptionEntity classSubscriptionEntity : subscriptions){
-            for(UserEntity userEntity : studentsEntity){
-                if(classSubscriptionEntity.studentRegistration.equals(userEntity.registration)){
-                    StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
-                    studentsModel.add(studentModel);
+    public List<ClassModel> getClassesByUser(String registration){
+        List<ClassEntity> classes = classRepository.getAllClasses();
+        List<ClassSubscriptionEntity> classesSubscription = classSubRepository.getAllClassSubscriptions();
+        List<ClassModel> classesModels = new ArrayList<>();
+        for(ClassEntity classEntity: classes){
+            for(ClassSubscriptionEntity classSubEntity: classesSubscription){
+                if(classSubEntity.studentRegistration.equals(registration) && classEntity.classCode.equals(classSubEntity.classCode) && classEntity.disciplineCode.equals(classSubEntity.disciplineCode) && classEntity.semester.equals(classSubEntity.semester)){
+                    ClassModel classModel = new ClassModel(classEntity.classCode, classEntity.disciplineCode, classEntity.discipline, classEntity.teacher, classEntity.semester, classEntity.total);
+                    classesModels.add(classModel);
                 }
             }
         }
-        return studentsModel;
+        return classesModels;
     }
 
 }

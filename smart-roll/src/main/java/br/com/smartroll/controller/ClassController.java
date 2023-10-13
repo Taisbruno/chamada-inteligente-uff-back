@@ -29,24 +29,25 @@ public class ClassController {
     @Autowired
     ClassService service;
 
-    @ApiOperation(value = "Retorna todas as alunos inscritos em uma determinada disciplina.")
+    @ApiOperation(value = "Retorna todas as turmas de um determinado usuário.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = String.class),
-                    examples = {@ExampleObject(value = SwaggerExamples.GETENROLLEDSTUDENTS)})),
+                    examples = {@ExampleObject(value = "EXEMPLO AQUI")})),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
-    @GetMapping(value = "/enrolled", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentsView getEnrolledStudentsInClass(@RequestParam String disciplineCode, @RequestParam  String codeClass, @RequestParam  String semester) {
-        List<StudentModel> students = service.getEnrolledStudentsByClassCode(disciplineCode, codeClass, semester);
-        return new StudentsView(students);
+    @GetMapping(value = "/classes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getClassesByUser(String registration){
+        //ClassesView classesView = new ClassesView();
+        return registration;
     }
 
-    @GetMapping(value = "/rolls-historic/{disciplineCode}/{codeClass}/{semester}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RollsView getRollsHistoric(){
+
+    @GetMapping(value = "/rolls-historic/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RollsView getRollsHistoricFromClass(){
         RollsView rollsView = new RollsView();
         return rollsView;
     }
