@@ -35,7 +35,7 @@ O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina 
 
 Antes de executar certifique-se de que o PostgreSQL está funcionando corretamente com o banco de dados montado (ver Seção [3](#3-banco-de-dados-do-projeto) deste documento).
 
-Antes de construir o JAR para distribuição certifique-se de que o PostgreSQL esteja **sem autenticação** e com o banco de dados `smart-roll` criado corretamente, pois os testes unitários são executados automaticamente quando compila-se o JAR para distribuição. Caso contrário, você deve desativar o processo de testes automáticos durante compilação do JAR.
+Antes de construir o JAR para distribuição certifique-se de que o PostgreSQL esteja **sem autenticação** e com o banco de dados `smart_rolls` criado corretamente, pois os testes unitários são executados automaticamente quando compila-se o JAR para distribuição. Caso contrário, você deve desativar o processo de testes automáticos durante compilação do JAR.
 
 ### 2.1. Compilando o JAR para distribuição
 
@@ -53,7 +53,7 @@ mvn install -DskipTests
 
 ### 2.3. Construindo e Executando diretamente
 
-**Atenção:** Como mencionado anteriormente, certifique-se de que o banco `smart-roll` existe no MongoDB instalado no ambiente e que esteja **sem autenticação**. Veja a seção abaixo de banco de dados para ver instruções de construção do banco.
+**Atenção:** Como mencionado anteriormente, certifique-se de que o banco `smart_rolls` existe no MongoDB instalado no ambiente e que esteja **sem autenticação**. Veja a seção abaixo de banco de dados para ver instruções de construção do banco.
 
 Apesar do projeto ser facilmente construído e executado através do Maven, este modo de compilação e execução somente é recomendado para desenvolvimento local. Dessa forma, o desenvolvedor pode usar o IntelliJ para executar em modo de desenvolvimento com ou sem debugger direto na própria interface da IDE. Você também pode compilar e executar de uma vez através do terminal no **diretório do POM.xml**:
 
@@ -93,7 +93,7 @@ O formato do comando deve estar documentado no próprio swagger.
 
 ## 3. Banco de Dados do Projeto
 
-O banco de dados relacional deste projeto é hospedado no PostgreSQL. Para desenvolvimento, recomenda-se hospedar o banco de dados localmente na porta 27017 com autenticação desligada, objetivando homogenizar a configuração padrão de execução da API para desenvolvimento. O nome utilizado por padrão é `smart-roll`, devendo ser alterado para qualquer outro nos ambientes externos que hospedam versões de produção ou controle de qualidade.
+O banco de dados relacional deste projeto é hospedado no PostgreSQL. Para desenvolvimento, recomenda-se hospedar o banco de dados localmente na porta 27017 com autenticação desligada, objetivando homogenizar a configuração padrão de execução da API para desenvolvimento. O nome utilizado por padrão é `smart_rolls`, devendo ser alterado para qualquer outro nos ambientes externos que hospedam versões de produção ou controle de qualidade.
 
 ```
 STRING DE CONEXÃO AQUI
@@ -105,7 +105,7 @@ Uma vez com o PostgreSQL implantado localmente ou na máquina externa, ...
 
 O código deste projeto é testado através de uma componente de teste unitário que fazem a cobertura parcial das componentes presentes no sistema. O teste de unidade utiliza a biblioteca do JUnit integrada no SpringBoot e todo seu código se encontra em `src/test`. A documentação que fornece a modelagem e auxilia no planejamento dos testes é feita diretamente no código-fonte dos testes.
 
-Antes de executar os testes, certifique-se que o serviço do PostgreSQL está ligado **sem autenticação** e que o banco de dados `smart-roll` **não** existe.
+Antes de executar os testes, certifique-se que o serviço do PostgreSQL está ligado **sem autenticação** e que o banco de dados `smart_rolls` **não** existe.
 
 Os testes unitários são executados automaticamente na construção de qualquer JAR para a distribuição do projeto pelo *script* agregado. Qualquer outro detalhe para execução dos testes unitários pode ser vista na respectiva seção de execução dos testes relacionada anteriormente neste documento. Toda a implementação dos testes devem estar documentadas, seguindo fielmente a estrutura dos demais testes. Os seguintes princípios de boas práticas devem ser aplicados:
 
@@ -129,7 +129,7 @@ Os testes unitários são executados automaticamente na construção de qualquer
 * Não é necessário usar JavaDoc.
 * Qualquer teste que necessite utilizar uma informação externa deve:
   * Utilizar somente arquivos no disco localizados no diretório `./src/test/resources/`;
-  * Utilizar somente informações presentes no banco de dados `test-MDC` do MongoDB, populando corretamente antes da execução do teste e limpando apropriadamente após a execução.
+  * Utilizar somente informações presentes no banco de dados `smart_rolls` do PostgreSQL, populando corretamente antes da execução do teste e limpando apropriadamente após a execução.
 
 ## 7. Estrutura de Pastas do Repositório
 

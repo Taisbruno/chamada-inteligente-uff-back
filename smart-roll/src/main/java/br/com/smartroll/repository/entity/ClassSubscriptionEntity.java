@@ -8,22 +8,23 @@ public class ClassSubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
-    @Column(name = "class_code", nullable = false, unique = true)
-    public String classCode;
-    @Column(name = "discipline_code", nullable = false, unique = true)
-    public String disciplineCode;
-    @Column(name = "student_registration", nullable = false, unique = true)
-    public String studentRegistration;
+    @Column(name = "registration", nullable = false, unique = true, insertable = false, updatable = false)
+    public String registration;
     @Column(name = "semester", nullable = false)
     public String semester;
+    @ManyToOne
+    @JoinColumn(name = "class_code", nullable = false, referencedColumnName = "class_code")
+    public ClassEntity classEntity;
+    @ManyToOne
+    @JoinColumn(name = "registration", nullable = false, referencedColumnName = "registration")
+    public UserEntity userEntity;
 
     public ClassSubscriptionEntity() {
         // Construtor padrão
     }
 
-    public ClassSubscriptionEntity(String classCode, String studentRegistration, String subscriptionDate) {
-        this.classCode = classCode;
-        this.studentRegistration = studentRegistration;
+    public ClassSubscriptionEntity(String registration, String subscriptionDate) {
+        this.registration = registration;
         this.semester = subscriptionDate;
     }
 }

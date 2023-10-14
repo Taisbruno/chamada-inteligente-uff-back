@@ -4,6 +4,7 @@ import br.com.smartroll.model.StudentModel;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,17 +12,17 @@ import java.util.stream.Collectors;
 public class StudentsView {
 
     @SerializedName("classmates")
-    private final List<StudentView> students;
+    private List<StudentView> students = new ArrayList<>();
 
     /**
      * Construtor padrão de uma view de estudantes.
-     * @param students uma lista de estudantes.
+     * @param studentsModel uma lista de estudantes.
      */
-    public StudentsView(Collection<StudentModel> students) {
-        this.students = students.stream()
-                .map(StudentView::new)
-                .collect(Collectors.toList());
-
+    public StudentsView(List<StudentModel> studentsModel) {
+        for(StudentModel studentModel : studentsModel){
+            StudentView studentView = new StudentView(studentModel.registrationNumber, studentModel.name);
+            students.add(studentView);
+        }
     }
 
     /**

@@ -41,9 +41,10 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/enrolled", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentsView getEnrolledStudentsByClass(@RequestParam String disciplineCode, @RequestParam  String codeClass, @RequestParam  String semester) {
-        List<StudentModel> students = service.getEnrolledStudentsByClassCode(disciplineCode, codeClass, semester);
-        return new StudentsView(students);
+    public String getEnrolledStudentsByClass(@RequestParam String codeClass, @RequestParam  String semester) {
+        List<StudentModel> students = service.getEnrolledStudentsByClassCode(codeClass, semester);
+        StudentsView studentsView = new StudentsView(students);
+        return studentsView.toJson();
     }
 
 }

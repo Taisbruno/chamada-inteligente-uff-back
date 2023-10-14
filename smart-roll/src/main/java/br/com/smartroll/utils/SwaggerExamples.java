@@ -19,19 +19,16 @@ public class SwaggerExamples {
 
     public final static String GETENROLLEDSTUDENTS = """
             {
-            	classmates : [
-            {
-            	“registration” : “11700830”,
-            	“name”: “Taís Bruno”
-            },
-            ...
-            {
-            	“registration” : “11700830”,
-            	“name”: “Natália Bruno”
-            }
-            ]
-            			
-            }
-                        
+              "classmates": [
+                {
+                  "registration": "117008301",
+                  "name": "Tais Bruno"
+                },
+                {
+                  "registration": "117008302",
+                  "name": "Natalia Bruno"
+                }
+              ]
+            }           
             """;
 }

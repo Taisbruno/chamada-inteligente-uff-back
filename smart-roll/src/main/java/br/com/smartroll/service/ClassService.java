@@ -19,17 +19,21 @@ public class ClassService {
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
 
-    public List<ClassModel> getClassesByUser(String registration){
-        List<ClassEntity> classes = classRepository.getAllClasses();
-        List<ClassSubscriptionEntity> classesSubscription = classSubRepository.getAllClassSubscriptions();
+    public List<ClassModel> getClassesByUser(String registration, String classCode, String disciplineCode, String semester){
+        List<ClassSubscriptionEntity> classesSubscription = classSubRepository.findClassesByStudent(
+                registration, classCode, disciplineCode, semester);
         List<ClassModel> classesModels = new ArrayList<>();
-        for(ClassEntity classEntity: classes){
-            for(ClassSubscriptionEntity classSubEntity: classesSubscription){
-                if(classSubEntity.studentRegistration.equals(registration) && classEntity.classCode.equals(classSubEntity.classCode) && classEntity.disciplineCode.equals(classSubEntity.disciplineCode) && classEntity.semester.equals(classSubEntity.semester)){
-                    ClassModel classModel = new ClassModel(classEntity.classCode, classEntity.disciplineCode, classEntity.discipline, classEntity.teacher, classEntity.semester, classEntity.total);
-                    classesModels.add(classModel);
-                }
-            }
+        for(ClassSubscriptionEntity classSubEntity: classesSubscription){
+            ClassEntity classEntity = classSubEntity.classEntity;
+            ClassModel classModel = new ClassModel(
+                    classEntity.classCode,
+                    classEntity.disciplineCode,
+                    classEntity.discipline,
+                    classEntity.teacher,
+                    classEntity.semester,
+                    classEntity.total
+            );
+            classesModels.add(classModel);
         }
         return classesModels;
     }

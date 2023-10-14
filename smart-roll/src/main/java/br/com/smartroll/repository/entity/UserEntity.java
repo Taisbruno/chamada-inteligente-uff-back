@@ -1,6 +1,7 @@
 package br.com.smartroll.repository.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "myuser")
@@ -20,6 +21,9 @@ public class UserEntity {
 
     @Column(name = "type", nullable = false)
     public String type;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<ClassSubscriptionEntity> classSubscriptions;
 
     public UserEntity() {
         // Construtor padrão

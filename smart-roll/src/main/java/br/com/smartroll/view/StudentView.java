@@ -14,4 +14,9 @@ public class StudentView {
         this.registration = studentModel.registrationNumber;
         this.name = studentModel.name;
     }
+
+    public StudentView(String registrationNumber, String name) {
+        this.registration = registrationNumber;
+        this.name = name;
+    }
 }

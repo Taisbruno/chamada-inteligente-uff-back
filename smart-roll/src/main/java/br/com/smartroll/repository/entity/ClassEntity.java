@@ -1,15 +1,16 @@
 package br.com.smartroll.repository.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "class")
+@Table(name = "course_class")
 public class ClassEntity {
     @Id
-    @Column(name = "classCode", nullable = false, unique = true, length = 50)
+    @Column(name = "class_code", nullable = false, unique = true, length = 50)
     public String classCode;
 
-    @Column(name = "code", nullable = false, unique = true, length = 50)
+    @Column(name = "discipline_code", nullable = false, unique = true, length = 50)
     public String disciplineCode;
 
     @Column(name = "discipline", nullable = false, length = 100)
@@ -23,6 +24,9 @@ public class ClassEntity {
 
     @Column(name = "total", nullable = false)
     public int total;
+
+    @OneToMany(mappedBy = "classEntity")
+    private List<ClassSubscriptionEntity> classSubscriptions;
 
     public ClassEntity() {
         // Construtor padrão
