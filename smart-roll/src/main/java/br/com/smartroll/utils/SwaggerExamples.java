@@ -16,4 +16,44 @@ public class SwaggerExamples {
             		</body>
             	</html>
             """;
+
+    public final static String GETENROLLEDSTUDENTS = """
+            {
+              "classmates": [
+                {
+                  "registration": "117008301",
+                  "name": "Tais Bruno"
+                },
+                ...
+                {
+                  "registration": "117008302",
+                  "name": "Natalia Bruno"
+                }
+              ]
+            }           
+            """;
+
+    public final static String GETCLASSESBYUSER = """
+            {
+              "classrooms": [
+                {
+                  "classCode": "code1",
+                  "disciplineCode": "dcode1",
+                  "discipline": "Matemática",
+                  "teacher": "Professor A",
+                  "semester": "2023.1",
+                  "total": 30
+                },
+                ...
+                {
+                  "classCode": "code2",
+                  "disciplineCode": "dcode2",
+                  "discipline": "Física",
+                  "teacher": "Professor B",
+                  "semester": "2023.1",
+                  "total": 30
+                }
+              ]
+            }         
+            """;
 }
