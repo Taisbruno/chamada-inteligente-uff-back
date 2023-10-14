@@ -24,10 +24,6 @@ public class ClassSubscriptionRepository {
                 classCode, disciplineCode, semester);
     }
 
-    public List<ClassSubscriptionEntity> findClassesByStudent(String studentRegistration, String classCode, String disciplineCode, String semester){
-        return classSubscriptionRepository.findClassesByStudent(studentRegistration, classCode, disciplineCode, semester);
-    }
-
     /**
      *
      public List<ClassSubscriptionEntity> getSubscriptionsByClassCodeAndSemester(String disciplineCode, String classCode, String semester) {

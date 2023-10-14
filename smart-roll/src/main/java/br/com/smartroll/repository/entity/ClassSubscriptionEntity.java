@@ -8,7 +8,7 @@ public class ClassSubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long id;
-    @Column(name = "registration", nullable = false, unique = true, insertable = false, updatable = false)
+    @Column(name = "registration", nullable = false, insertable = false, updatable = false)
     public String registration;
     @Column(name = "semester", nullable = false)
     public String semester;

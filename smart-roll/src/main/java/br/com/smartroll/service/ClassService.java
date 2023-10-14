@@ -19,12 +19,10 @@ public class ClassService {
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
 
-    public List<ClassModel> getClassesByUser(String registration, String classCode, String disciplineCode, String semester){
-        List<ClassSubscriptionEntity> classesSubscription = classSubRepository.findClassesByStudent(
-                registration, classCode, disciplineCode, semester);
+    public List<ClassModel> getClassesByUser(String registration){
+        List<ClassEntity> classes = classRepository.findClassesByUserRegistration(registration);
         List<ClassModel> classesModels = new ArrayList<>();
-        for(ClassSubscriptionEntity classSubEntity: classesSubscription){
-            ClassEntity classEntity = classSubEntity.classEntity;
+        for(ClassEntity classEntity: classes){
             ClassModel classModel = new ClassModel(
                     classEntity.classCode,
                     classEntity.disciplineCode,

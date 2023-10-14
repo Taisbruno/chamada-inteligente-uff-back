@@ -14,7 +14,7 @@ public class ClassRepository {
     private IClassRepository classRepository;
 
 
-    public List<ClassEntity> getAllClasses() {
-        return classRepository.findAll();
+    public List<ClassEntity> findClassesByUserRegistration(String registration) {
+        return classRepository.findClassesByUserRegistration(registration);
     }
 }
