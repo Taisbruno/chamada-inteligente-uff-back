@@ -6,6 +6,8 @@ INSERT INTO myuser (registration, name, email, password, type) VALUES
 ('1', 'João', 'joao@example.com', 'joaospassword', 'student');
 INSERT INTO myuser (registration, name, email, password, type) VALUES 
 ('2', 'Natalia', 'natalia@example.com', 'nataliapassword', 'student');
+INSERT INTO myuser (registration, name, email, password, type) VALUES 
+('1111', 'Hugo', 'hugo@example.com', 'hugopassword', 'student');
 
 -- Inserir Classe
 INSERT INTO course_class (class_code, discipline_code, discipline, teacher, semester, total) VALUES 
