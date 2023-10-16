@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,8 +36,8 @@ public class LoginController {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class), examples = {
                     @ExampleObject(value = SwaggerExamples.GETUSER) })),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
-    @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserView> authenticate(@RequestBody UserEntity user) {
+    @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserView> authenticate(@RequestParam UserEntity user) {
         UserEntity userEntity = service.authenticateUser(user.registration, user.password);
 
         if (userEntity != null) {
