@@ -2,10 +2,12 @@ CREATE USER smart WITH SUPERUSER;
 
 
 -- Inserir Usuário
-INSERT INTO myuser (registration, name, email, password, type) VALUES 
-('1', 'João', 'joao@example.com', 'joaospassword', 'student');
-INSERT INTO myuser (registration, name, email, password, type) VALUES 
-('2', 'Natalia', 'natalia@example.com', 'nataliapassword', 'student');
+INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES 
+('1', 'João', '1111', 'joao@example.com', 'joaospassword', 'student');
+INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES 
+('2', 'Natalia', '2222', 'natalia@example.com', 'nataliapassword', 'student');
+INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES 
+('3', 'Hugo', '3333', 'hugo@example.com', 'hugopassword', 'student');
 
 -- Inserir Classe
 INSERT INTO course_class (class_code, discipline_code, discipline, teacher, semester, total) VALUES 
