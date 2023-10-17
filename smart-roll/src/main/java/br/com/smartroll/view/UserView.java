@@ -11,6 +11,9 @@ public class UserView {
     @SerializedName("name")
     public String name;
 
+    @SerializedName("cpf")
+    public String cpf;
+
     @SerializedName("email")
     public String email;
 
@@ -20,6 +23,7 @@ public class UserView {
     public UserView(UserEntity userEntity) {
         this.registration = userEntity.registration;
         this.name = userEntity.name;
+        this.cpf = userEntity.cpf;
         this.email = userEntity.email;
         this.type = userEntity.type;
     }

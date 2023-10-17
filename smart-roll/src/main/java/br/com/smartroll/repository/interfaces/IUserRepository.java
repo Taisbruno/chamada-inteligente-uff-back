@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface IUserRepository extends JpaRepository<UserEntity, String> {
-    UserEntity findUserByRegistration(String registration);
+    UserEntity findUserByCpf(String cpf);
 
     List<UserEntity> findByRegistrationIn(List<String> registrations);
 

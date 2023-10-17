@@ -12,7 +12,7 @@ public class LoginService {
     private UserRepository userRepository;
 
     public UserEntity authenticateUser(String cpf, String password) {
-        UserEntity user = userRepository.getUserByRegistration(cpf);
+        UserEntity user = userRepository.getUserByCpf(cpf);
 
         if (user != null) {
             if (user.password.equals(password)) {

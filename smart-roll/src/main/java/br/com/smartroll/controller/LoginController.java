@@ -37,8 +37,8 @@ public class LoginController {
                     @ExampleObject(value = SwaggerExamples.GETUSER) })),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserView> authenticate(@RequestParam UserEntity user) {
-        UserEntity userEntity = service.authenticateUser(user.registration, user.password);
+    public ResponseEntity<UserView> authenticate(@RequestBody UserEntity user) {
+        UserEntity userEntity = service.authenticateUser(user.cpf, user.password);
 
         if (userEntity != null) {
             return ResponseEntity.ok().body(new UserView(userEntity));

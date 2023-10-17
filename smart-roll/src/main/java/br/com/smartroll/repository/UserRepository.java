@@ -21,8 +21,8 @@ public class UserRepository {
         return userRepository.findUsersByClassCodeAndSemester(classCode, semester);
     }
 
-    public UserEntity getUserByRegistration(String cpf) {
-        return userRepository.findUserByRegistration(cpf);
+    public UserEntity getUserByCpf(String cpf) {
+        return userRepository.findUserByCpf(cpf);
     }
 
 }
