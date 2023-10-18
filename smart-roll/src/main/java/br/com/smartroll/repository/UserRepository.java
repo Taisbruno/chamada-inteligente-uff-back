@@ -14,9 +14,6 @@ public class UserRepository {
     @Autowired
     private IUserRepository userRepository;
 
-    @Autowired
-    ClassSubscriptionRepository classSubRepository;
-
     public List<UserEntity> getEnrolledUsersByClassCode(String classCode, String semester) {
         return userRepository.findUsersByClassCodeAndSemester(classCode, semester);
     }

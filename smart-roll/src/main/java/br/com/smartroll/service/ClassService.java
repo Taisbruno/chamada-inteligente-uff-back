@@ -1,5 +1,6 @@
 package br.com.smartroll.service;
 
+import br.com.smartroll.exception.ClassesNotFoundException;
 import br.com.smartroll.model.ClassModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.ClassSubscriptionRepository;
@@ -19,8 +20,11 @@ public class ClassService {
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
 
-    public List<ClassModel> getClassesByUser(String registration){
+    public List<ClassModel> getClassesByUser(String registration) throws ClassesNotFoundException {
         List<ClassEntity> classes = classRepository.findClassesByUserRegistration(registration);
+        if(classes.isEmpty()){
+            throw new ClassesNotFoundException(registration);
+        }
         List<ClassModel> classesModels = new ArrayList<>();
         for(ClassEntity classEntity: classes){
             ClassModel classModel = new ClassModel(

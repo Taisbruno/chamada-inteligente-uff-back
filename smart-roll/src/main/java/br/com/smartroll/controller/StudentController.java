@@ -1,11 +1,13 @@
 package br.com.smartroll.controller;
 
+import br.com.smartroll.exception.UsersNotFoundException;
 import br.com.smartroll.model.StudentModel;
 import br.com.smartroll.service.ClassService;
 import br.com.smartroll.service.UserService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.StudentsView;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,7 +43,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/enrolled", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getEnrolledStudentsByClass(@RequestParam String codeClass, @RequestParam  String semester) {
+    public String getEnrolledStudentsByClass(@Parameter(description = "Código da classe/disciplina", example = "code1") @RequestParam String codeClass, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws UsersNotFoundException {
         List<StudentModel> students = service.getEnrolledStudentsByClassCode(codeClass, semester);
         StudentsView studentsView = new StudentsView(students);
         return studentsView.toJson();
