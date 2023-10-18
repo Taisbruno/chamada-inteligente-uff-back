@@ -60,6 +60,12 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>2.7.5</version>
         </dependency>
+        <!--Lib para WebSocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <version>2.7.5</version>
+        </dependency>
         <!--Lib do FLyWay -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -107,8 +113,6 @@
             <artifactId>unirest-java</artifactId>
             <version>3.13.10</version>
         </dependency>
-
-
     </dependencies>
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
