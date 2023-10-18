@@ -70,7 +70,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(value = {UserUnauthorizedException.class})
+    @ExceptionHandler(value = {UserUnauthorizedException.class, IncorrectCredentialException.class})
     public ResponseEntity<String>  unauthorized(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.UNAUTHORIZED);

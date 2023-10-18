@@ -1,5 +1,6 @@
 package br.com.smartroll.view;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import br.com.smartroll.repository.entity.UserEntity;
@@ -26,5 +27,14 @@ public class UserView {
         this.cpf = userEntity.cpf;
         this.email = userEntity.email;
         this.type = userEntity.type;
+    }
+
+    /**
+     * Retorna a view em formato de Json.
+     * @return Uma String com formatação de Json da view.
+     */
+    public String toJson() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
