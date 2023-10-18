@@ -28,6 +28,9 @@ public class ClassEntity {
     @OneToMany(mappedBy = "classEntity")
     private List<ClassSubscriptionEntity> classSubscriptions;
 
+    @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
+    private List<RollEntity> rolls;
+
     public ClassEntity() {
         // Construtor padrão
     }
