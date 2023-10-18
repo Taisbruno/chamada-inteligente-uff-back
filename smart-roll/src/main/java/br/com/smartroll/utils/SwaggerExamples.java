@@ -19,16 +19,17 @@ public class SwaggerExamples {
 
   public final static String GETUSER = """
       {
-        "registration": "1111",
-        "name": "Hugo",
-        "email": "hugo@example.com",
-        "type": "student"
+        "registration": "string",
+        "name": "string",
+        "cpf": "string",
+        "email": "string",
+        "type": "string"
       }
         """;
 
   public final static String POSTLOGIN = """
           {
-            "cpf": "1111",
+            "cpf": "3333",
             "password": "hugopassword"
           }""";
 
