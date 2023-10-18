@@ -26,17 +26,29 @@ public class SwaggerExamples {
       }
         """;
 
+  public final static String POSTLOGIN = """
+          {
+            "cpf": "1111",
+            "password": "hugopassword"
+          }""";
+
+  public final static String POSTLOGINEXAMPLE = """
+          {
+            "cpf": "string",
+            "password": "string"
+          }""";
+
   public final static String GETENROLLEDSTUDENTS = """
       {
         "classmates": [
           {
-            "registration": "117008301",
-            "name": "Tais Bruno"
+            "registration": "string",
+            "name": "string"
           },
           ...
           {
-            "registration": "117008302",
-            "name": "Natalia Bruno"
+            "registration": "string",
+            "name": "string"
           }
         ]
       }
@@ -46,21 +58,21 @@ public class SwaggerExamples {
       {
         "classrooms": [
           {
-            "classCode": "code1",
-            "disciplineCode": "dcode1",
-            "discipline": "Matemática",
-            "teacher": "Professor A",
-            "semester": "2023.1",
-            "total": 30
+            "classCode": "string",
+            "disciplineCode": "string",
+            "discipline": "string",
+            "teacher": "string",
+            "semester": "string",
+            "total": int
           },
           ...
           {
-            "classCode": "code2",
-            "disciplineCode": "dcode2",
-            "discipline": "Física",
-            "teacher": "Professor B",
-            "semester": "2023.1",
-            "total": 30
+            "classCode": "string",
+            "disciplineCode": "string",
+            "discipline": "string",
+            "teacher": "string",
+            "semester": "string",
+            "total": int
           }
         ]
       }
