@@ -74,9 +74,7 @@ public class RollController {
     @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = String.class),
-                    examples = {@ExampleObject(value = SwaggerExamples.POSTROLLEXAMPLE)})),
+                    mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
