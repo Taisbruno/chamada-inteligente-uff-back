@@ -27,6 +27,22 @@ public class SwaggerExamples {
       }
         """;
 
+  public final static String POSTROLLEXAMPLE = """
+      {
+        "latitude": "string",
+        "longitude": "string",
+        "class_code": "string"
+      }
+        """;
+
+  public final static String POSTROLL = """
+      {
+        "latitude": "-23.550520",
+        "longitude": "-46.633308",
+        "class_code": "code1"
+      }
+        """;
+
   public final static String TOGGLESTOPWATCH = """
       {
           "hours": "string",

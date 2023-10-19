@@ -1,23 +1,25 @@
 package br.com.smartroll.controller;
 
+import br.com.smartroll.exception.InvalidJsonException;
 import br.com.smartroll.exception.RollNotFoundException;
+import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.RollService;
+import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.RollsView;
-import br.com.smartroll.view.StopWatchView;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kong.unirest.json.JSONException;
+import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/roll")
@@ -27,10 +29,6 @@ public class RollController {
     @Autowired
     RollService service;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-
     @ApiOperation(value = "Inicia a transmissão do cronômetro via WebSocket para o callId fornecido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transmissão iniciada com sucesso", content = @Content(schema = @Schema(description = "A resposta não possui corpo. Inicia a transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} cujo payload é um json como descrito no exemplo abaixo."))),
@@ -38,31 +36,8 @@ public class RollController {
             @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @GetMapping(value = "/startStopwatch", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void startStopwatch(@RequestParam String callId) throws RollNotFoundException {
-
-        if(service.getRoll(Long.parseLong(callId)).isEmpty()){
-            throw new RollNotFoundException(callId);
-        }
-        service.startCall(callId);
-
-        new Thread(() -> {
-            while (service.activeCalls.containsKey(callId)) {
-                Duration duration = Duration.between(service.activeCalls.get(callId), LocalDateTime.now());
-                long hours = duration.toHours();
-                long minutes = duration.minusHours(hours).toMinutes();
-                long seconds = duration.minusHours(hours).minusMinutes(minutes).getSeconds();
-
-                StopWatchView stopwatch = new StopWatchView(String.format("%02d", hours), String.format("%02d", minutes), String.format("%02d", seconds));
-
-                messagingTemplate.convertAndSend("/topic/time/" + callId, stopwatch.toJson());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e.getMessage());
-                }
-                System.out.println("Sending message for callId " + callId + ": " + stopwatch.toJson());
-            }
-        }).start();
+    public void startStopwatch(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
+        service.startStopWatch(callId);
     }
 
     @ApiOperation(value = "Interrompe a transmissão do cronômetro via WebSocket para o callId fornecido")
@@ -72,8 +47,8 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @GetMapping(value = "/stopStopwatch")
-    public void stopStopwatch(@RequestParam String callId) throws RollNotFoundException {
+    @PostMapping(value = "/stopStopwatch")
+    public void stopStopwatch(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
         if(service.getRoll(Long.parseLong(callId)).isEmpty()){
             throw new RollNotFoundException(callId);
         }
@@ -95,4 +70,40 @@ public class RollController {
         RollsView rollsView = new RollsView();
         return rollsView;
     }
+
+    @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void postCurrentRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException {
+        JSONObject requestBodyJson = null;
+        try {
+            if (requestBody != null) {
+                requestBodyJson = new JSONObject(requestBody);
+            } else throw new InvalidJsonException("missing.");
+        }
+        catch (JSONException | InvalidJsonException e) {
+            throw new InvalidJsonException(" incorrect format.");
+        }
+        if(!requestBodyJson.has("longitude"))
+            throw new InvalidJsonException("expected \"longitude\" key.");
+        if(requestBodyJson.isNull("longitude"))
+            throw new InvalidJsonException("\"longitude\" can not be null.");
+        if(!requestBodyJson.has("latitude"))
+            throw new InvalidJsonException("expected \"latitude\" key.");
+        if(requestBodyJson.isNull("latitude"))
+            throw new InvalidJsonException("\"latitude\" can not be null.");
+        if(!requestBodyJson.has("class_code"))
+            throw new InvalidJsonException("expected \"class_code\" key.");
+        if(requestBodyJson.isNull("class_code"))
+            throw new InvalidJsonException("\"class_code\" can not be null.");
+        RollModel rollModel = new RollModel(requestBodyJson.getString("longitude"), requestBodyJson.getString("latitude"), requestBodyJson.getString("class_code"));
+        service.createRoll(rollModel);
+    }
+
 }

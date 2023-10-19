@@ -3,6 +3,7 @@ package br.com.smartroll;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan("br.com.smartroll.repository.entity")
 @EnableJpaRepositories("br.com.smartroll.repository")
+@EnableJpaAuditing
 public class SmartRollsApplication {
     /**
      * Lógica da main.
