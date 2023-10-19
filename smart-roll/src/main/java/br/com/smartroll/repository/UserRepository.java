@@ -22,4 +22,8 @@ public class UserRepository {
         return userRepository.findUserByCpf(cpf);
     }
 
+    public UserEntity getUserByRegistration(String registration) {
+        return userRepository.findUserByRegistration(registration);
+    }
+
 }

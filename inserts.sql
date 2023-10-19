@@ -17,13 +17,14 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('1', '2023.1', 'code1'),
 ('1', '2023.1', 'code2');
 
--- Inserting Presence
-INSERT INTO presence (student_registration, id_call, certificate, message, is_present, time_present) VALUES 
-('1', 'call1', 'cert1', 'Estava presente', TRUE, '10:00');
-
--- Inserting Roll
+-- Inserting Roll (Need to capture the ID returned by this for the next insert)
 INSERT INTO roll (longitude, latitude, class_code, created_at) VALUES 
 ('-47.875', '-15.794', 'code1', NOW());
+
+-- Assuming the above insert gives roll_id as '1' (You'll need to verify this!):
+-- Inserting Presence
+INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, time_present) VALUES 
+('1', 1, 'cert1', 'Estava presente', TRUE, '10:00');
 
 -- Inserting Class Schedule (sample data for demonstration)
 INSERT INTO class_schedule (class_code, day_of_week, start_time, end_time) VALUES
