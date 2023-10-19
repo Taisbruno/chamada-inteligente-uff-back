@@ -27,6 +27,15 @@ public class SwaggerExamples {
       }
         """;
 
+  public final static String TOGGLESTOPWATCH = """
+      {
+          "hours": "string",
+          "minutes": "string",
+          "seconds": "string"
+      }
+
+        """;
+
   public final static String POSTLOGIN = """
           {
             "cpf": "3333",

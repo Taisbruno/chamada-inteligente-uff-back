@@ -55,7 +55,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(value = {RuntimeException.class, IOException.class, ServletException.class})
+    @ExceptionHandler(value = {RuntimeException.class, IOException.class, ServletException.class, InterruptedException.class})
     public ResponseEntity<String> internalError(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.name(), exception.getMessage());
         logger.warn("Status Response: " + HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,7 +83,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class})
+    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class})
     public ResponseEntity<String>  notFound(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.NOT_FOUND);
