@@ -25,6 +25,9 @@ public class RollService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private PresenceService presenceService;
+
     public ConcurrentHashMap<String, LocalDateTime> activeCalls = new ConcurrentHashMap<>();
 
     public void startStopWatch(String callId) throws RollNotFoundException {
@@ -48,7 +51,7 @@ public class RollService {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e.getMessage());
                 }
-                System.out.println("Sending message for callId " + callId + ": " + stopwatch.toJson());
+                //System.out.println("Sending message for callId " + callId + ": " + stopwatch.toJson());
             }
         }).start();
     }
@@ -68,5 +71,6 @@ public class RollService {
 
     public void endCall(String callId) {
         activeCalls.remove(callId);
+        presenceService.clearPresencesForRoll(callId);
     }
 }

@@ -103,4 +103,13 @@ public class SwaggerExamples {
         ]
       }
       """;
+
+    public static final String POSTPRESENCE = """
+            {
+              "studentRegistration": "2",
+              "rollId": "1",
+              "medicalCertificate": "cert2",
+              "message": "Estava presente"
+            }
+      """;
 }

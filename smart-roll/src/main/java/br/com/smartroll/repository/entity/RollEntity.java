@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "roll")
@@ -23,6 +24,8 @@ public class RollEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PresenceEntity> presences;
 
     // Construtor padrão
     public RollEntity() {}

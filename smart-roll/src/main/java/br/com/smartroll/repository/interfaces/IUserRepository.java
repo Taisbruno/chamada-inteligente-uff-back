@@ -11,7 +11,7 @@ import java.util.List;
 public interface IUserRepository extends JpaRepository<UserEntity, String> {
     UserEntity findUserByCpf(String cpf);
 
-    List<UserEntity> findByRegistrationIn(List<String> registrations);
+    UserEntity findUserByRegistration(String registration);
 
     @Query("SELECT u FROM UserEntity u JOIN ClassSubscriptionEntity cs ON u.registration = cs.userEntity.registration WHERE cs.classEntity.classCode = :classCode AND cs.semester = :semester")
     List<UserEntity> findUsersByClassCodeAndSemester(
