@@ -14,6 +14,14 @@ import javax.transaction.Transactional;
 public interface IRollRepository extends JpaRepository<RollEntity, Long> {
 
     /**
+     * Retorna uma chamada com base no id da chamada.
+     * @param id o id da chamada.
+     * @return RollEntity a entidade de chamada.
+     */
+    @Query("SELECT r FROM RollEntity r WHERE r.id = ?1")
+    RollEntity getRoll(Long id);
+
+    /**
      * Atualiza a coluna 'finishedAt' da entidade RollEntity com o timestamp atual
      * para a entidade com o ID especificado.
      *

@@ -23,12 +23,12 @@ public class RollEntity {
     public String latitude;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_code", nullable = false)
-    private ClassEntity classEntity;
+    public ClassEntity classEntity;
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    public LocalDateTime createdAt;
     @Column(name = "finished_at")
-    private LocalDateTime finishedAt;
+    public LocalDateTime finishedAt;
     @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PresenceEntity> presences;
 

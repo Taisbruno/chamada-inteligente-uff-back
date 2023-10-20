@@ -48,7 +48,7 @@ public class PresenceService {
      * @throws RollClosedException Se a chamada especificada já estiver fechada.
      */
     public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException {
-        if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)).isEmpty()){
+        if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)) == null){
             throw new RollNotFoundException(presenceModel.rollId);
         }else if(rollRepository.isRollClosed(Long.parseLong(presenceModel.rollId))){
             throw new RollClosedException(presenceModel.rollId);

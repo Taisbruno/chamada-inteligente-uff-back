@@ -34,8 +34,8 @@ public class RollRepository {
      * @param id identificador único do registro de chamada.
      * @return uma instância Optional contendo o registro de chamada, se presente.
      */
-    public Optional<RollEntity> getRoll(Long id) {
-        return rollRepository.findById(id);
+    public RollEntity getRoll(Long id) {
+        return rollRepository.getRoll(id);
     }
 
     /**

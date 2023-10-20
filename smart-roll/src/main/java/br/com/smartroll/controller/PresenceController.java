@@ -39,19 +39,17 @@ public class PresenceController {
      *
      * @param requestBody JSON que contém informações de presença.
      * @throws InvalidJsonException Quando o JSON do corpo da requisição é inválido.
-     * @throws UserUnauthorizedException Quando o usuário não está autorizado.
-     * @throws IncorrectCredentialException Quando as credenciais fornecidas são incorretas.
      * @throws RollNotFoundException Quando a chamada especificada não é encontrada.
      * @throws RollClosedException Quando a chamada está fechada.
      */
     @ApiOperation(value = "Realiza a submissão de presença em uma chamada e transmite via WebSocket a lista de alunos inscritos em tempo real ")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do login a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, UserUnauthorizedException, IncorrectCredentialException, RollNotFoundException, RollClosedException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do login a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {
