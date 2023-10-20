@@ -1,5 +1,6 @@
 package br.com.smartroll.service;
 
+import br.com.smartroll.exception.RollClosedException;
 import br.com.smartroll.exception.RollNotFoundException;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.model.StudentModel;
@@ -14,11 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Classe de serviço responsável pelas operações relacionadas à presença dos alunos.
+ * Esta classe oferece métodos para gerenciar e notificar sobre a presença dos alunos em uma determinada chamada.
+ */
 @Service
 public class PresenceService {
 
@@ -36,9 +40,18 @@ public class PresenceService {
 
     public ConcurrentHashMap<String, List<StudentView>> activePresencesByRoll = new ConcurrentHashMap<>();
 
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException {
+    /**
+     * Método responsável por registrar uma presença de um aluno em uma chamada.
+     *
+     * @param presenceModel Modelo contendo as informações da presença.
+     * @throws RollNotFoundException Se a chamada especificada não for encontrada.
+     * @throws RollClosedException Se a chamada especificada já estiver fechada.
+     */
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException {
         if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)).isEmpty()){
             throw new RollNotFoundException(presenceModel.rollId);
+        }else if(rollRepository.isRollClosed(Long.parseLong(presenceModel.rollId))){
+            throw new RollClosedException(presenceModel.rollId);
         }
 
         PresenceEntity presenceEntity = new PresenceEntity(presenceModel);
@@ -47,6 +60,12 @@ public class PresenceService {
         notifyFrontEndAboutActivePresences(presenceModel.rollId);
     }
 
+    /**
+     * Método auxiliar para adicionar um aluno à lista de presenças ativas de uma chamada.
+     *
+     * @param studentRegistration Registro do aluno.
+     * @param rollId ID da chamada.
+     */
     private void submitStudent(String studentRegistration, String rollId) {
         UserEntity userEntity = userRepository.getUserByRegistration(studentRegistration);
         StudentView student = new StudentView(userEntity.registration, userEntity.name);
@@ -62,10 +81,17 @@ public class PresenceService {
 
 
     /**
-     * Método responsável por exibir a lista de alunos inscritos em uma chamada via WebSocket.
-     * @param rollId o id da chamada
+     * Método para notificar a interface do usuário sobre as presenças ativas em uma chamada via WebSocket.
+     *
+     * @param rollId ID da chamada para a qual as notificações devem ser enviadas.
      */
     private void notifyFrontEndAboutActivePresences(String rollId) {
+        // Verificar se a chamada está fechada
+        if (rollRepository.isRollClosed(Long.parseLong(rollId))) {
+            activePresencesByRoll.remove(rollId);
+            return; // Encerrar a função para não enviar mensagens para uma chamada fechada
+        }
+
         List<StudentView> activeStudentsForRoll = activePresencesByRoll.getOrDefault(rollId, new ArrayList<>());
         messagingTemplate.convertAndSend("/topic/presences/" + rollId, activeStudentsForRoll);
 
@@ -79,7 +105,4 @@ public class PresenceService {
         System.out.println("Message sent to /topic/presences/" + rollId);
     }
 
-    public void clearPresencesForRoll(String rollId) {
-        activePresencesByRoll.remove(rollId);
-    }
 }

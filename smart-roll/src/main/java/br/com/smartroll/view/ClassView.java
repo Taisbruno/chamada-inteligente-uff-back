@@ -1,9 +1,12 @@
 package br.com.smartroll.view;
 
 import br.com.smartroll.model.ClassModel;
-import br.com.smartroll.model.StudentModel;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Representa uma visualização simplificada de uma classe.
+ * Esta classe é utilizada principalmente para serialização e apresentação dos dados de uma classe.
+ */
 public class ClassView {
 
     @SerializedName("classCode")

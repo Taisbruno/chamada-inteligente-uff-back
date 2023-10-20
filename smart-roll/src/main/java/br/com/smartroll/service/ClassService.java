@@ -5,13 +5,18 @@ import br.com.smartroll.model.ClassModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.ClassSubscriptionRepository;
 import br.com.smartroll.repository.entity.ClassEntity;
-import br.com.smartroll.repository.entity.ClassSubscriptionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Classe de serviço dedicada a gerenciar operações relacionadas às Classes.
+ * Este serviço oferece métodos para recuperar informações de classes com base no registro do usuário e realiza
+ * as transformações necessárias das representações de entidade para modelo.
+ */
 @Service
 public class ClassService {
     @Autowired
@@ -20,6 +25,13 @@ public class ClassService {
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
 
+    /**
+     * Recupera as classes com base no número de registro de um usuário.
+     *
+     * @param registration O número de registro do usuário.
+     * @return Uma lista de ClassModel representando as classes associadas ao usuário.
+     * @throws ClassesNotFoundException Se nenhuma classe for encontrada para o registro fornecido.
+     */
     public List<ClassModel> getClassesByUser(String registration) throws ClassesNotFoundException {
         List<ClassEntity> classes = classRepository.findClassesByUserRegistration(registration);
         if(classes.isEmpty()){

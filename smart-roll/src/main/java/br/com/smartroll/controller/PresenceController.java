@@ -1,9 +1,6 @@
 package br.com.smartroll.controller;
 
-import br.com.smartroll.exception.IncorrectCredentialException;
-import br.com.smartroll.exception.InvalidJsonException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.UserUnauthorizedException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.model.UserModel;
 import br.com.smartroll.repository.entity.UserEntity;
@@ -25,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador responsável por gerenciar as operações relacionadas às presenças.
+ */
 @RestController
 @RequestMapping("/presences")
 @Tag(name = "presence-controller", description = "Controller responsável por requisições de presenças")
@@ -33,7 +33,17 @@ public class PresenceController {
     @Autowired
     PresenceService service;
 
-
+    /**
+     * Requisição para submeter uma presença em uma chamada. A lista de alunos
+     * inscritos é transmitida em tempo real via WebSocket após a submissão.
+     *
+     * @param requestBody JSON que contém informações de presença.
+     * @throws InvalidJsonException Quando o JSON do corpo da requisição é inválido.
+     * @throws UserUnauthorizedException Quando o usuário não está autorizado.
+     * @throws IncorrectCredentialException Quando as credenciais fornecidas são incorretas.
+     * @throws RollNotFoundException Quando a chamada especificada não é encontrada.
+     * @throws RollClosedException Quando a chamada está fechada.
+     */
     @ApiOperation(value = "Realiza a submissão de presença em uma chamada e transmite via WebSocket a lista de alunos inscritos em tempo real ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
@@ -41,7 +51,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do login a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, UserUnauthorizedException, IncorrectCredentialException, RollNotFoundException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do login a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, UserUnauthorizedException, IncorrectCredentialException, RollNotFoundException, RollClosedException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

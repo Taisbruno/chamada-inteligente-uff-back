@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import br.com.smartroll.repository.entity.UserEntity;
 
+/**
+ * Representa uma visualização simplificada de um usuário.
+ * Esta classe é utilizada principalmente para serialização e apresentação dos dados de um usuário.
+ */
 public class UserView {
     @SerializedName("registration")
     public String registration;
@@ -21,6 +25,12 @@ public class UserView {
     @SerializedName("type")
     public String type;
 
+    /**
+     * Construtor de UserView baseado em uma entidade de usuário.
+     * Inicializa a visualização do usuário usando os dados da entidade fornecida.
+     *
+     * @param userEntity A entidade do usuário que será transformada em uma visualização de usuário.
+     */
     public UserView(UserEntity userEntity) {
         this.registration = userEntity.registration;
         this.name = userEntity.name;

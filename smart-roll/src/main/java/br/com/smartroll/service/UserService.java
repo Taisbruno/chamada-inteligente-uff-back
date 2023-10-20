@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe de serviço responsável pelas operações relacionadas aos usuários.
+ * Esta classe oferece métodos para gerenciar e recuperar informações de usuários e estudantes.
+ */
 @Service
 public class UserService {
     @Autowired
@@ -18,6 +22,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Método para recuperar uma lista de estudantes inscritos com base no código da turma e no semestre.
+     *
+     * @param classCode Código da turma.
+     * @param semester Semestre da turma.
+     * @return Uma lista de modelos de estudantes inscritos.
+     * @throws UsersNotFoundException Exceção lançada se não forem encontrados estudantes inscritos para o código da turma e semestre fornecidos.
+     */
     public List<StudentModel> getEnrolledStudentsByClassCode(String classCode, String semester) throws UsersNotFoundException {
         List<UserEntity> studentsEntity = userRepository.getEnrolledUsersByClassCode(classCode, semester);
         if(studentsEntity.isEmpty()){

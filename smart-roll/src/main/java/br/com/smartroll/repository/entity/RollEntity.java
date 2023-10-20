@@ -7,6 +7,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Representa a entidade "Roll" no banco de dados.
+ */
 @Entity
 @Table(name = "roll")
 @EntityListeners(AuditingEntityListener.class)
@@ -24,13 +27,23 @@ public class RollEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    @Column(name = "finished_at")
+    private LocalDateTime finishedAt;
     @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PresenceEntity> presences;
 
-    // Construtor padrão
+    /**
+     * Construtor padrão de RollEntity.
+     */
     public RollEntity() {}
 
-    // Construtor com parâmetros
+    /**
+     * Construtor parametrizado de RollEntity.
+     *
+     * @param longitude Longitude onde a chamada foi realizada.
+     * @param latitude Latitude onde a chamada foi realizada.
+     * @param classCode Código da turma para a qual a chamada é direcionada.
+     */
     public RollEntity(String longitude, String latitude, String classCode) {
         this.longitude = longitude;
         this.latitude = latitude;

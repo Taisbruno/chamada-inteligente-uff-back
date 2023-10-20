@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 /**
  * Classe responsável por implementar a View de uma mensagem de exceção.
- * @author Natália
  */
 public class ExceptionView {
 

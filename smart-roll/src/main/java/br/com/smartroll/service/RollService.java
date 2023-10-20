@@ -22,39 +22,6 @@ public class RollService {
     @Autowired
     private RollRepository rollRepository;
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    private PresenceService presenceService;
-
-    public ConcurrentHashMap<String, LocalDateTime> activeCalls = new ConcurrentHashMap<>();
-
-    public void startStopWatch(String callId) throws RollNotFoundException {
-        if(rollRepository.getRoll(Long.parseLong(callId)).isEmpty()){
-            throw new RollNotFoundException(callId);
-        }
-        startCall(callId);
-
-        new Thread(() -> {
-            while (this.activeCalls.containsKey(callId)) {
-                Duration duration = Duration.between(this.activeCalls.get(callId), LocalDateTime.now());
-                long hours = duration.toHours();
-                long minutes = duration.minusHours(hours).toMinutes();
-                long seconds = duration.minusHours(hours).minusMinutes(minutes).getSeconds();
-
-                StopWatchView stopwatch = new StopWatchView(String.format("%02d", hours), String.format("%02d", minutes), String.format("%02d", seconds));
-
-                messagingTemplate.convertAndSend("/topic/time/" + callId, stopwatch.toJson());
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e.getMessage());
-                }
-                //System.out.println("Sending message for callId " + callId + ": " + stopwatch.toJson());
-            }
-        }).start();
-    }
 
     public Optional<RollEntity> getRoll(Long id) {
         return rollRepository.getRoll(id);
@@ -65,12 +32,12 @@ public class RollService {
         rollRepository.createRoll(rollEntity);
     }
 
-    public void startCall(String callId) {
-        activeCalls.put(callId, LocalDateTime.now());
+    public void closeRoll(Long id){
+        rollRepository.closeRoll(id);
     }
 
-    public void endCall(String callId) {
-        activeCalls.remove(callId);
-        presenceService.clearPresencesForRoll(callId);
+    public boolean isRollClosed(Long id){
+        return rollRepository.isRollClosed(id);
     }
+
 }

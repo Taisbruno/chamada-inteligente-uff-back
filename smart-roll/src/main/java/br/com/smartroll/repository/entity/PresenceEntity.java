@@ -4,6 +4,9 @@ import br.com.smartroll.model.PresenceModel;
 
 import javax.persistence.*;
 
+/**
+ * Representa a entidade "Presence" no banco de dados.
+ */
 @Entity
 @Table(name = "presence")
 public class PresenceEntity {
@@ -37,6 +40,11 @@ public class PresenceEntity {
         this.timePresent = timePresent;
     }
 
+    /**
+     * Construtor que transforma um modelo de presença em uma entidade de presença.
+     *
+     * @param presenceModel Modelo de presença a ser transformado.
+     */
     public PresenceEntity(PresenceModel presenceModel) {
         this.studentRegistration = presenceModel.studentRegistration;
         this.roll = new RollEntity();

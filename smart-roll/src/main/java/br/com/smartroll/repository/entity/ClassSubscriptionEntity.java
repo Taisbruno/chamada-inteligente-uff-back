@@ -2,6 +2,9 @@ package br.com.smartroll.repository.entity;
 
 import javax.persistence.*;
 
+/**
+ * Representa a entidade "ClassSubscription" no banco de dados.
+ */
 @Entity
 @Table(name = "class_subscription")
 public class ClassSubscriptionEntity {
@@ -19,10 +22,19 @@ public class ClassSubscriptionEntity {
     @JoinColumn(name = "registration", nullable = false, referencedColumnName = "registration")
     public UserEntity userEntity;
 
+    /**
+     * Construtor padrão de ClassSubscriptionEntity.
+     */
     public ClassSubscriptionEntity() {
         // Construtor padrão
     }
 
+    /**
+     * Construtor parametrizado de ClassSubscriptionEntity.
+     *
+     * @param registration Número de registro do usuário (estudante).
+     * @param subscriptionDate Data de inscrição do usuário na turma.
+     */
     public ClassSubscriptionEntity(String registration, String subscriptionDate) {
         this.registration = registration;
         this.semester = subscriptionDate;

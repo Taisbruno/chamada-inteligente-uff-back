@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Controlador para gerenciar operações relacionadas aos alunos (Students).
+ * Responsável por tratar requisições para consulta de alunos inscritos em determinadas disciplinas.
+ */
 @RestController
 @RequestMapping("/students")
 @Tag(name = "student-controller", description = "Controller responsável por requisições de alunos")
@@ -32,6 +34,14 @@ public class StudentController {
     @Autowired
     UserService service;
 
+    /**
+     * Requisição para recuperar uma lista de alunos inscritos em uma determinada disciplina.
+     *
+     * @param codeClass Código da classe/disciplina para a qual a consulta está sendo feita.
+     * @param semester Semestre de interesse para a consulta.
+     * @return JSON representando os alunos inscritos na disciplina especificada para o semestre dado.
+     * @throws UsersNotFoundException Caso não sejam encontrados alunos para a combinação de classe e semestre especificados.
+     */
     @ApiOperation(value = "Retorna todos as alunos inscritos em uma determinada disciplina.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
