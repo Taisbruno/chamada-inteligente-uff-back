@@ -37,7 +37,7 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('3', '2023.1', '6'),
 ('8', '2023.1', '1'),
 ('8', '2023.1', '2'),
-('8', '2023.1', '3');
+('8', '2023.1', '3'),
 ('4', '2023.1', '1'),
 ('4', '2023.1', '2'),
 ('4', '2023.1', '3'),
@@ -52,21 +52,22 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('6', '2023.1', '2'),
 ('6', '2023.1', '3'),
 ('6', '2023.1', '5'),
-('6', '2023.1', '6'),
+('6', '2023.1', '6');
 
 
--- Inserting Roll (Need to capture the ID returned by this for the next insert)
-INSERT INTO roll (longitude, latitude, class_code, created_at) VALUES 
-('-47.875', '-15.794', 'code1', NOW());
+WITH inserted_roll AS (
+    INSERT INTO roll (longitude, latitude, class_code, created_at)
+    VALUES ('-47.875', '-15.794', '1', NOW())
+    RETURNING id
+)
 
--- Assuming the above insert gives roll_id as '1' (You'll need to verify this!):
--- Inserting Presence
-INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, time_present) VALUES 
-('1', 1, 'cert1', 'Estava presente', TRUE, '10:00');
+INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, time_present)
+SELECT '1', id, 'cert1', 'Estava presente', TRUE, '10:00'
+FROM inserted_roll;
+
 
 -- Inserting Class Schedule (sample data for demonstration)
 INSERT INTO class_schedule (class_code, day_of_week, start_time, end_time) VALUES
 ('1', 1, '08:00:00', '10:00:00'),
 ('2', 2, '10:00:00', '12:00:00'),
 ('3', 3, '18:00:00', '20:00:00');
-
