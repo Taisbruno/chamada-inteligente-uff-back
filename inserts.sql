@@ -37,7 +37,7 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('3', '2023.1', '6'),
 ('8', '2023.1', '1'),
 ('8', '2023.1', '2'),
-('8', '2023.1', '3');
+('8', '2023.1', '3'),
 ('4', '2023.1', '1'),
 ('4', '2023.1', '2'),
 ('4', '2023.1', '3'),
@@ -52,7 +52,7 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('6', '2023.1', '2'),
 ('6', '2023.1', '3'),
 ('6', '2023.1', '5'),
-('6', '2023.1', '6'),
+('6', '2023.1', '6');
 
 
 -- Inserting Roll (Need to capture the ID returned by this for the next insert)
