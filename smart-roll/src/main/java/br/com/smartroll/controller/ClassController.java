@@ -2,13 +2,9 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
 import br.com.smartroll.model.ClassModel;
-import br.com.smartroll.model.StudentModel;
-import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.service.ClassService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.ClassesViews;
-import br.com.smartroll.view.RollsView;
-import br.com.smartroll.view.StudentsView;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,10 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Controladora de turmas.
+ */
 @RestController
 @RequestMapping("/class")
 @Tag(name = "class-controller", description = "Controller responsável por requisições de turmas")
@@ -33,6 +30,12 @@ public class ClassController {
     @Autowired
     ClassService service;
 
+    /**
+     * Requisição para obter todas as turmas associadas a um determinado usuário.
+     * @param registration Matrícula do usuário.
+     * @return Uma representação JSON das turmas do usuário.
+     * @throws ClassesNotFoundException Exceção lançada quando as turmas não são encontradas.
+     */
     @ApiOperation(value = "Retorna todas as turmas de um determinado usuário.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(

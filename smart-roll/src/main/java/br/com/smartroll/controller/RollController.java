@@ -5,6 +5,7 @@ import br.com.smartroll.exception.RollNotFoundException;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
+import br.com.smartroll.view.RollView;
 import br.com.smartroll.view.RollsView;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador responsável por gerenciar as operações relacionadas às chamadas (rolls).
+ */
 @RestController
 @RequestMapping("/roll")
 @Tag(name = "roll-controller", description = "Controller responsável por requisições de chamadas")
@@ -29,33 +33,50 @@ public class RollController {
     @Autowired
     RollService service;
 
-    @ApiOperation(value = "Inicia a transmissão do cronômetro via WebSocket para o callId fornecido")
+    /**
+     * Requisição para finalizar uma chamada ativa. Registra a data e hora de conclusão.
+     *
+     * @param callId Id da chamada a ser finalizada.
+     * @throws RollNotFoundException Caso a chamada especificada não seja encontrada.
+     */
+    @ApiOperation(value = "Finaliza uma chamada ativa, registrando a data e hora de conclusão.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transmissão iniciada com sucesso", content = @Content(schema = @Schema(description = "A resposta não possui corpo. Inicia a transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} cujo payload é um json como descrito no exemplo abaixo."))),
-            @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
-            @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
-    @GetMapping(value = "/startStopwatch", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void startStopwatch(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
-        service.startStopWatch(callId);
-    }
-
-    @ApiOperation(value = "Interrompe a transmissão do cronômetro via WebSocket para o callId fornecido")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transmissão interrompida com sucesso", content = @Content(schema = @Schema(description = "A resposta não possui corpo. A transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} será interrompida."))),
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(schema = @Schema(description = "A resposta não possui corpo. A transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} será interrompida."))),
             @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
             @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PostMapping(value = "/stopStopwatch")
-    public void stopStopwatch(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
-        if(service.getRoll(Long.parseLong(callId)).isEmpty()){
-            throw new RollNotFoundException(callId);
-        }
-        service.endCall(callId);
+    @PutMapping(value = "/close-roll")
+    public void closeRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
+        service.closeRoll(Long.parseLong(callId));
     }
 
-    @ApiOperation(value = "Retorna o histórico de chamadas de uma determinada turma - TODO.")
+    /**
+     * Requisição para retornar uma chamada.
+     *
+     * @param rollId Id da chamada a ser retornada.
+     * @throws RollNotFoundException Caso a chamada especificada não seja encontrada.
+     */
+    @ApiOperation(value = "Retorna uma chamada com base no id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(schema = @Schema(description = "A resposta não possui corpo. A transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} será interrompida."))),
+            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
+            @ApiResponse(responseCode = "404", description = "A chamada com o rollId fornecido não foi encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
+    })
+    @GetMapping(value = "/get-roll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String rollId) throws RollNotFoundException {
+        RollModel rollModel = service.getRoll(Long.parseLong(rollId));
+        return new RollView(rollModel).toJson();
+    }
+
+
+    /**
+     * Requisição para recuperar o histórico de chamadas de uma turma específica.
+     *
+     * @return Uma visualização (RollsView) representando o histórico de chamadas.
+     */
+    @ApiOperation(value = "TODO - Retorna o histórico de chamadas de uma determinada turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
@@ -66,11 +87,18 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/rolls-historic/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RollsView getRollsHistoricFromClass(){
+    public RollsView getRollsFromClass(){
         RollsView rollsView = new RollsView();
         return rollsView;
     }
 
+    /**
+     * Requisição para criar uma nova chamada associada a uma turma.
+     * Processa o corpo da requisição para extrair e validar informações da chamada antes da criação.
+     *
+     * @param requestBody JSON representando a chamada a ser criada.
+     * @throws InvalidJsonException Caso o corpo da requisição contenha JSON inválido ou ausente.
+     */
     @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
@@ -80,7 +108,7 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postCurrentRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException {
+    public void postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

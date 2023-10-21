@@ -27,14 +27,6 @@ public class SwaggerExamples {
       }
         """;
 
-  public final static String POSTROLLEXAMPLE = """
-      {
-        "latitude": "string",
-        "longitude": "string",
-        "class_code": "string"
-      }
-        """;
-
   public final static String POSTROLL = """
       {
         "latitude": "-23.550520",
@@ -43,25 +35,10 @@ public class SwaggerExamples {
       }
         """;
 
-  public final static String TOGGLESTOPWATCH = """
-      {
-          "hours": "string",
-          "minutes": "string",
-          "seconds": "string"
-      }
-
-        """;
-
   public final static String POSTLOGIN = """
           {
             "cpf": "3333",
             "password": "hugopassword"
-          }""";
-
-  public final static String POSTLOGINEXAMPLE = """
-          {
-            "cpf": "string",
-            "password": "string"
           }""";
 
   public final static String GETENROLLEDSTUDENTS = """

@@ -3,6 +3,9 @@ package br.com.smartroll.repository.entity;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Representa a entidade "Class" no banco de dados.
+ **/
 @Entity
 @Table(name = "course_class")
 public class ClassEntity {
@@ -31,10 +34,22 @@ public class ClassEntity {
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
     private List<RollEntity> rolls;
 
+    /**
+     * Construtor padrão de ClassEntity.
+     */
     public ClassEntity() {
         // Construtor padrão
     }
 
+    /**
+     * Construtor parametrizado de ClassEntity.
+     *
+     * @param code Código da disciplina.
+     * @param discipline Nome da disciplina.
+     * @param teacher Nome do professor.
+     * @param semester Semestre em que a turma está ocorrendo.
+     * @param total Número total de alunos na turma.
+     */
     public ClassEntity(String code, String discipline, String teacher, String semester, int total) {
         this.disciplineCode = code;
         this.discipline = discipline;

@@ -5,10 +5,12 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Representa uma visualização de uma lista de estudantes.
+ * Esta classe é utilizada principalmente para serialização e apresentação dos dados de uma lista de estudantes.
+ */
 public class StudentsView {
 
     @SerializedName("classmates")

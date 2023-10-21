@@ -1,8 +1,5 @@
 package br.com.smartroll.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClassModel {
     public String classCode;
     public String disciplineCode;
