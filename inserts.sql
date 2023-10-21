@@ -1,5 +1,12 @@
--- Creating superuser in the database.
-CREATE USER smart WITH SUPERUSER PASSWORD 'smart2552'; 
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        SELECT FROM pg_catalog.pg_user WHERE usename = 'smart'
+    ) THEN 
+        CREATE USER smart WITH PASSWORD 'smart2552';
+    END IF; 
+END 
+$$;
 
 -- Inserting User
 INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES 
@@ -71,3 +78,5 @@ INSERT INTO class_schedule (class_code, day_of_week, start_time, end_time) VALUE
 ('1', 1, '08:00:00', '10:00:00'),
 ('2', 2, '10:00:00', '12:00:00'),
 ('3', 3, '18:00:00', '20:00:00');
+
+
