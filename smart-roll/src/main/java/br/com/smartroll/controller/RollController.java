@@ -41,7 +41,7 @@ public class RollController {
      */
     @ApiOperation(value = "Finaliza uma chamada ativa, registrando a data e hora de conclusão.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(schema = @Schema(description = "A resposta não possui corpo. A transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} será interrompida."))),
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
             @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
             @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
@@ -59,7 +59,10 @@ public class RollController {
      */
     @ApiOperation(value = "Retorna uma chamada com base no id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(schema = @Schema(description = "A resposta não possui corpo. A transmissão de mensagens via WebSocket para o tópico /topic/time/{callId} será interrompida."))),
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETROLLEXAMPLE)})),
             @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
             @ApiResponse(responseCode = "404", description = "A chamada com o rollId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
