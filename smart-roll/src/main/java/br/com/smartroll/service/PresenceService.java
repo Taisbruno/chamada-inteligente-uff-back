@@ -1,10 +1,9 @@
 package br.com.smartroll.service;
 
+import br.com.smartroll.exception.PresenceNotFoundException;
 import br.com.smartroll.exception.RollClosedException;
 import br.com.smartroll.exception.RollNotFoundException;
 import br.com.smartroll.model.PresenceModel;
-import br.com.smartroll.model.StudentModel;
-import br.com.smartroll.model.UserModel;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -103,6 +103,19 @@ public class PresenceService {
             System.out.println("Student: " + student.name + ", Registration: " + student.registration);
         }
         System.out.println("Message sent to /topic/presences/" + rollId);
+    }
+
+    public void updatePresenceStatus(Long id, boolean isPresent) {
+        Optional<PresenceEntity> entityOptional = presenceRepository.getPresence(id);
+
+        if (!entityOptional.isPresent()) {
+            throw new PresenceNotFoundException("Presence with id " + id + " not found.");
+        }
+
+        PresenceEntity entity = entityOptional.get();
+        entity.isPresent = isPresent;
+
+        presenceRepository.savePresence(entity);
     }
 
 }
