@@ -43,8 +43,11 @@ public class UserService {
         return studentsModel;
     }
 
-    public List<StudentModel> getEnrolledStudentsByRoll(String idRoll) {
+    public List<StudentModel> getEnrolledStudentsByRoll(String idRoll) throws UsersNotFoundException {
         List<UserEntity> studentsEntity = userRepository.getEnrolledStudentsByRoll(Long.valueOf(idRoll));
+        if(studentsEntity.isEmpty()){
+            throw new UsersNotFoundException(idRoll);
+        }
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity user : studentsEntity){
             if(user.type.equals("student")) {

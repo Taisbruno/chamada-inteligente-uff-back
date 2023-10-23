@@ -76,7 +76,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/enrolled-roll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getEnrolledStudentsByRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String idRoll){
+    public String getEnrolledStudentsByRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String idRoll) throws UsersNotFoundException {
         List<StudentModel> students = service.getEnrolledStudentsByRoll(idRoll);
         StudentsView studentsView = new StudentsView(students);
         return studentsView.toJson();

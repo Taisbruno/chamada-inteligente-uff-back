@@ -1,7 +1,7 @@
 package br.com.smartroll.exception;
 
 /**
- * Exceção lançada quando não foram encontrados usuários de uma determinada turma.
+ * Exceção lançada quando não foram encontrados usuários de uma determinada turma ou chamada.
  */
 public class UsersNotFoundException extends Exception{
 
@@ -12,5 +12,9 @@ public class UsersNotFoundException extends Exception{
      */
     public UsersNotFoundException(String classCode, String semester){
         super("No users associated with class: " + classCode + " and " + semester + " was found.");
+    }
+
+    public UsersNotFoundException(String idRoll){
+        super("No users associated with roll: " + idRoll + " was found.");
     }
 }
