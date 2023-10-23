@@ -86,7 +86,7 @@ WITH inserted_roll AS (
 )
 
 INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, time_present)
-SELECT '1', id, 'cert1', 'Estava presente', TRUE, '10:00'
+SELECT '1', id, 'cert1', 'Estava presente', TRUE, '2023-10-23T01:24:00.385734701'
 FROM inserted_roll;
 
 
