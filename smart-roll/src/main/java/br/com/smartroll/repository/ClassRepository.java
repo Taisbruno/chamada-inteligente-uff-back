@@ -29,4 +29,9 @@ public class ClassRepository {
         return classRepository.findClassesByUserRegistration(registration);
     }
 
+    public int getTotalByClassCode(String code){
+        return classRepository.getTotalByClassCode(code);
+    }
+
+
 }

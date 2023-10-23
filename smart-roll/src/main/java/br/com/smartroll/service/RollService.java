@@ -17,6 +17,8 @@ import br.com.smartroll.repository.interfaces.IClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class RollService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ClassRepository classRepository;
 
 
     public RollModel getRoll(Long id) throws RollNotFoundException {
@@ -78,6 +83,30 @@ public class RollService {
         List<RollModel> rollModels = new ArrayList<>();
         for(RollEntity rollEntity : rollsEntity){
             RollModel rollModel = new RollModel(rollEntity);
+            rollModel.presencePercentage = ((double) rollsEntity.size() / classRepository.getTotalByClassCode(classCode)) * 100;
+
+            // Cálculo da média de tempo de presença
+            long totalPresenceTimeInSeconds = 0; // Em segundos
+            int numberOfStudentsPresent = 0;
+            for (PresenceEntity presenceEntity : rollEntity.presences) {
+                if (presenceEntity.isPresent) {
+                    LocalDateTime timeRollCreated = rollEntity.createdAt;
+                    LocalDateTime timeStudentPresent = LocalDateTime.parse(presenceEntity.timePresent);
+                    Duration duration = Duration.between(timeRollCreated, timeStudentPresent);
+
+                    totalPresenceTimeInSeconds += duration.getSeconds();
+                    numberOfStudentsPresent++;
+                }
+            }
+            long averagePresenceTimeInSeconds = numberOfStudentsPresent == 0 ? 0 : totalPresenceTimeInSeconds / numberOfStudentsPresent;
+
+            // Convertendo média de segundos para horas, minutos e segundos
+            long hours = averagePresenceTimeInSeconds / 3600;
+            long minutes = (averagePresenceTimeInSeconds % 3600) / 60;
+            long seconds = averagePresenceTimeInSeconds % 60;
+            String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+            rollModel.presenceTimeAvarage = formattedTime;
             for(PresenceEntity presenceEntity : rollEntity.presences){
                 PresenceModel presenceModel = new PresenceModel(presenceEntity);
                 UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
@@ -93,4 +122,6 @@ public class RollService {
         }
         return rollModels;
     }
+
+
 }

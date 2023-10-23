@@ -24,6 +24,10 @@ public class HistoricRollView {
     public String finishedAt;
     @SerializedName("studentsPresent")
     public int studentsPresent;
+    @SerializedName("presencePercentage")
+    public double presencePercentage;
+    @SerializedName("presenceTimeAvarage")
+    public String presenceTimeAvarage;
     @SerializedName("presences")
     public List<PresenceView> presences = new ArrayList<>();
 
@@ -39,6 +43,8 @@ public class HistoricRollView {
             this.presences.add(presenceView);
         }
         this.studentsPresent = this.presences.size();
+        this.presencePercentage = rollModel.presencePercentage;
+        this.presenceTimeAvarage = rollModel.presenceTimeAvarage;
     }
 
     /**
