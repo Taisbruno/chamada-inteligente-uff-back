@@ -47,8 +47,10 @@ public class UserService {
         List<UserEntity> studentsEntity = userRepository.getEnrolledStudentsByRoll(Long.valueOf(idRoll));
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity user : studentsEntity){
-            StudentModel studentModel = new StudentModel(user.registration, user.name, user.email, user.password);
-            studentsModel.add(studentModel);
+            if(user.type.equals("student")) {
+                StudentModel studentModel = new StudentModel(user.registration, user.name, user.email, user.password);
+                studentsModel.add(studentModel);
+            }
         }
         return studentsModel;
     }
