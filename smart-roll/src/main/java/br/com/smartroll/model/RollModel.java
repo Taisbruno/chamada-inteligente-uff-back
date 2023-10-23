@@ -17,6 +17,7 @@ public class RollModel {
     }
 
     public RollModel(RollEntity rollEntity){
+        this.id = String.valueOf(rollEntity.id);
         this.longitude = rollEntity.longitude;
         this.latitude = rollEntity.latitude;
         this.class_code = rollEntity.classEntity.classCode;

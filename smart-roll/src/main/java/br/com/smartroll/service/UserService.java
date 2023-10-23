@@ -37,8 +37,10 @@ public class UserService {
         }
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity userEntity : studentsEntity){
-            StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
-            studentsModel.add(studentModel);
+            if(userEntity.type.equals("student")){
+                StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
+                studentsModel.add(studentModel);
+            }
         }
         return studentsModel;
     }

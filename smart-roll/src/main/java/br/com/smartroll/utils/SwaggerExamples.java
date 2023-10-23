@@ -37,10 +37,33 @@ public class SwaggerExamples {
 
   public final static String GETROLLEXAMPLE = """
           {
+            "id": "string",
             "longitude": "string",
             "latitude": "string",
             "createdAt": "string",
             "finishedAt": "string"
+          }
+          """;
+
+  public final static String GETROLLSFROMCLASSEXAMPLE = """
+          {
+            "rolls": [
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "createdAt": "string",
+                "finishedAt": "string"
+              }
+              ...
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "createdAt": "string",
+                "finishedAt": "string"
+              }
+            ]
           }
           """;
 

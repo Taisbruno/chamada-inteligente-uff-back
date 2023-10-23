@@ -2,6 +2,7 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.InvalidJsonException;
 import br.com.smartroll.exception.RollNotFoundException;
+import br.com.smartroll.exception.RollsNotFoundException;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
@@ -22,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Controlador responsável por gerenciar as operações relacionadas às chamadas (rolls).
  */
@@ -32,24 +36,6 @@ public class RollController {
 
     @Autowired
     RollService service;
-
-    /**
-     * Requisição para finalizar uma chamada ativa. Registra a data e hora de conclusão.
-     *
-     * @param callId Id da chamada a ser finalizada.
-     * @throws RollNotFoundException Caso a chamada especificada não seja encontrada.
-     */
-    @ApiOperation(value = "Finaliza uma chamada ativa, registrando a data e hora de conclusão.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
-            @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
-            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
-    })
-    @PutMapping(value = "/close-roll")
-    public void closeRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
-        service.closeRoll(Long.parseLong(callId));
-    }
 
     /**
      * Requisição para retornar uma chamada.
@@ -73,6 +59,46 @@ public class RollController {
         return new RollView(rollModel).toJson();
     }
 
+    /**
+     * Requisição para finalizar uma chamada ativa. Registra a data e hora de conclusão.
+     *
+     * @param callId Id da chamada a ser finalizada.
+     * @throws RollNotFoundException Caso a chamada especificada não seja encontrada.
+     */
+    @ApiOperation(value = "Finaliza uma chamada ativa, registrando a data e hora de conclusão.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
+            @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
+    })
+    @PutMapping(value = "/close-roll")
+    public void closeRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException {
+        service.closeRoll(Long.parseLong(callId));
+    }
+
+    /**
+     * Requisição para retornar a lista de chamadas de uma turma específica.
+     * @param classCode Código da turma
+     * @param semester Semestre de interesse.
+     * @return Uma visualização (RollsView) representando as chamadas de uma determinada turma.
+     */
+    @ApiOperation(value = "Retorna as chamadas de uma determinada turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETROLLSFROMCLASSEXAMPLE)})),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @GetMapping(value = "/list-rolls/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getRollsFromClass(@Parameter(description = "Id da turma", example = "1") @RequestParam String classCode, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws RollsNotFoundException {
+        List<RollModel> rolls = service.getRollsFromClass(classCode, semester);
+        RollsView rollsView = new RollsView(rolls);
+        return rollsView.toJson();
+    }
 
     /**
      * Requisição para recuperar o histórico de chamadas de uma turma específica.
@@ -90,9 +116,9 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/rolls-historic/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RollsView getRollsFromClass(){
-        RollsView rollsView = new RollsView();
-        return rollsView;
+    public String getHistoricRollsFromClass(){
+        //RollsView rollsView = new RollsView();
+        return "rollsView";
     }
 
     /**

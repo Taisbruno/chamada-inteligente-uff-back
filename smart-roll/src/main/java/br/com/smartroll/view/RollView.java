@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 public class RollView {
+    @SerializedName("id")
+    public String id;
     @SerializedName("longitude")
     public String longitude;
     @SerializedName("latitude")
@@ -17,6 +19,7 @@ public class RollView {
     public String finishedAt;
 
     public RollView(RollModel rollModel) {
+        this.id = rollModel.id;
         this.longitude = rollModel.longitude;
         this.latitude = rollModel.latitude;
         this.classCode = rollModel.class_code;

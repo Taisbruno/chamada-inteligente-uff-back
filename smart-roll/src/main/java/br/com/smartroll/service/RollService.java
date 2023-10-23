@@ -1,11 +1,15 @@
 package br.com.smartroll.service;
 
 import br.com.smartroll.exception.RollNotFoundException;
+import br.com.smartroll.exception.RollsNotFoundException;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RollService {
@@ -38,4 +42,16 @@ public class RollService {
         return rollRepository.isRollClosed(id);
     }
 
+    public List<RollModel> getRollsFromClass(String classCode, String semester) throws RollsNotFoundException {
+        List<RollEntity> rollsEntity = rollRepository.getRollsFromClass(classCode, semester);
+        if(rollsEntity.isEmpty()){
+            throw new RollsNotFoundException(classCode, semester);
+        }
+        List<RollModel> rollModels = new ArrayList<>();
+        for(RollEntity rollEntity : rollsEntity){
+            RollModel rollModel = new RollModel(rollEntity);
+            rollModels.add(rollModel);
+        }
+        return rollModels;
+    }
 }
