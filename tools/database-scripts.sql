@@ -1,6 +1,23 @@
+-- Verificar se o banco de dados "smart_rolls" existe
 DO $$ 
 BEGIN 
     IF NOT EXISTS (
+        SELECT 1 FROM pg_database WHERE datname = 'smart_rolls'
+    ) THEN 
+        -- Se não existir, criar o banco de dados
+        CREATE DATABASE smart_rolls;
+    END IF; 
+END 
+$$;
+
+-- Usar o banco de dados recém-criado
+\c smart_rolls;
+
+-- Verificar se o usuário "smart" existe
+DO $$ 
+BEGIN 
+    IF NOT EXISTS (
+        -- Se não existir, criar o usuário
         SELECT FROM pg_catalog.pg_user WHERE usename = 'smart'
     ) THEN 
         CREATE USER smart WITH PASSWORD 'smart2552';

@@ -31,7 +31,7 @@ public class SwaggerExamples {
       {
         "latitude": "-23.550520",
         "longitude": "-46.633308",
-        "class_code": "code1"
+        "class_code": "1"
       }
         """;
 
@@ -62,6 +62,72 @@ public class SwaggerExamples {
                 "latitude": "string",
                 "createdAt": "string",
                 "finishedAt": "string"
+              }
+            ]
+          }
+          """;
+
+  public final static String GETROLLSHISTORICEXAMPLE = """
+          {
+            "rolls": [
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "studentsPresent": int
+                "presences": [
+                  {
+                    "registration": "string",
+                    "name": "string",
+                    "medicalCertificate": "string",
+                    "message": "string",
+                    "isPresent": boolean,
+                    "timePresent": "string",
+                    "frequency": double
+                  }
+                  ...
+                  {
+                    "registration": "string",
+                    "name": "string",
+                    "medicalCertificate": "string",
+                    "message": "string",
+                    "isPresent": boolean,
+                    "timePresent": "string",
+                    "frequency": double
+                  }
+                ]
+              }
+              ...
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "studentsPresent": int
+                "presences": [
+                  {
+                    "registration": "string",
+                    "name": "string",
+                    "medicalCertificate": "string",
+                    "message": "string",
+                    "isPresent": boolean,
+                    "timePresent": "string",
+                    "frequency": double
+                  }
+                  ...
+                  {
+                    "registration": "string",
+                    "name": "string",
+                    "medicalCertificate": "string",
+                    "message": "string",
+                    "isPresent": boolean,
+                    "timePresent": "string",
+                    "frequency": double
+                  }
+                ]
               }
             ]
           }

@@ -21,4 +21,5 @@ public interface IClassRepository extends JpaRepository<ClassEntity, Long> {
      */
     @Query("SELECT c FROM ClassEntity c JOIN c.classSubscriptions cs WHERE cs.userEntity.registration = :registration")
     List<ClassEntity> findClassesByUserRegistration(@Param("registration") String registration);
+
 }

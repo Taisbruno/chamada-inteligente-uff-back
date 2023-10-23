@@ -93,13 +93,19 @@ O formato do comando deve estar documentado no próprio swagger.
 
 ## 3. Banco de Dados do Projeto
 
-O banco de dados relacional deste projeto é hospedado no PostgreSQL. Para desenvolvimento, recomenda-se hospedar o banco de dados localmente na porta 27017 com autenticação desligada, objetivando homogenizar a configuração padrão de execução da API para desenvolvimento. O nome utilizado por padrão é `smart_rolls`, devendo ser alterado para qualquer outro nos ambientes externos que hospedam versões de produção ou controle de qualidade.
+O banco de dados relacional deste projeto é hospedado no PostgreSQL. Para desenvolvimento, recomenda-se hospedar o banco de dados localmente na porta 5432 com autenticação desligada, objetivando homogenizar a configuração padrão de execução da API para desenvolvimento. O nome utilizado por padrão é `smart_rolls`, devendo ser alterado para qualquer outro nos ambientes externos que hospedam versões de produção ou controle de qualidade.
 
 ```
-STRING DE CONEXÃO AQUI
+postgresql://<user>:<password>@<host>:<port>/<database-name>
 ```
 
-Uma vez com o PostgreSQL implantado localmente ou na máquina externa, ...
+Uma vez com o PostgreSQL implantado localmente ou em máquina externa, o banco de dados do projeto pode ter a criação de tabelas através biblioteca JPA por meio das anotações nas entidades definidas em ./src/main/java/repository/entity/, porém, certifique-se de antes ter rodado o script de criação do banco `smart_rolls`, bem como criação do usuário superuser padrão do projeto com usuário `smart` e senha `smart2552` contido em ./tools/database-scripts.sql.
+
+Vale a pena enfatizar que o script de criação do banco de dados agrega um usuário administrador para o banco com a seguinte credencial:
+
+* username: smart
+* senha: smart2552
+
 
 ## 4. Testes Unitário do Projeto
 

@@ -30,7 +30,7 @@ public class RollEntity {
     @Column(name = "finished_at")
     public LocalDateTime finishedAt;
     @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PresenceEntity> presences;
+    public List<PresenceEntity> presences;
 
     /**
      * Construtor padrão de RollEntity.

@@ -2,6 +2,7 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.UsersNotFoundException;
 import br.com.smartroll.model.StudentModel;
+import br.com.smartroll.model.UserModel;
 import br.com.smartroll.service.ClassService;
 import br.com.smartroll.service.UserService;
 import br.com.smartroll.utils.SwaggerExamples;
@@ -35,14 +36,14 @@ public class StudentController {
     UserService service;
 
     /**
-     * Requisição para recuperar uma lista de alunos inscritos em uma determinada disciplina.
+     * Requisição para retornar uma lista de alunos inscritos em uma determinada disciplina.
      *
      * @param codeClass Código da classe/disciplina para a qual a consulta está sendo feita.
      * @param semester Semestre de interesse para a consulta.
      * @return JSON representando os alunos inscritos na disciplina especificada para o semestre dado.
      * @throws UsersNotFoundException Caso não sejam encontrados alunos para a combinação de classe e semestre especificados.
      */
-    @ApiOperation(value = "Retorna todos as alunos inscritos em uma determinada turma.")
+    @ApiOperation(value = "Retorna todos os alunos inscritos em uma determinada turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
@@ -59,7 +60,12 @@ public class StudentController {
         return studentsView.toJson();
     }
 
-    @ApiOperation(value = "TODO - Retorna todos as alunos inscritos em uma determinada chamada.")
+    /**
+     * Requisição para retornar uma lista de alunos inscritos em uma chamada.
+     * @param idRoll id da chanmada.
+     * @return Json representando os alunos inscritos na chamada.
+     */
+    @ApiOperation(value = "Retorna todos os alunos inscritos em uma determinada chamada.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
@@ -70,8 +76,10 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/enrolled-roll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getEnrolledStudentsByRoll(){
-        return "";
+    public String getEnrolledStudentsByRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String idRoll){
+        List<StudentModel> students = service.getEnrolledStudentsByRoll(idRoll);
+        StudentsView studentsView = new StudentsView(students);
+        return studentsView.toJson();
     }
 
 }
