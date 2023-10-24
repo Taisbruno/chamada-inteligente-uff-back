@@ -68,4 +68,8 @@ public class PresenceRepository {
         }
         return null; // ou lançar uma exceção, ou usar Optional<PresenceEntity>
     }
+
+    public PresenceEntity savePresence(PresenceEntity presenceEntity) {
+        return presenceRepository.save(presenceEntity);
+    }
 }
