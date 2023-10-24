@@ -2,6 +2,7 @@ package br.com.smartroll.model;
 
 import br.com.smartroll.repository.entity.PresenceEntity;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class PresenceModel {
@@ -14,6 +15,8 @@ public class PresenceModel {
     public String medicalCertificate;
     public String message;
     public boolean isPresent;
+    public String entryTime;
+    public String exitTime;
     public String timePresent;
     public double frequency;
     public boolean failed;
@@ -24,7 +27,7 @@ public class PresenceModel {
         this.medicalCertificate = medicalCertificate;
         this.message = message;
         this.isPresent = true;
-        this.timePresent = LocalDateTime.now().toString();
+        this.entryTime = LocalDateTime.now().toString();
     }
 
     public PresenceModel(PresenceEntity presenceEntity){
@@ -33,7 +36,18 @@ public class PresenceModel {
         this.medicalCertificate = presenceEntity.medicalCertificate;
         this.message = presenceEntity.message;
         this.isPresent = presenceEntity.isPresent;
-        this.timePresent = String.valueOf(presenceEntity.timePresent);
+        this.entryTime = String.valueOf(presenceEntity.entryTime);
+        this.exitTime = String.valueOf(presenceEntity.exitTime);
+        // Calculate the duration between entry and exit time
+        LocalDateTime entry = LocalDateTime.parse(presenceEntity.entryTime);
+        LocalDateTime exit = LocalDateTime.parse(presenceEntity.exitTime);
+        Duration duration = Duration.between(entry, exit);
+
+        // Convert the duration to a formatted string (e.g., "02:15:30" for 2 hours, 15 minutes, and 30 seconds)
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
+        this.timePresent = String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
 }

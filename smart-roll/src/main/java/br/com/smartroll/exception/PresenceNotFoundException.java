@@ -1,7 +1,8 @@
 package br.com.smartroll.exception;
 
-public class PresenceNotFoundException extends RuntimeException {
-    public PresenceNotFoundException(String message) {
-        super(message);
-    }
+public class PresenceNotFoundException extends Exception{
+
+    public PresenceNotFoundException(String id) {
+            super("Presence with id: " + id + " not found.");
+        }
 }

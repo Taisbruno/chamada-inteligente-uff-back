@@ -24,20 +24,22 @@ public class PresenceEntity {
     public String message;
     @Column(name = "is_present", nullable = false)
     public boolean isPresent;
-    @Column(name = "time_present", nullable = false)
-    public String timePresent;
+    @Column(name = "entry_time", nullable = false)
+    public String entryTime;
+    @Column(name = "exit_time")
+    public String exitTime;
 
     public PresenceEntity() {}
 
     public PresenceEntity(String studentRegistration, String idCall, String medicalCertificate,
-                          String message, boolean isPresent, String timePresent) {
+                          String message, boolean isPresent, String entryTime) {
         this.studentRegistration = studentRegistration;
         this.roll = new RollEntity();
         this.roll.id = Long.valueOf(idCall);
         this.medicalCertificate = medicalCertificate;
         this.message = message;
         this.isPresent = isPresent;
-        this.timePresent = timePresent;
+        this.entryTime = entryTime;
     }
 
     /**
@@ -52,6 +54,6 @@ public class PresenceEntity {
         this.medicalCertificate = presenceModel.medicalCertificate;
         this.message = presenceModel.message;
         this.isPresent = presenceModel.isPresent;
-        this.timePresent = presenceModel.timePresent;
+        this.entryTime = presenceModel.entryTime;
     }
 }
