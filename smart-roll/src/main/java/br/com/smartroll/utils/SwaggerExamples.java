@@ -35,6 +35,15 @@ public class SwaggerExamples {
       }
         """;
 
+  public final static String GETROLLEXAMPLE = """
+          {
+            "longitude": "string",
+            "latitude": "string",
+            "createdAt": "string",
+            "finishedAt": "string"
+          }
+          """;
+
   public final static String POSTLOGIN = """
           {
             "cpf": "3333",
