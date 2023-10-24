@@ -83,7 +83,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class})
+    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class, PresenceNotFoundException.class})
     public ResponseEntity<String> notFound(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.NOT_FOUND);

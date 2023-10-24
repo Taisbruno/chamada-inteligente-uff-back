@@ -5,6 +5,7 @@ import br.com.smartroll.repository.interfaces.IPresenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,14 +34,24 @@ public class PresenceRepository {
         return presenceRepository.isPresent(registration, id);
     }
 
+    public void invalidatePresence(String id) {
+        String exitTime = LocalDateTime.now().toString();
+        presenceRepository.invalidatePresence(Long.parseLong(id), exitTime);
+    }
+
+    public void markExitTimeForAllPresentInRoll(Long rollId){
+        String exitTime = LocalDateTime.now().toString();
+        presenceRepository.markExitTimeForAllPresentInRoll(rollId, exitTime);
+    }
+
     /**
      * Recupera um registro de presença do banco de dados usando um identificador.
      *
      * @param id identificador único do registro de presença.
      * @return uma instância Optional contendo o registro de presença, se presente.
      */
-    public Optional<PresenceEntity> getPresence(Long id) {
-        return presenceRepository.findById(id);
+    public PresenceEntity getPresence(Long id) {
+        return presenceRepository.getPresence(id);
     }
 
     /**
@@ -72,4 +83,6 @@ public class PresenceRepository {
     public PresenceEntity savePresence(PresenceEntity presenceEntity) {
         return presenceRepository.save(presenceEntity);
     }
+
+
 }

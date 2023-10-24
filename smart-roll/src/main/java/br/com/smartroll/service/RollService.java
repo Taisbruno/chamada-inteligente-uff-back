@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,9 @@ public class RollService {
 
     @Autowired
     private ClassRepository classRepository;
+
+    @Autowired
+    private PresenceRepository presenceRepository;
 
 
     public RollModel getRoll(Long id) throws RollNotFoundException {
@@ -55,6 +60,7 @@ public class RollService {
             throw new RollClosedException(String.valueOf(id));
         }
         rollRepository.closeRoll(id);
+        presenceRepository.markExitTimeForAllPresentInRoll(id);
     }
 
     public boolean isRollClosed(Long id){
@@ -77,27 +83,35 @@ public class RollService {
     public List<RollModel> getHistoricRollsFromClass(String classCode, String semester) throws RollsNotFoundException {
         List<RollEntity> rollsEntity = rollRepository.getRollsFromClass(classCode, semester);
 
-        if(rollsEntity.isEmpty()){
+        if (rollsEntity.isEmpty()) {
             throw new RollsNotFoundException(classCode, semester);
         }
+
         List<RollModel> rollModels = new ArrayList<>();
-        for(RollEntity rollEntity : rollsEntity){
+
+        for (RollEntity rollEntity : rollsEntity) {
             RollModel rollModel = new RollModel(rollEntity);
             rollModel.presencePercentage = ((double) rollsEntity.size() / classRepository.getTotalByClassCode(classCode)) * 100;
 
             // Cálculo da média de tempo de presença
             long totalPresenceTimeInSeconds = 0; // Em segundos
             int numberOfStudentsPresent = 0;
+
             for (PresenceEntity presenceEntity : rollEntity.presences) {
                 if (presenceEntity.isPresent) {
-                    LocalDateTime timeRollCreated = rollEntity.createdAt;
-                    LocalDateTime timeStudentPresent = LocalDateTime.parse(presenceEntity.timePresent);
-                    Duration duration = Duration.between(timeRollCreated, timeStudentPresent);
+                    try {
+                        LocalDateTime entryTime = LocalDateTime.parse(presenceEntity.entryTime);
+                        LocalDateTime exitTime = LocalDateTime.parse(presenceEntity.exitTime);
+                        Duration duration = Duration.between(entryTime, exitTime);
 
-                    totalPresenceTimeInSeconds += duration.getSeconds();
-                    numberOfStudentsPresent++;
+                        totalPresenceTimeInSeconds += duration.getSeconds();
+                        numberOfStudentsPresent++;
+                    } catch (DateTimeParseException ex) {
+                        System.out.println("OIE " + ex.getErrorIndex() + ex.getParsedString());
+                    }
                 }
             }
+
             long averagePresenceTimeInSeconds = numberOfStudentsPresent == 0 ? 0 : totalPresenceTimeInSeconds / numberOfStudentsPresent;
 
             // Convertendo média de segundos para horas, minutos e segundos
@@ -107,7 +121,8 @@ public class RollService {
             String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
             rollModel.presenceTimeAvarage = formattedTime;
-            for(PresenceEntity presenceEntity : rollEntity.presences){
+
+            for (PresenceEntity presenceEntity : rollEntity.presences) {
                 PresenceModel presenceModel = new PresenceModel(presenceEntity);
                 UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
                 presenceModel.name = userEntity.name;
@@ -122,6 +137,5 @@ public class RollService {
         }
         return rollModels;
     }
-
 
 }

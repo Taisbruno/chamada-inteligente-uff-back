@@ -108,17 +108,12 @@ public class PresenceService {
         System.out.println("Message sent to /topic/presences/" + rollId);
     }
 
-    public void updatePresenceStatus(Long id, boolean isPresent) {
-        Optional<PresenceEntity> entityOptional = presenceRepository.getPresence(id);
+    public void invalidatePresenceStatus(String id) throws PresenceNotFoundException {
 
-        if (!entityOptional.isPresent()) {
-            throw new PresenceNotFoundException("Presence with id " + id + " not found.");
+        if(presenceRepository.getPresence(Long.parseLong(id)) == null){
+            throw new PresenceNotFoundException(id);
         }
-
-        PresenceEntity entity = entityOptional.get();
-        entity.isPresent = isPresent;
-
-        presenceRepository.savePresence(entity);
+        presenceRepository.invalidatePresence(id);
     }
 
 }
