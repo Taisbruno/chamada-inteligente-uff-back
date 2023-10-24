@@ -5,6 +5,7 @@ import br.com.smartroll.repository.interfaces.IPresenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,6 +27,10 @@ public class PresenceRepository {
      */
     public PresenceEntity createPresence(PresenceEntity presenceEntity) {
         return presenceRepository.save(presenceEntity);
+    }
+
+    public boolean isPresent(String registration, Long id){
+        return presenceRepository.isPresent(registration, id);
     }
 
     /**

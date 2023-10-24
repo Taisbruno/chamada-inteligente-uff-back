@@ -2,7 +2,7 @@ package br.com.smartroll.service;
 
 import br.com.smartroll.exception.UsersNotFoundException;
 import br.com.smartroll.model.StudentModel;
-import br.com.smartroll.repository.ClassSubscriptionRepository;
+import br.com.smartroll.model.UserModel;
 import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,6 @@ import java.util.List;
  */
 @Service
 public class UserService {
-    @Autowired
-    private ClassSubscriptionRepository classSubRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -37,8 +35,25 @@ public class UserService {
         }
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity userEntity : studentsEntity){
-            StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
-            studentsModel.add(studentModel);
+            if(userEntity.type.equals("student")){
+                StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
+                studentsModel.add(studentModel);
+            }
+        }
+        return studentsModel;
+    }
+
+    public List<StudentModel> getEnrolledStudentsByRoll(String idRoll) throws UsersNotFoundException {
+        List<UserEntity> studentsEntity = userRepository.getEnrolledStudentsByRoll(Long.valueOf(idRoll));
+        if(studentsEntity.isEmpty()){
+            throw new UsersNotFoundException(idRoll);
+        }
+        List<StudentModel> studentsModel = new ArrayList<>();
+        for(UserEntity user : studentsEntity){
+            if(user.type.equals("student")) {
+                StudentModel studentModel = new StudentModel(user.registration, user.name, user.email, user.password);
+                studentsModel.add(studentModel);
+            }
         }
         return studentsModel;
     }

@@ -7,15 +7,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RollsView {
+public class HistoricRollsView {
 
     @SerializedName("rolls")
-    private List<RollView> rolls = new ArrayList<>();
+    private List<HistoricRollView> rolls = new ArrayList<>();
 
-    public RollsView(List<RollModel> rollsModel) {
+    public HistoricRollsView(List<RollModel> rollsModel) {
         for(RollModel rollModel : rollsModel){
-            RollView rollView = new RollView(rollModel);
-            rolls.add(rollView);
+            HistoricRollView rollView = new HistoricRollView(rollModel);
+            this.rolls.add(rollView);
         }
     }
 
@@ -27,5 +27,4 @@ public class RollsView {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
-
 }

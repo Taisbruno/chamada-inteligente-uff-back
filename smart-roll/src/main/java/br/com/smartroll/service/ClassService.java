@@ -37,6 +37,11 @@ public class ClassService {
         if(classes.isEmpty()){
             throw new ClassesNotFoundException(registration);
         }
+        return convertEntityToModelList(classes);
+    }
+
+    private List<ClassModel> convertEntityToModelList(List<ClassEntity> classes){
+
         List<ClassModel> classesModels = new ArrayList<>();
         for(ClassEntity classEntity: classes){
             ClassModel classModel = new ClassModel(
@@ -51,5 +56,4 @@ public class ClassService {
         }
         return classesModels;
     }
-
 }

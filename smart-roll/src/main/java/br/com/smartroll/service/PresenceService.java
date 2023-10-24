@@ -3,6 +3,7 @@ package br.com.smartroll.service;
 import br.com.smartroll.exception.PresenceNotFoundException;
 import br.com.smartroll.exception.RollClosedException;
 import br.com.smartroll.exception.RollNotFoundException;
+import br.com.smartroll.exception.StudentAlreadyPresentException;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
@@ -47,11 +48,13 @@ public class PresenceService {
      * @throws RollNotFoundException Se a chamada especificada não for encontrada.
      * @throws RollClosedException Se a chamada especificada já estiver fechada.
      */
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException {
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException {
         if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)) == null){
             throw new RollNotFoundException(presenceModel.rollId);
         }else if(rollRepository.isRollClosed(Long.parseLong(presenceModel.rollId))){
             throw new RollClosedException(presenceModel.rollId);
+        }else if(presenceRepository.isPresent(presenceModel.studentRegistration, Long.parseLong(presenceModel.rollId))){
+            throw new StudentAlreadyPresentException(presenceModel.studentRegistration, presenceModel.rollId);
         }
 
         PresenceEntity presenceEntity = new PresenceEntity(presenceModel);
