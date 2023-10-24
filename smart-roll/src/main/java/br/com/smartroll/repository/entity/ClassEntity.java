@@ -29,10 +29,10 @@ public class ClassEntity {
     public int total;
 
     @OneToMany(mappedBy = "classEntity")
-    private List<ClassSubscriptionEntity> classSubscriptions;
+    public List<ClassSubscriptionEntity> classSubscriptions;
 
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
-    private List<RollEntity> rolls;
+    public List<RollEntity> rolls;
 
     /**
      * Construtor padrão de ClassEntity.

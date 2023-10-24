@@ -5,6 +5,7 @@ import br.com.smartroll.repository.interfaces.IRollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -79,5 +80,9 @@ public class RollRepository {
      */
     public boolean isRollClosed(Long id){
         return rollRepository.isCallClosed(id);
+    }
+
+    public List<RollEntity> getRollsFromClass(String classCode, String semester) {
+        return rollRepository.getRollsFromClass(classCode, semester);
     }
 }

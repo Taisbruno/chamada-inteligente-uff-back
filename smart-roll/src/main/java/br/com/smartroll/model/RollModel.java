@@ -1,6 +1,12 @@
 package br.com.smartroll.model;
 
+import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.entity.RollEntity;
+import br.com.smartroll.repository.entity.UserEntity;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RollModel {
     public String id;
@@ -9,6 +15,9 @@ public class RollModel {
     public String class_code;
     public String createdAt;
     public String finishedAt;
+    public double presencePercentage;
+    public String presenceTimeAvarage;
+    public List<PresenceModel> presences;
 
     public RollModel(String longitude, String latitude, String class_code){
         this.longitude = longitude;
@@ -17,10 +26,12 @@ public class RollModel {
     }
 
     public RollModel(RollEntity rollEntity){
+        this.id = String.valueOf(rollEntity.id);
         this.longitude = rollEntity.longitude;
         this.latitude = rollEntity.latitude;
         this.class_code = rollEntity.classEntity.classCode;
         this.createdAt = String.valueOf(rollEntity.createdAt);
         this.finishedAt = String.valueOf(rollEntity.finishedAt);
+        this.presences = new ArrayList<>();
     }
 }

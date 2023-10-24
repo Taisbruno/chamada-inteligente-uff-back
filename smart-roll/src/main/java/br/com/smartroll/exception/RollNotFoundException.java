@@ -7,7 +7,7 @@ public class RollNotFoundException extends Exception{
 
     /**
      * Construtor padrão que recebe o id da chamada.
-     * @param id semestre utilizado para tentar obter chamadas referente a turmas que não foram encontradas.
+     * @param id da chamada.
      */
     public RollNotFoundException(String id){
         super("No roll associated with id: " + id + " was found.");

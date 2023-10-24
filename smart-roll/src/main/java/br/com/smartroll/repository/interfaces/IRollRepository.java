@@ -4,8 +4,10 @@ import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Repositório para operações CRUD e consultas personalizadas relacionadas a entidades de Roll.
@@ -41,4 +43,8 @@ public interface IRollRepository extends JpaRepository<RollEntity, Long> {
      */
     @Query("SELECT CASE WHEN r.finishedAt IS NOT NULL THEN true ELSE false END FROM RollEntity r WHERE r.id = ?1")
     boolean isCallClosed(Long id);
+
+    @Query("SELECT r FROM RollEntity r JOIN r.classEntity c WHERE c.classCode = :classCode AND c.semester = :semester")
+    List<RollEntity> getRollsFromClass(@Param("classCode") String classCode, @Param("semester") String semester);
+
 }

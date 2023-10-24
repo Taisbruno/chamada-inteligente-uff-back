@@ -44,10 +44,10 @@ public class ClassController {
                     examples = {@ExampleObject(value = SwaggerExamples.GETCLASSESBYUSER)})),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "404", description = "A turma não foi encontradda"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/classes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getClassesByUser(@Parameter(description = "Matrícula", example = "1") @RequestParam String registration) throws ClassesNotFoundException {
+    public String getClassesByUser(@Parameter(description = "Matrícula do usuário", example = "1") @RequestParam String registration) throws ClassesNotFoundException {
         List<ClassModel> classesModels = service.getClassesByUser(registration);
         ClassesViews classesViews = new ClassesViews(classesModels);
         return classesViews.toJson();

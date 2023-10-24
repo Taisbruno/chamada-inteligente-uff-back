@@ -83,7 +83,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class})
+    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class})
     public ResponseEntity<String> notFound(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.NOT_FOUND);
@@ -133,4 +133,18 @@ public class ExceptionController implements ErrorController {
         return new ResponseEntity<>(view.toJson(), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    /**
+     * Método que mapeia as exceções de conflito.
+     * O erro 409 deve ser retornado quando uma operação não pode ser realizada devido a um conflito
+     * com o estado atual do recurso, como por exemplo, tentar registrar um estudante que já está presente.
+     * @param exception A exceção tratada.
+     * @return A view da exceção com o estado 409 de conflict.
+     */
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(value = {StudentAlreadyPresentException.class})
+    public ResponseEntity<String> conflict(Exception exception){
+        ExceptionView view = new ExceptionView(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.name(), exception.getMessage());
+        return new ResponseEntity<>(view.toJson(), HttpStatus.CONFLICT);
+    }
 }
