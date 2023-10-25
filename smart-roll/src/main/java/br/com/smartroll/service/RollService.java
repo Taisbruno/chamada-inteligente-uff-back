@@ -81,7 +81,7 @@ public class RollService {
     }
 
     public List<RollModel> getHistoricRollsFromClass(String classCode, String semester) throws RollsNotFoundException {
-        List<RollEntity> rollsEntity = rollRepository.getRollsFromClass(classCode, semester);
+        List<RollEntity> rollsEntity = rollRepository.getClosedRollsFromClass(classCode, semester);
 
         if (rollsEntity.isEmpty()) {
             throw new RollsNotFoundException(classCode, semester);

@@ -108,7 +108,7 @@ public class RollController {
      * @param semester Semestre de interesse.
      * @return Uma visualização (RollsView) representando o histórico de chamadas.
      */
-    @ApiOperation(value = "Retorna o histórico de chamadas de uma determinada turma.")
+    @ApiOperation(value = "Retorna o histórico de chamadas fechadas de uma determinada turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",

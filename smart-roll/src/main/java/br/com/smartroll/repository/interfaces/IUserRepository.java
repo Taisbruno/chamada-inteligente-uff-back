@@ -43,6 +43,7 @@ public interface IUserRepository extends JpaRepository<UserEntity, String> {
             @Param("semester") String semester);
 
 
-    @Query("SELECT u FROM UserEntity u JOIN ClassSubscriptionEntity cs ON u.registration = cs.userEntity.registration JOIN RollEntity r ON r.classEntity.classCode = cs.classEntity.classCode WHERE r.id = :idRoll")
+    @Query("SELECT u FROM UserEntity u JOIN PresenceEntity p ON u.registration = p.studentRegistration WHERE p.roll.id = :idRoll")
     List<UserEntity> findUsersByRoll(@Param("idRoll") Long idRoll);
+
 }

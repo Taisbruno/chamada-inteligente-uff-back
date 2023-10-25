@@ -36,14 +36,33 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     @Query("UPDATE PresenceEntity p SET p.isPresent = false, p.exitTime = :exitTime WHERE p.id = :id")
     void invalidatePresence(@Param("id") long id, @Param("exitTime") String exitTime);
 
+    /**
+     * Valida uma presença com base no id.
+     * @param id O id da presença
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.isPresent = true WHERE p.id = :id")
+    void validatePresence(@Param("id") long id);
+
+    /**
+     * Insere um certificado em uma presença com base no id da presença.
+     * @param id id da presença.
+     * @param certificate atestado médico a ser anexado.
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.medicalCertificate = :certificate WHERE p.id = :id")
+    void updateCertificate(@Param("id") long id, @Param("certificate") String certificate);
+
 
     /**
      * Atualiza o tempo de saída para todos os alunos inscritos em uma determinada RollEntity
-     * com base em seu id, e que têm o campo isPresent como true.
+     * com base em seu id, e que têm o campo isPresent como true ou possuem um certificado médico.
      * @param rollId O id da chamada.
      */
     @Transactional
     @Modifying
-    @Query("UPDATE PresenceEntity p SET p.exitTime = :exitTime WHERE p.roll.id = :rollId AND p.isPresent = true")
+    @Query("UPDATE PresenceEntity p SET p.exitTime = :exitTime WHERE p.roll.id = :rollId AND (p.isPresent = true OR p.medicalCertificate IS NOT NULL)")
     void markExitTimeForAllPresentInRoll(@Param("rollId") Long rollId, @Param("exitTime") String exitTime);
 }

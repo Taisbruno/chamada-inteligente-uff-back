@@ -68,69 +68,77 @@ public class SwaggerExamples {
           """;
 
   public final static String GETROLLSHISTORICEXAMPLE = """
-          {
-            "rolls": [
-              {
-                "id": "string",
-                "longitude": "string",
-                "latitude": "string",
-                "createdAt": "string",
-                "finishedAt": "string",
-                "studentsPresent": int
-                "presences": [
-                  {
-                    "registration": "string",
-                    "name": "string",
-                    "medicalCertificate": "string",
-                    "message": "string",
-                    "isPresent": boolean,
-                    "timePresent": "string",
-                    "frequency": double
-                  }
-                  ...
-                  {
-                    "registration": "string",
-                    "name": "string",
-                    "medicalCertificate": "string",
-                    "message": "string",
-                    "isPresent": boolean,
-                    "timePresent": "string",
-                    "frequency": double
-                  }
-                ]
-              }
-              ...
-              {
-                "id": "string",
-                "longitude": "string",
-                "latitude": "string",
-                "createdAt": "string",
-                "finishedAt": "string",
-                "studentsPresent": int
-                "presences": [
-                  {
-                    "registration": "string",
-                    "name": "string",
-                    "medicalCertificate": "string",
-                    "message": "string",
-                    "isPresent": boolean,
-                    "timePresent": "string",
-                    "frequency": double
-                  }
-                  ...
-                  {
-                    "registration": "string",
-                    "name": "string",
-                    "medicalCertificate": "string",
-                    "message": "string",
-                    "isPresent": boolean,
-                    "timePresent": "string",
-                    "frequency": double
-                  }
-                ]
-              }
-            ]
-          }
+            {
+              "rolls": [
+                {
+                  "id": "string",
+                  "longitude": "string",
+                  "latitude": "string",
+                  "createdAt": "string",
+                  "finishedAt": "string",
+                  "studentsPresent": int,
+                  "presencePercentage": double,
+                  "presenceTimeAvarage": "string",
+                  "presences": [
+                    {
+                      "registration": "string",
+                      "name": "string",
+                      "medicalCertificate": "string",
+                      "message": "string",
+                      "isPresent": boolean,
+                      "timePresent": "string",
+                      "frequency": int,
+                      "failed": boolean
+                    },
+                    ...
+                    {
+                      "registration": "string",
+                      "name": "string",
+                      "medicalCertificate": "string",
+                      "message": "string",
+                      "isPresent": boolean,
+                      "timePresent": "string",
+                      "frequency": int,
+                      "failed": boolean
+                    }
+                  ]
+                },
+                ...
+                {
+                  "id": "string",
+                  "longitude": "string",
+                  "latitude": "string",
+                  "createdAt": "string",
+                  "finishedAt": "string",
+                  "studentsPresent": int,
+                  "presencePercentage": double,
+                  "presenceTimeAvarage": "string",
+                  "presences": [
+                    {
+                      "registration": "string",
+                      "name": "string",
+                      "medicalCertificate": "string",
+                      "message": "string",
+                      "isPresent": boolean,
+                      "timePresent": "string",
+                      "frequency": int,
+                      "failed": boolean
+                    },
+                    ...
+                    {
+                      "registration": "string",
+                      "name": "string",
+                      "medicalCertificate": "string",
+                      "message": "string",
+                      "isPresent": boolean,
+                      "timePresent": "string",
+                      "frequency": int,
+                      "failed": boolean
+                    }
+                  ]
+                }
+              ]
+            }
           """;
 
   public final static String POSTLOGIN = """
@@ -183,8 +191,29 @@ public class SwaggerExamples {
             {
               "studentRegistration": "2",
               "rollId": "1",
-              "medicalCertificate": "cert2",
               "message": "Estava presente"
             }
       """;
+
+  public static final String PUTCERTIFICATE = """
+              {
+                "id": "1",
+                "certificate": "iVBORw0KGgoAAAANSUhEUgAAAXAAAAIECAIAAACPIOIiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQA"
+              }
+          """;
+  public static final String POSTPRESENCEEXAMPLE1 = """ 
+            {
+              "studentRegistration": "string",
+              "rollId": "string",
+              "message": "string"
+            }
+          """;
+  public static final String POSTPRESENCEEXAMPLE2 = """ 
+            {
+              "studentRegistration": "string",
+              "rollId": "string",
+              "certificate": "string",
+              "message": "string"
+            }
+          """;
 }

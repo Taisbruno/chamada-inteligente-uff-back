@@ -18,7 +18,7 @@ public class PresenceEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roll_id", nullable = false)
     public RollEntity roll;
-    @Column(name = "certificate", nullable = false)
+    @Column(name = "certificate")
     public String medicalCertificate;
     @Column(name = "message", nullable = false)
     public String message;

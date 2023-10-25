@@ -39,6 +39,10 @@ public class PresenceRepository {
         presenceRepository.invalidatePresence(Long.parseLong(id), exitTime);
     }
 
+    public void validatePresence(String id) {
+        presenceRepository.validatePresence(Long.parseLong(id));
+    }
+
     public void markExitTimeForAllPresentInRoll(Long rollId){
         String exitTime = LocalDateTime.now().toString();
         presenceRepository.markExitTimeForAllPresentInRoll(rollId, exitTime);
@@ -52,6 +56,15 @@ public class PresenceRepository {
      */
     public PresenceEntity getPresence(Long id) {
         return presenceRepository.getPresence(id);
+    }
+
+    /**
+     * Método responsável por inserir um certificado em uma presença.
+     * @param id o id da presença.
+     * @param certificate a string em base64 do certificado.
+     */
+    public void updateCertificate(long id, String certificate){
+        presenceRepository.updateCertificate(id, certificate);
     }
 
     /**
@@ -83,6 +96,4 @@ public class PresenceRepository {
     public PresenceEntity savePresence(PresenceEntity presenceEntity) {
         return presenceRepository.save(presenceEntity);
     }
-
-
 }

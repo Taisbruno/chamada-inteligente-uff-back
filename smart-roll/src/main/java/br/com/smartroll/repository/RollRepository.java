@@ -85,4 +85,8 @@ public class RollRepository {
     public List<RollEntity> getRollsFromClass(String classCode, String semester) {
         return rollRepository.getRollsFromClass(classCode, semester);
     }
+
+    public List<RollEntity> getClosedRollsFromClass(String classCode, String semester) {
+        return rollRepository.getClosedRollsFromClass(classCode, semester);
+    }
 }

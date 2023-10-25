@@ -47,4 +47,15 @@ public interface IRollRepository extends JpaRepository<RollEntity, Long> {
     @Query("SELECT r FROM RollEntity r JOIN r.classEntity c WHERE c.classCode = :classCode AND c.semester = :semester")
     List<RollEntity> getRollsFromClass(@Param("classCode") String classCode, @Param("semester") String semester);
 
+    /**
+     * Retorna todas as chamadas fechadas de uma turma específica, identificadas pelo código da turma e semestre.
+     * Uma chamada é considerada fechada se a coluna 'finishedAt' não for nula.
+     *
+     * @param classCode o código da turma.
+     * @param semester o semestre da turma.
+     * @return Lista de entidades RollEntity que são chamadas fechadas.
+     */
+    @Query("SELECT r FROM RollEntity r JOIN r.classEntity c WHERE c.classCode = :classCode AND c.semester = :semester AND r.finishedAt IS NOT NULL")
+    List<RollEntity> getClosedRollsFromClass(@Param("classCode") String classCode, @Param("semester") String semester);
+
 }
