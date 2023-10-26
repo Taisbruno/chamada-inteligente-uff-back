@@ -22,6 +22,8 @@ public class HistoricRollView {
     public String createdAt;
     @SerializedName("finishedAt")
     public String finishedAt;
+    @SerializedName("isOpen")
+    public boolean isOpen;
     @SerializedName("studentsPresent")
     public int studentsPresent;
     @SerializedName("presencePercentage")
@@ -38,6 +40,7 @@ public class HistoricRollView {
         this.classCode = rollModel.class_code;
         this.createdAt = rollModel.createdAt;
         this.finishedAt = rollModel.finishedAt;
+        this.isOpen = rollModel.isOpen;
         for(PresenceModel presenceModel : rollModel.presences){
             PresenceView presenceView = new PresenceView(presenceModel);
             this.presences.add(presenceView);

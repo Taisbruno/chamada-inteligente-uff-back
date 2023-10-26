@@ -2,9 +2,12 @@ package br.com.smartroll.service;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
 import br.com.smartroll.model.ClassModel;
+import br.com.smartroll.model.RollModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.ClassSubscriptionRepository;
+import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.entity.ClassEntity;
+import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,9 @@ import java.util.List;
 public class ClassService {
     @Autowired
     private ClassRepository classRepository;
+
+    @Autowired
+    private RollRepository rollRepository;
 
     @Autowired
     private ClassSubscriptionRepository classSubRepository;
@@ -43,15 +49,25 @@ public class ClassService {
     private List<ClassModel> convertEntityToModelList(List<ClassEntity> classes){
 
         List<ClassModel> classesModels = new ArrayList<>();
+        ClassModel classModel;
         for(ClassEntity classEntity: classes){
-            ClassModel classModel = new ClassModel(
+            List<RollEntity> rollEntities = rollRepository.getRollsFromClass(classEntity.classCode, classEntity.semester);
+            List<RollModel> rollsModels = new ArrayList<>();
+            for(RollEntity rollEntity : rollEntities){
+                RollModel rollModel = new RollModel(rollEntity);
+                rollModel.class_code = classEntity.classCode;
+                rollsModels.add(rollModel);
+            }
+            classModel = new ClassModel(
                     classEntity.classCode,
                     classEntity.disciplineCode,
                     classEntity.discipline,
                     classEntity.teacher,
                     classEntity.semester,
-                    classEntity.total
+                    classEntity.total,
+                    rollsModels
             );
+
             classesModels.add(classModel);
         }
         return classesModels;

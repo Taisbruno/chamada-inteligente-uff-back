@@ -1,7 +1,11 @@
 package br.com.smartroll.view;
 
 import br.com.smartroll.model.ClassModel;
+import br.com.smartroll.model.RollModel;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representa uma visualização simplificada de uma classe.
@@ -21,6 +25,8 @@ public class ClassView {
     public String semester;
     @SerializedName("total")
     public int total;
+    @SerializedName("rolls")
+    public List<RollView> rolls = new ArrayList<>();
 
     public ClassView(ClassModel classModel) {
         this.classCode = classModel.classCode;
@@ -29,5 +35,9 @@ public class ClassView {
         this.teacher = classModel.teacher;
         this.semester = classModel.semester;
         this.total = classModel.total;
+        for(RollModel rollModel : classModel.rolls){
+            RollView rollView = new RollView(rollModel);
+            rolls.add(rollView);
+        }
     }
 }

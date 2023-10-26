@@ -25,6 +25,12 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     @Query("SELECT r FROM PresenceEntity r WHERE r.id = ?1")
     PresenceEntity getPresence(Long id);
 
+    /**
+     * Verifica se a chamada relacionada a esta presença está aberta com base no ID da presença.
+     *
+     * @param presenceId O ID da presença para o qual deseja verificar o estado da chamada.
+     * @return true se a chamada estiver aberta, false se estiver fechada.
+     */
     @Query("SELECT CASE WHEN r.finishedAt IS NULL THEN true ELSE false END FROM RollEntity r WHERE r.id = (SELECT p.roll.id FROM PresenceEntity p WHERE p.id = :presenceId)")
     boolean isRollOpenForPresence(@Param("presenceId") Long presenceId);
 

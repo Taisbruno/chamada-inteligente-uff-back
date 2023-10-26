@@ -29,6 +29,14 @@ public class RollRepository {
         return rollRepository.save(rollEntity);
     }
 
+    public boolean isOpen(Long rollId){
+        return rollRepository.isOpen(rollId);
+    }
+
+    public boolean hasOpenRollsForClass(String classCode){
+        return rollRepository.hasOpenRollsForClass(classCode);
+    }
+
     /**
      * Recupera um registro de chamada do banco de dados usando um identificador.
      *

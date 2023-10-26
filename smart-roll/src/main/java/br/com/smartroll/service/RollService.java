@@ -1,5 +1,6 @@
 package br.com.smartroll.service;
 
+import br.com.smartroll.exception.ClassHasOpenRollException;
 import br.com.smartroll.exception.RollClosedException;
 import br.com.smartroll.exception.RollNotFoundException;
 import br.com.smartroll.exception.RollsNotFoundException;
@@ -45,10 +46,16 @@ public class RollService {
         if(rollEntity == null){
             throw new RollNotFoundException(String.valueOf(id));
         }
-        return new RollModel(rollEntity);
+        RollModel rollModel = new RollModel(rollEntity);
+        rollModel.class_code = classRepository.getClassCodeByRollId(id);
+        rollModel.isOpen = rollRepository.isOpen(id);
+        return rollModel;
     }
 
-    public void createRoll(RollModel rollModel){
+    public void createRoll(RollModel rollModel) throws ClassHasOpenRollException {
+        if(rollRepository.hasOpenRollsForClass(rollModel.class_code)){
+            throw new ClassHasOpenRollException(rollModel.class_code);
+        }
         RollEntity rollEntity = new RollEntity(rollModel.longitude, rollModel.latitude, rollModel.class_code);
         rollRepository.createRoll(rollEntity);
     }
@@ -75,6 +82,8 @@ public class RollService {
         List<RollModel> rollModels = new ArrayList<>();
         for(RollEntity rollEntity : rollsEntity){
             RollModel rollModel = new RollModel(rollEntity);
+            rollModel.isOpen = rollRepository.isOpen(rollEntity.id);
+            rollModel.class_code = classRepository.getClassCodeByRollId(rollEntity.id);
             rollModels.add(rollModel);
         }
         return rollModels;
@@ -91,6 +100,8 @@ public class RollService {
 
         for (RollEntity rollEntity : rollsEntity) {
             RollModel rollModel = new RollModel(rollEntity);
+            rollModel.isOpen = rollRepository.isOpen(rollEntity.id);
+            rollModel.class_code = classRepository.getClassCodeByRollId(rollEntity.id);
             rollModel.presencePercentage = ((double) rollsEntity.size() / classRepository.getTotalByClassCode(classCode)) * 100;
 
             // Cálculo da média de tempo de presença

@@ -22,8 +22,21 @@ public interface IClassRepository extends JpaRepository<ClassEntity, Long> {
     @Query("SELECT c FROM ClassEntity c JOIN c.classSubscriptions cs WHERE cs.userEntity.registration = :registration")
     List<ClassEntity> findClassesByUserRegistration(@Param("registration") String registration);
 
+    /**
+     * Retorna o total de aulas de uma determinada turma.
+     * @param code o código da turma.
+     * @return um inteiro com o total de aulas.
+     */
     @Query("SELECT c.total FROM ClassEntity c WHERE c.classCode = :code")
     Integer getTotalByClassCode(@Param("code") String code);
 
+    /**
+     * Retorna o valor da coluna 'classCode' com base no ID da chamada (RollEntity).
+     *
+     * @param rollId O ID da chamada (RollEntity).
+     * @return O valor da coluna 'classCode' ou null se não encontrado.
+     */
+    @Query("SELECT r.classEntity.classCode FROM RollEntity r WHERE r.id = :rollId")
+    String getClassCodeByRollId(@Param("rollId") Long rollId);
 
 }
