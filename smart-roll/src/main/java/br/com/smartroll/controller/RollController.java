@@ -2,7 +2,6 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.*;
 import br.com.smartroll.model.RollModel;
-import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.HistoricRollsView;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -129,6 +127,7 @@ public class RollController {
      *
      * @param requestBody JSON representando a chamada a ser criada.
      * @throws InvalidJsonException Caso o corpo da requisição contenha JSON inválido ou ausente.
+     * @return
      */
     @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
     @ApiResponses(value = {
@@ -142,8 +141,8 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "Corpo do json mal formado"),
             @ApiResponse(responseCode = "409", description = "Chamada aberta já existente associada à turma"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
-    @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException {
+    @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {
@@ -168,6 +167,7 @@ public class RollController {
 
         RollModel rollModel = new RollModel(requestBodyJson.getString("longitude"), requestBodyJson.getString("latitude"), requestBodyJson.getString("class_code"));
         RollModel createdRoll = service.createRoll(rollModel);
+        createdRoll.isOpen = service.isOpen(Long.parseLong(createdRoll.id));
         return new RollView(createdRoll).toJson();
     }
 }
