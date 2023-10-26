@@ -10,17 +10,14 @@ import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
-import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
-import br.com.smartroll.repository.interfaces.IClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +49,7 @@ public class RollService {
         return rollModel;
     }
 
-    public void createRoll(RollModel rollModel) throws ClassHasOpenRollException {
+    public RollModel createRoll(RollModel rollModel) throws ClassHasOpenRollException {
         if(rollRepository.hasOpenRollsForClass(rollModel.class_code)){
             throw new ClassHasOpenRollException(rollModel.class_code);
         }
@@ -70,6 +67,10 @@ public class RollService {
         }
         rollRepository.closeRoll(id);
         presenceRepository.markExitTimeForAllPresentInRoll(id);
+    }
+
+    public boolean isOpen(Long id){
+        return rollRepository.isOpen(id);
     }
 
     public boolean isRollClosed(Long id){
