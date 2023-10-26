@@ -21,7 +21,7 @@ O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina 
   * SpringFox 2 v. 3.0.0 
   * Outras menores configuradas no build do Maven (POM.xml)
 * [Maven 3.8.6](https://maven.apache.org/download.cgi)
-* [PostGreSQL VER VERSAO](VER LINK)
+* [PostgreSQL na última versão](https://www.postgresql.org/download/)
 
 ### 1.2. Somente para compilar e executar
 
@@ -29,7 +29,7 @@ O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina 
   * [Java 17.0.1](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) - Distribuição: Oracle
   * [Maven 3.8.6](https://maven.apache.org/download.cgi)
   * [Python 3.9.12](https://www.python.org/downloads/)
-* [PostgreSQL VER VERSAO](VER LINK)
+* [PostgreSQL na última versão](https://www.postgresql.org/download/)
 
 ## 2. Instruções de construção, execução e uso da API
 

@@ -79,13 +79,13 @@ INSERT INTO class_subscription (registration, semester, class_code) VALUES
 ('6', '2023.1', '6');
 
 
+-- Roll and Presence
 WITH inserted_roll AS (
     INSERT INTO roll (longitude, latitude, class_code, created_at)
     VALUES ('-47.875', '-15.794', '1', NOW())
     RETURNING id
 )
-
-INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, time_present)
+INSERT INTO presence (student_registration, roll_id, certificate, message, is_present, entry_time)
 SELECT '1', id, 'cert1', 'Estava presente', TRUE, '2023-10-23T01:24:00.385734701'
 FROM inserted_roll;
 
