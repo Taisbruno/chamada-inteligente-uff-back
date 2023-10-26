@@ -2,6 +2,7 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.*;
 import br.com.smartroll.model.RollModel;
+import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.HistoricRollsView;
@@ -132,7 +133,10 @@ public class RollController {
     @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
-                    mediaType = "application/json")),
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETROLLEXAMPLE)})
+            ),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Corpo do json mal formado"),
@@ -161,8 +165,9 @@ public class RollController {
             throw new InvalidJsonException("expected \"class_code\" key.");
         if(requestBodyJson.isNull("class_code"))
             throw new InvalidJsonException("\"class_code\" can not be null.");
-        RollModel rollModel = new RollModel(requestBodyJson.getString("longitude"), requestBodyJson.getString("latitude"), requestBodyJson.getString("class_code"));
-        service.createRoll(rollModel);
-    }
 
+        RollModel rollModel = new RollModel(requestBodyJson.getString("longitude"), requestBodyJson.getString("latitude"), requestBodyJson.getString("class_code"));
+        RollModel createdRoll = service.createRoll(rollModel);
+        return new RollView(createdRoll).toJson();
+    }
 }
