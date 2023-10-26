@@ -1,7 +1,6 @@
 package br.com.smartroll.repository.interfaces;
 
 import br.com.smartroll.repository.entity.PresenceEntity;
-import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,23 +26,60 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     PresenceEntity getPresence(Long id);
 
     /**
-     * Invalida uma presença com base no id e marca o tempo de saída do aluno no tempo corrente.
+     * Verifica se a chamada relacionada a esta presença está aberta com base no ID da presença.
+     *
+     * @param presenceId O ID da presença para o qual deseja verificar o estado da chamada.
+     * @return true se a chamada estiver aberta, false se estiver fechada.
+     */
+    @Query("SELECT CASE WHEN r.finishedAt IS NULL THEN true ELSE false END FROM RollEntity r WHERE r.id = (SELECT p.roll.id FROM PresenceEntity p WHERE p.id = :presenceId)")
+    boolean isRollOpenForPresence(@Param("presenceId") Long presenceId);
+
+    /**
+     * Invalida uma presença em chamada aberta com base no id e marca o tempo de saída do aluno no tempo corrente.
      * @param id O id da presença
      * @param exitTime O tempo de saída para ser definido
      */
     @Transactional
     @Modifying
     @Query("UPDATE PresenceEntity p SET p.isPresent = false, p.exitTime = :exitTime WHERE p.id = :id")
-    void invalidatePresence(@Param("id") long id, @Param("exitTime") String exitTime);
+    void invalidateOpenPresence(@Param("id") long id, @Param("exitTime") String exitTime);
+
+    /**
+     * Invalida uma presença em chamada fechada com base no id.
+     * @param id O id da presença
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.isPresent = false WHERE p.id = :id")
+    void invalidateClosedPresence(@Param("id") long id);
+
+    /**
+     * Valida uma presença com base no id.
+     * @param id O id da presença
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.isPresent = true WHERE p.id = :id")
+    void validatePresence(@Param("id") long id);
+
+    /**
+     * Insere um certificado em uma presença com base no id da presença.
+     * @param id id da presença.
+     * @param certificate atestado médico a ser anexado.
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.medicalCertificate = :certificate WHERE p.id = :id")
+    void updateCertificate(@Param("id") long id, @Param("certificate") String certificate);
 
 
     /**
      * Atualiza o tempo de saída para todos os alunos inscritos em uma determinada RollEntity
-     * com base em seu id, e que têm o campo isPresent como true.
+     * com base em seu id, e que têm o campo isPresent como true ou possuem um certificado médico.
      * @param rollId O id da chamada.
      */
     @Transactional
     @Modifying
-    @Query("UPDATE PresenceEntity p SET p.exitTime = :exitTime WHERE p.roll.id = :rollId AND p.isPresent = true")
+    @Query("UPDATE PresenceEntity p SET p.exitTime = :exitTime WHERE p.roll.id = :rollId AND (p.isPresent = true OR p.medicalCertificate IS NOT NULL)")
     void markExitTimeForAllPresentInRoll(@Param("rollId") Long rollId, @Param("exitTime") String exitTime);
 }

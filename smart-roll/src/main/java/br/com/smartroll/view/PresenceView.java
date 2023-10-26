@@ -17,6 +17,10 @@ public class PresenceView {
     public String message;
     @SerializedName("isPresent")
     public boolean isPresent;
+    @SerializedName("entryTime")
+    public String entryTime;
+    @SerializedName("exitTime")
+    public String exitTime;
     @SerializedName("timePresent")
     public String timePresent;
     @SerializedName("frequency")
@@ -31,6 +35,8 @@ public class PresenceView {
         this.medicalCertificate = presenceModel.medicalCertificate;
         this.message = presenceModel.message;
         this.isPresent = presenceModel.isPresent;
+        this.entryTime = presenceModel.entryTime;
+        this.exitTime = presenceModel.exitTime;
         this.timePresent = presenceModel.timePresent;
         this.frequency = presenceModel.frequency;
         this.failed = presenceModel.failed;

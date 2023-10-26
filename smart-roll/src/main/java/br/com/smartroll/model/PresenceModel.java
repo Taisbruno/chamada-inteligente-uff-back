@@ -21,16 +21,25 @@ public class PresenceModel {
     public double frequency;
     public boolean failed;
 
-    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String message){
+    public PresenceModel(String studentRegistration, String rollId, String message){
         this.studentRegistration = studentRegistration;
         this.rollId = rollId;
-        this.medicalCertificate = medicalCertificate;
         this.message = message;
         this.isPresent = true;
         this.entryTime = LocalDateTime.now().toString();
     }
 
+    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String message){
+        this.studentRegistration = studentRegistration;
+        this.rollId = rollId;
+        this.medicalCertificate = medicalCertificate;
+        this.message = message;
+        this.isPresent = false;
+        this.entryTime = LocalDateTime.now().toString();
+    }
+
     public PresenceModel(PresenceEntity presenceEntity){
+        this.id = String.valueOf(presenceEntity.id);
         this.studentRegistration = presenceEntity.studentRegistration;
         this.rollId = String.valueOf(presenceEntity.roll.id);
         this.medicalCertificate = presenceEntity.medicalCertificate;

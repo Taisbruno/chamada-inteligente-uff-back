@@ -2,7 +2,9 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
 import br.com.smartroll.model.ClassModel;
+import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.ClassService;
+import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.ClassesViews;
 import io.swagger.annotations.ApiOperation;
@@ -28,15 +30,15 @@ import java.util.List;
 public class ClassController {
 
     @Autowired
-    ClassService service;
+    ClassService classService;
 
     /**
-     * Requisição para obter todas as turmas associadas a um determinado usuário.
+     * Requisição para obter todas as turmas e chamadas associadas a um determinado usuário.
      * @param registration Matrícula do usuário.
      * @return Uma representação JSON das turmas do usuário.
      * @throws ClassesNotFoundException Exceção lançada quando as turmas não são encontradas.
      */
-    @ApiOperation(value = "Retorna todas as turmas de um determinado usuário.")
+    @ApiOperation(value = "Retorna todas as turmas junto a suas respectiva chamadas de um determinado usuário.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
@@ -48,7 +50,7 @@ public class ClassController {
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/classes", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getClassesByUser(@Parameter(description = "Matrícula do usuário", example = "1") @RequestParam String registration) throws ClassesNotFoundException {
-        List<ClassModel> classesModels = service.getClassesByUser(registration);
+        List<ClassModel> classesModels = classService.getClassesByUser(registration);
         ClassesViews classesViews = new ClassesViews(classesModels);
         return classesViews.toJson();
     }

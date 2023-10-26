@@ -10,7 +10,7 @@ import java.util.List;
 public class RollsView {
 
     @SerializedName("rolls")
-    private List<RollView> rolls = new ArrayList<>();
+    public List<RollView> rolls = new ArrayList<>();
 
     public RollsView(List<RollModel> rollsModel) {
         for(RollModel rollModel : rollsModel){

@@ -1,9 +1,6 @@
 package br.com.smartroll.controller;
 
-import br.com.smartroll.exception.InvalidJsonException;
-import br.com.smartroll.exception.RollClosedException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.RollsNotFoundException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.service.RollService;
@@ -94,7 +91,7 @@ public class RollController {
                     examples = {@ExampleObject(value = SwaggerExamples.GETROLLSFROMCLASSEXAMPLE)})),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "404", description = "Chamadas associadas à turma não foram encontradas"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/list-rolls/", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getRollsFromClass(@Parameter(description = "Id da turma", example = "1") @RequestParam String classCode, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws RollsNotFoundException {
@@ -109,7 +106,7 @@ public class RollController {
      * @param semester Semestre de interesse.
      * @return Uma visualização (RollsView) representando o histórico de chamadas.
      */
-    @ApiOperation(value = "Retorna o histórico de chamadas de uma determinada turma.")
+    @ApiOperation(value = "Retorna o histórico de chamadas fechadas de uma determinada turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
@@ -117,7 +114,7 @@ public class RollController {
                     examples = {@ExampleObject(value = SwaggerExamples.GETROLLSHISTORICEXAMPLE)})),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "404", description = "Chamadas associadas a esta turma não foram encontradas"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/rolls-historic/", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getHistoricRollsFromClass(@Parameter(description = "Id da turma", example = "1") @RequestParam String classCode, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws RollsNotFoundException {
@@ -142,10 +139,11 @@ public class RollController {
             ),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "404", description = "Corpo do json mal formado"),
+            @ApiResponse(responseCode = "409", description = "Chamada aberta já existente associada à turma"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
-    @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException {
+    @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

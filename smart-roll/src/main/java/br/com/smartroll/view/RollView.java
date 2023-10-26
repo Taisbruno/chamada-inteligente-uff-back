@@ -4,8 +4,6 @@ import br.com.smartroll.model.RollModel;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class RollView {
     @SerializedName("id")
     public String id;
@@ -19,6 +17,8 @@ public class RollView {
     public String createdAt;
     @SerializedName("finishedAt")
     public String finishedAt;
+    @SerializedName("isOpen")
+    public boolean isOpen;
 
     public RollView(RollModel rollModel) {
         this.id = rollModel.id;
@@ -27,6 +27,7 @@ public class RollView {
         this.classCode = rollModel.class_code;
         this.createdAt = rollModel.createdAt;
         this.finishedAt = rollModel.finishedAt;
+        this.isOpen = rollModel.isOpen;
     }
 
     /**

@@ -1,5 +1,8 @@
 package br.com.smartroll.utils;
 
+/**
+ * Classe que armazena os exemplos para anotações do swagger da API.
+ */
 public class SwaggerExamples {
   /**
    * HomeController.
@@ -17,6 +20,10 @@ public class SwaggerExamples {
       	</html>
       """;
 
+  /**
+   * LoginController.
+   * Exemplo de retorno de json de login.
+   */
   public final static String GETUSER = """
       {
         "registration": "string",
@@ -27,6 +34,20 @@ public class SwaggerExamples {
       }
         """;
 
+  /**
+   * LoginController.
+   * Exemplo de corpo de json entrada para getHistoricRollsFromClass.
+   */
+  public final static String POSTLOGIN = """
+          {
+            "cpf": "3333",
+            "password": "hugopassword"
+          }""";
+
+  /**
+   * RollController.
+   * Exemplo de corpo de json entrada para postRollByClass.
+   */
   public final static String POSTROLL = """
       {
         "latitude": "-23.550520",
@@ -35,16 +56,26 @@ public class SwaggerExamples {
       }
         """;
 
+  /**
+   * RollController.
+   * Exemplo de retorno de json para getRoll.
+   */
   public final static String GETROLLEXAMPLE = """
           {
             "id": "string",
             "longitude": "string",
             "latitude": "string",
+            "classCode": "string",
             "createdAt": "string",
             "finishedAt": "string"
+            "isOpen": boolean
           }
           """;
 
+  /**
+   * RollController.
+   * Exemplo de retorno de json para getRollsFromClass.
+   */
   public final static String GETROLLSFROMCLASSEXAMPLE = """
           {
             "rolls": [
@@ -52,21 +83,29 @@ public class SwaggerExamples {
                 "id": "string",
                 "longitude": "string",
                 "latitude": "string",
+                "classCode": "string",
                 "createdAt": "string",
                 "finishedAt": "string"
+                "isOpen": boolean
               }
               ...
               {
                 "id": "string",
                 "longitude": "string",
                 "latitude": "string",
+                "classCode": "string",
                 "createdAt": "string",
                 "finishedAt": "string"
+                "isOpen": boolean
               }
             ]
           }
           """;
 
+  /**
+   * RollController.
+   * Exemplo de retorno de json para getHistoricRollsFromClass.
+   */
   public final static String GETROLLSHISTORICEXAMPLE = """
           {
             "rolls": [
@@ -74,58 +113,82 @@ public class SwaggerExamples {
                 "id": "string",
                 "longitude": "string",
                 "latitude": "string",
+                "classCode": "string",
                 "createdAt": "string",
                 "finishedAt": "string",
-                "studentsPresent": int
+                "isOpen": boolean,
+                "studentsPresent": int,
+                "presencePercentage": int,
+                "presenceTimeAvarage": "string",
                 "presences": [
                   {
+                    "id": "string",
                     "registration": "string",
                     "name": "string",
                     "medicalCertificate": "string",
                     "message": "string",
                     "isPresent": boolean,
+                    "entryTime": "string",
+                    "exitTime": "string",
                     "timePresent": "string",
-                    "frequency": double
-                  }
+                    "frequency": double,
+                    "failed": boolean
+                  },
                   ...
                   {
+                    "id": "string",
                     "registration": "string",
                     "name": "string",
                     "medicalCertificate": "string",
                     "message": "string",
                     "isPresent": boolean,
+                    "entryTime": "string",
+                    "exitTime": "string",
                     "timePresent": "string",
-                    "frequency": double
+                    "frequency": double,
+                    "failed": boolean
                   }
                 ]
-              }
+              },
               ...
               {
                 "id": "string",
                 "longitude": "string",
                 "latitude": "string",
+                "classCode": "string",
                 "createdAt": "string",
                 "finishedAt": "string",
-                "studentsPresent": int
+                "isOpen": boolean,
+                "studentsPresent": int,
+                "presencePercentage": int,
+                "presenceTimeAvarage": "string",
                 "presences": [
                   {
+                    "id": "string",
                     "registration": "string",
                     "name": "string",
                     "medicalCertificate": "string",
                     "message": "string",
                     "isPresent": boolean,
+                    "entryTime": "string",
+                    "exitTime": "string",
                     "timePresent": "string",
-                    "frequency": double
-                  }
+                    "frequency": double,
+                    "failed": boolean
+                  },
                   ...
                   {
+                    "id": "string",
                     "registration": "string",
                     "name": "string",
                     "medicalCertificate": "string",
                     "message": "string",
                     "isPresent": boolean,
+                    "entryTime": "string",
+                    "exitTime": "string",
                     "timePresent": "string",
-                    "frequency": double
+                    "frequency": double,
+                    "failed": boolean
                   }
                 ]
               }
@@ -133,12 +196,10 @@ public class SwaggerExamples {
           }
           """;
 
-  public final static String POSTLOGIN = """
-          {
-            "cpf": "3333",
-            "password": "hugopassword"
-          }""";
-
+  /**
+   * StudentController.
+   * Exemplo de retorno de json para getEnrolledStudentsByClass.
+   */
   public final static String GETENROLLEDSTUDENTS = """
       {
         "classmates": [
@@ -155,6 +216,10 @@ public class SwaggerExamples {
       }
       """;
 
+  /**
+   * ClassController.
+   * Exemplo de retorno de json para getClassesByUser.
+   */
   public final static String GETCLASSESBYUSER = """
       {
         "classrooms": [
@@ -164,7 +229,28 @@ public class SwaggerExamples {
             "discipline": "string",
             "teacher": "string",
             "semester": "string",
-            "total": int
+            "total": int,
+            "rolls": [
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "classCode": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "isOpen": boolean
+              },
+              ...
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "classCode": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "isOpen": boolean
+              }
+            ]
           },
           ...
           {
@@ -173,18 +259,53 @@ public class SwaggerExamples {
             "discipline": "string",
             "teacher": "string",
             "semester": "string",
-            "total": int
+            "total": int,
+            "rolls": [
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "classCode": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "isOpen": boolean
+              },
+              ...
+              {
+                "id": "string",
+                "longitude": "string",
+                "latitude": "string",
+                "classCode": "string",
+                "createdAt": "string",
+                "finishedAt": "string",
+                "isOpen": boolean
+              }
+            ]
           }
         ]
       }
       """;
 
+  /**
+   * PresenceController.
+   * Exemplo de corpo de json entrada para getClassesByUser.
+   */
     public static final String POSTPRESENCE = """
             {
               "studentRegistration": "2",
               "rollId": "1",
-              "medicalCertificate": "cert2",
               "message": "Estava presente"
             }
       """;
+
+  /**
+   * PresenceController.
+   * Exemplo de corpo de json entrada para getClassesByUser.
+   */
+  public static final String PUTCERTIFICATE = """
+              {
+                "id": "1",
+                "certificate": "iVBORw0KGgoAAAANSUhEUgAAAXAAAAIECAIAAACPIOIiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQA"
+              }
+          """;
 }

@@ -136,13 +136,13 @@ public class ExceptionController implements ErrorController {
     /**
      * Método que mapeia as exceções de conflito.
      * O erro 409 deve ser retornado quando uma operação não pode ser realizada devido a um conflito
-     * com o estado atual do recurso, como por exemplo, tentar registrar um estudante que já está presente.
+     * com o estado atual do recurso, como por exemplo, tentar registrar um estudante que já está presente ou tentar abrir uma chamada em uma turma que já contém chamada aberta.
      * @param exception A exceção tratada.
      * @return A view da exceção com o estado 409 de conflict.
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(value = {StudentAlreadyPresentException.class})
+    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class})
     public ResponseEntity<String> conflict(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.CONFLICT);

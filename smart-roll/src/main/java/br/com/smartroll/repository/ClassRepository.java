@@ -29,8 +29,17 @@ public class ClassRepository {
         return classRepository.findClassesByUserRegistration(registration);
     }
 
+    /**
+     * Retorna o total de aulas de uma determinada turma.
+     * @param code o código da turma.
+     * @return inteiro com total de aulas da turma.
+     */
     public int getTotalByClassCode(String code){
         return classRepository.getTotalByClassCode(code);
+    }
+
+    public String getClassCodeByRollId(long id){
+        return classRepository.getClassCodeByRollId(id);
     }
 
 
