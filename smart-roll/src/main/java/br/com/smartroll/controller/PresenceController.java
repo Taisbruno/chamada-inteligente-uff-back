@@ -41,7 +41,19 @@ public class PresenceController {
      * @throws RollNotFoundException Quando a chamada especificada não é encontrada.
      * @throws RollClosedException Quando a chamada está fechada.
      */
-    @ApiOperation(value = "Realiza a submissão de presença ou falta justificada com atestado em uma chamada e transmite via WebSocket a lista de alunos inscritos em tempo real ")
+    @ApiOperation(value = "Realiza a submissão de presença ou falta justificada com atestado em uma chamada e transmite via WebSocket a lista de alunos inscritos em tempo real ", notes = "Submete uma presença ou falta justificada com atestato médico. Caso tenha sido passado um corpo de json sem a chave 'certificate', a presença será registrada com campo 'isPresent' como 'true', caso contrário, este campo será salvo como 'false' e esta presença deve ser validada pelo professor posteriormente para fins de abono de falta. <br><br>Exemplo de JSON sem atestado:<br><pre>" +
+            "{<br>" +
+            "    \"studentRegistration\": \"string\",<br>" +
+            "    \"rollId\": \"string\",<br>" +
+            "    \"message\": \"string\"<br>" +
+            "}<br><pre>" +
+            "<br><br>Exemplo de JSON com atestado:<br><pre>" +
+            "{<br>" +
+            "    \"studentRegistration\": \"string\",<br>" +
+            "    \"certificate\": \"string\",<br>" +
+            "    \"rollId\": \"string\",<br>" +
+            "    \"message\": \"string\"<br>" +
+            "}<br><pre>")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json")),
@@ -75,13 +87,13 @@ public class PresenceController {
 
         String registration = requestBodyJson.getString("studentRegistration");
         String rollId = requestBodyJson.getString("rollId");
-        String medicalCertificate = requestBodyJson.optString("medicalCertificate");
         String message = requestBodyJson.getString("message");
 
         PresenceModel presenceModelModel;
 
         // Se houver certificado no corpo do json, será submetido uma presença inválida pendente de análise a ser validada pelo professor.
-        if(medicalCertificate != null){
+        if(requestBodyJson.has("certificate")){
+            String medicalCertificate = requestBodyJson.getString("certificate");
             presenceModelModel = new PresenceModel(registration, rollId, medicalCertificate, message);
         }else{ // Se não houver, será submetida uma presença válida.
             presenceModelModel = new PresenceModel(registration, rollId, message);

@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Repositório que fornece uma camada de abstração sobre o repositório JPA IPresenceRepository.
@@ -34,9 +32,16 @@ public class PresenceRepository {
         return presenceRepository.isPresent(registration, id);
     }
 
-    public void invalidatePresence(String id) {
-        String exitTime = LocalDateTime.now().toString();
-        presenceRepository.invalidatePresence(Long.parseLong(id), exitTime);
+    public boolean isRollOpenForPresence(long presenceId){
+        return presenceRepository.isRollOpenForPresence(presenceId);
+    }
+
+    public void invalidateOpenPresence(long id, String exitTime) {
+        presenceRepository.invalidateOpenPresence(id, exitTime);
+    }
+
+    public void invalidateClosedPresence(long id) {
+        presenceRepository.invalidateClosedPresence(id);
     }
 
     public void validatePresence(String id) {

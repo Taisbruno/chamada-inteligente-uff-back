@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -109,11 +109,17 @@ public class PresenceService {
     }
 
     public void invalidatePresenceStatus(String id) throws PresenceNotFoundException {
-
-        if(presenceRepository.getPresence(Long.parseLong(id)) == null){
+        long convertedId = Long.parseLong(id);
+        if(presenceRepository.getPresence(convertedId) == null){
             throw new PresenceNotFoundException(id);
         }
-        presenceRepository.invalidatePresence(id);
+        if(presenceRepository.isRollOpenForPresence(convertedId)){
+            String exitTime = LocalDateTime.now().toString();
+            presenceRepository.invalidateOpenPresence(convertedId, exitTime);
+        }else{
+            presenceRepository.invalidateClosedPresence(convertedId);
+        }
+
     }
 
     public void validatePresenceStatus(String id) throws PresenceNotFoundException {

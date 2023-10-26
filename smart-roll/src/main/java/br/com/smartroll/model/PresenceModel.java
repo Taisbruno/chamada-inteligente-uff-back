@@ -39,6 +39,7 @@ public class PresenceModel {
     }
 
     public PresenceModel(PresenceEntity presenceEntity){
+        this.id = String.valueOf(presenceEntity.id);
         this.studentRegistration = presenceEntity.studentRegistration;
         this.rollId = String.valueOf(presenceEntity.roll.id);
         this.medicalCertificate = presenceEntity.medicalCertificate;

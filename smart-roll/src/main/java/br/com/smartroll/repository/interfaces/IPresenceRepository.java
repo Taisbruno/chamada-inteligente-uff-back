@@ -1,7 +1,6 @@
 package br.com.smartroll.repository.interfaces;
 
 import br.com.smartroll.repository.entity.PresenceEntity;
-import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,15 +25,27 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     @Query("SELECT r FROM PresenceEntity r WHERE r.id = ?1")
     PresenceEntity getPresence(Long id);
 
+    @Query("SELECT CASE WHEN r.finishedAt IS NULL THEN true ELSE false END FROM RollEntity r WHERE r.id = (SELECT p.roll.id FROM PresenceEntity p WHERE p.id = :presenceId)")
+    boolean isRollOpenForPresence(@Param("presenceId") Long presenceId);
+
     /**
-     * Invalida uma presença com base no id e marca o tempo de saída do aluno no tempo corrente.
+     * Invalida uma presença em chamada aberta com base no id e marca o tempo de saída do aluno no tempo corrente.
      * @param id O id da presença
      * @param exitTime O tempo de saída para ser definido
      */
     @Transactional
     @Modifying
     @Query("UPDATE PresenceEntity p SET p.isPresent = false, p.exitTime = :exitTime WHERE p.id = :id")
-    void invalidatePresence(@Param("id") long id, @Param("exitTime") String exitTime);
+    void invalidateOpenPresence(@Param("id") long id, @Param("exitTime") String exitTime);
+
+    /**
+     * Invalida uma presença em chamada fechada com base no id.
+     * @param id O id da presença
+     */
+    @Transactional
+    @Modifying
+    @Query("UPDATE PresenceEntity p SET p.isPresent = false WHERE p.id = :id")
+    void invalidateClosedPresence(@Param("id") long id);
 
     /**
      * Valida uma presença com base no id.
