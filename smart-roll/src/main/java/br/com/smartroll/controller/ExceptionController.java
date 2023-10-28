@@ -97,7 +97,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {JSONException.class, InvalidJsonException.class, RollClosedException.class})
+    @ExceptionHandler(value = {JSONException.class, InvalidJsonException.class, RollClosedException.class, InvalidDayOfWeekException.class, InvalidTimeException.class, InvalidTimeFormatException.class})
     public ResponseEntity<String> badRequest(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.BAD_REQUEST);
@@ -142,7 +142,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class})
+    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class, ScheduleConflictException.class})
     public ResponseEntity<String> conflict(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.CONFLICT);

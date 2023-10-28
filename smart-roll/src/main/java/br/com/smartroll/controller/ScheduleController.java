@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controlador responsável por gerenciar as operações relacionadas aos agendamentos.
+ */
 @RestController
 @RequestMapping("/schedule")
 @Tag(name = "schedule-controller", description = "Controller responsável por requisições de agendamento")
@@ -28,7 +31,15 @@ public class ScheduleController {
     @Autowired
     ScheduleService scheduleService;
 
-    @ApiOperation(value = "Submete um agendamento de chamada relacionado a uma turma.", notes = "Submete um agendamento para criação de chamadas automáticas para uma turma. Certifique-se de que os horários estejam no formato Time e de que o dia da semana seja um inteiro de acordo com o padrão da expressão CRON do Spring, a saber:  \n0 ou 7 - Domingo\n" +
+    /**
+     * Requisição para submeter um agendamento relacionado a uma turma para criação automática de chamadas.
+     * @param requestBody o corpo do json com agendamento.
+     * @throws InvalidJsonException Exceção lançada quando json é inválido.
+     * @throws InvalidDayOfWeekException Exceção lançada quando o dia da semana não está de acordo com o formato do CRON do Spring.
+     * @throws InvalidTimeException Exceção lançada quando o tempo escolhido é inválido.
+     * @throws InvalidTimeFormatException Exceção lançada quando o formato de tempo é inválido
+     */
+    @ApiOperation(value = "Submete um agendamento de criação automática de chamadas relacionado a uma turma.", notes = "Certifique-se de que os horários estejam no formato Time, como por exemplo '18:00:00', e de que o dia da semana seja um inteiro de acordo com o padrão da expressão CRON do Spring, a saber:  \n0 ou 7 - Domingo\n" +
             " 1 - Segunda-feira\n" +
             " 2 - Terça-feira\n" +
             " 3 - Quarta-feira\n" +
@@ -39,11 +50,12 @@ public class ScheduleController {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Corpo do json mal formado"),
-            @ApiResponse(responseCode = "409", description = "Chamada aberta já existente associada à turma"),
+            @ApiResponse(responseCode = "400", description = "Corpo do json mal formado"),
+            @ApiResponse(responseCode = "404", description = "Turma não encontrada"),
+            @ApiResponse(responseCode = "409", description = "Agendamento já existente no horário escolhido"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @PostMapping(value = "/create-schedule/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postScheduleByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do agendamento a ser preenchido", example = SwaggerExamples.POSTSCHEDULE) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException, InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException {
+    public void postScheduleByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do agendamento a ser preenchido", example = SwaggerExamples.POSTSCHEDULE) @RequestBody String requestBody) throws InvalidJsonException, InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

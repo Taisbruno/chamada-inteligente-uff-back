@@ -2,9 +2,7 @@ package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
 import br.com.smartroll.model.ClassModel;
-import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.ClassService;
-import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.ClassesViews;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Controladora de turmas.
+ * Controlador de turmas.
  */
 @RestController
 @RequestMapping("/class")

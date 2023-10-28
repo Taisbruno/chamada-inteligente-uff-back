@@ -1,16 +1,15 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.ClassHasOpenRollException;
 import br.com.smartroll.exception.InvalidDayOfWeekException;
 import br.com.smartroll.exception.InvalidTimeException;
 import br.com.smartroll.exception.InvalidTimeFormatException;
+import br.com.smartroll.exception.ScheduleConflictException;
 import br.com.smartroll.model.ScheduleModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.ScheduleRepository;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.ScheduleEntity;
-import br.com.smartroll.repository.interfaces.IRollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
@@ -23,6 +22,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Classe de serviço responsável por manipular operações de agendamento.
+ */
 @Service
 public class ScheduleService {
 
@@ -38,11 +40,17 @@ public class ScheduleService {
     @Autowired
     private ClassRepository classRepository;
 
+    /**
+     * Inicializa o serviço e agenda todos os agendamentos existentes.
+     */
     @PostConstruct
     public void init() {
         scheduleAllExisting();
     }
 
+    /**
+     * Agenda todos os agendamentos existentes no banco de dados.
+     */
     private void scheduleAllExisting() {
         List<ScheduleEntity> allSchedules = scheduleRepository.getAllSchedules();
         LocalDateTime now = LocalDateTime.now();
@@ -52,7 +60,15 @@ public class ScheduleService {
         }
     }
 
-    public void createSchedule(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException {
+    /**
+     * Cria um novo agendamento e agenda tarefas com base no novo agendamento.
+     *
+     * @param scheduleModel o modelo de agendamento a ser criado.
+     * @throws InvalidDayOfWeekException se o dia da semana fornecido é inválido.
+     * @throws InvalidTimeException se o horário fornecido é inválido.
+     * @throws InvalidTimeFormatException se o formato do horário fornecido é inválido.
+     */
+    public void createSchedule(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
         validateScheduleModel(scheduleModel);
         ScheduleEntity scheduleEntity = new ScheduleEntity(classRepository.getClassByCode(scheduleModel.classCode), scheduleModel.dayOfWeek, Time.valueOf(scheduleModel.startTime), Time.valueOf(scheduleModel.endTime), scheduleModel.longitude, scheduleModel.latitude);
         scheduleRepository.createSchedule(scheduleEntity);
@@ -61,6 +77,12 @@ public class ScheduleService {
         scheduleTask(scheduleEntity, LocalDateTime.now());
     }
 
+    /**
+     * Agenda tarefas com base no agendamento fornecido.
+     *
+     * @param schedule o agendamento para o qual as tarefas devem ser agendadas.
+     * @param now o momento atual.
+     */
     private void scheduleTask(ScheduleEntity schedule, LocalDateTime now) {
         LocalDateTime startScheduledDateTime = LocalDateTime.of(LocalDate.now(), schedule.startTime.toLocalTime());
         LocalDateTime endScheduledDateTime = LocalDateTime.of(LocalDate.now(), schedule.endTime.toLocalTime());
@@ -87,6 +109,11 @@ public class ScheduleService {
         }
     }
 
+    /**
+     * Cria Rolls com base no agendamento fornecido.
+     *
+     * @param schedule o agendamento com base no qual os Rolls devem ser criados.
+     */
     private void createRollsBasedOnSchedule(ScheduleEntity schedule) {
         if (!rollRepository.hasOpenRollsForClass(schedule.classEntity.classCode)) {
             RollEntity rollEntity = new RollEntity(schedule.longitude, schedule.latitude, schedule.classEntity.classCode);
@@ -94,16 +121,37 @@ public class ScheduleService {
         }
     }
 
+    /**
+     * Fecha Rolls com base no agendamento fornecido.
+     *
+     * @param schedule o agendamento com base no qual os Rolls devem ser fechados.
+     */
     private void closeRollBasedOnSchedule(ScheduleEntity schedule) {
         rollRepository.closeOpenRollByClassCode(schedule.classEntity.classCode);
     }
 
+    /**
+     * Converte um horário e dia da semana para uma expressão CRON.
+     *
+     * @param time o horário a ser convertido.
+     * @param dayOfWeek o dia da semana a ser convertido.
+     * @return a expressão CRON resultante.
+     */
     private String convertTimeToCronExpression(Time time, int dayOfWeek) {
         LocalTime localTime = time.toLocalTime();
         return String.format("0 %d %d ? * %d", localTime.getMinute(), localTime.getHour(), dayOfWeek);
     }
 
-    private void validateScheduleModel(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException {
+    /**
+     * Valida um modelo de agendamento.
+     *
+     * @param scheduleModel o modelo de agendamento a ser validado.
+     * @throws InvalidDayOfWeekException se o dia da semana fornecido é inválido.
+     * @throws InvalidTimeException se o horário fornecido é inválido.
+     * @throws InvalidTimeFormatException se o formato do horário fornecido é inválido.
+     * @throws ScheduleConflictException se houver conflito de intervalo de tempo.
+     */
+    private void validateScheduleModel(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
         // Verificar dia da semana
         if (scheduleModel.dayOfWeek < 0 || scheduleModel.dayOfWeek > 7 || scheduleModel.dayOfWeek == 1) {
             throw new InvalidDayOfWeekException("Invalid day of the week provided. It should be 0, 7 for Sunday or between 2 and 6 for other days.");
@@ -123,6 +171,12 @@ public class ScheduleService {
             }
         } else {
             throw new InvalidTimeException("Start time and end time cannot be null.");
+        }
+
+        List<ScheduleEntity> conflictingSchedules = scheduleRepository.findConflictingSchedules(scheduleModel.dayOfWeek, Time.valueOf(scheduleModel.startTime), Time.valueOf(scheduleModel.endTime));
+
+        if (!conflictingSchedules.isEmpty()) {
+            throw new ScheduleConflictException("The provided schedule conflicts with an existing schedule.");
         }
     }
 
