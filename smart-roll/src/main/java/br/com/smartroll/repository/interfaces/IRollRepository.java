@@ -52,6 +52,11 @@ public interface IRollRepository extends JpaRepository<RollEntity, Long> {
     @Query("UPDATE RollEntity r SET r.finishedAt = CURRENT_TIMESTAMP WHERE r.id = ?1")
     void updateFinishedAtById(Long id);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE RollEntity r SET r.finishedAt = CURRENT_TIMESTAMP WHERE r.classEntity.classCode = ?1 AND r.finishedAt IS NULL")
+    void updateFinishedAtByClassCode(String classCode);
+
     /**
      * Verifica se uma chamada, identificada por seu ID, está fechada ou não.
      * Uma chamada é considerada fechada se a coluna 'finishedAt' não for nula.

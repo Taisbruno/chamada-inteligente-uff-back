@@ -1,9 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.PresenceNotFoundException;
-import br.com.smartroll.exception.RollClosedException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.StudentAlreadyPresentException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
@@ -47,14 +44,18 @@ public class PresenceService {
      * @param presenceModel Modelo contendo as informações da presença.
      * @throws RollNotFoundException Se a chamada especificada não for encontrada.
      * @throws RollClosedException Se a chamada especificada já estiver fechada.
+     * @throws StudentAlreadyPresentException Se o aluno já estiver inscrito na presença.
+     * @throws UserNotFoundException Se o usuário não for encontrado.
      */
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException {
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException {
         if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)) == null){
             throw new RollNotFoundException(presenceModel.rollId);
         }else if(rollRepository.isRollClosed(Long.parseLong(presenceModel.rollId))){
             throw new RollClosedException(presenceModel.rollId);
         }else if(presenceRepository.isPresent(presenceModel.studentRegistration, Long.parseLong(presenceModel.rollId))){
             throw new StudentAlreadyPresentException(presenceModel.studentRegistration, presenceModel.rollId);
+        }else if(userRepository.getUserByRegistration(presenceModel.studentRegistration) == null){
+            throw new UserNotFoundException(presenceModel.studentRegistration);
         }
 
         PresenceEntity presenceEntity = new PresenceEntity(presenceModel);
@@ -108,6 +109,11 @@ public class PresenceService {
         System.out.println("Message sent to /topic/presences/" + rollId);
     }
 
+    /**
+     * Invalida o status de uma presença para não presente.
+     * @param id o id da presença.
+     * @throws PresenceNotFoundException presença não encontrada.
+     */
     public void invalidatePresenceStatus(String id) throws PresenceNotFoundException {
         long convertedId = Long.parseLong(id);
         if(presenceRepository.getPresence(convertedId) == null){
@@ -122,6 +128,11 @@ public class PresenceService {
 
     }
 
+    /**
+     * Valida o status de uma presença para presente.
+     * @param id o id da presença
+     * @throws PresenceNotFoundException presença não encontrada.
+     */
     public void validatePresenceStatus(String id) throws PresenceNotFoundException {
 
         if(presenceRepository.getPresence(Long.parseLong(id)) == null){

@@ -42,5 +42,9 @@ public class ClassRepository {
         return classRepository.getClassCodeByRollId(id);
     }
 
+    public ClassEntity getClassByCode(String code){
+        return classRepository.getClassByCode(code);
+    }
+
 
 }

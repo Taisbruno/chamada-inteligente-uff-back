@@ -1,9 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.ClassHasOpenRollException;
-import br.com.smartroll.exception.RollClosedException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.RollsNotFoundException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.repository.ClassRepository;
@@ -22,6 +19,9 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe de serviço responsável pelas operações relacionadas a chamadas.
+ */
 @Service
 public class RollService {
 
@@ -49,14 +49,15 @@ public class RollService {
         return rollModel;
     }
 
-    public RollModel createRoll(RollModel rollModel) throws ClassHasOpenRollException {
-        if(rollRepository.hasOpenRollsForClass(rollModel.class_code)){
+    public RollModel createRoll(RollModel rollModel) throws ClassHasOpenRollException, ClassroomNotFoundException {
+        if(classRepository.getClassByCode(rollModel.class_code) == null){
+            throw new ClassroomNotFoundException(rollModel.class_code);
+        }else if(rollRepository.hasOpenRollsForClass(rollModel.class_code)){
             throw new ClassHasOpenRollException(rollModel.class_code);
         }
         RollEntity rollEntity = new RollEntity(rollModel.longitude, rollModel.latitude, rollModel.class_code);
         RollEntity createdEntity = rollRepository.createRoll(rollEntity);
-        RollModel createdRoll = new RollModel(createdEntity);
-        return createdRoll;
+        return new RollModel(createdEntity);
     }
 
     public void closeRoll(Long id) throws RollNotFoundException, RollClosedException {
@@ -92,10 +93,11 @@ public class RollService {
         return rollModels;
     }
 
-    public List<RollModel> getHistoricRollsFromClass(String classCode, String semester) throws RollsNotFoundException {
+    public List<RollModel> getHistoricRollsFromClass(String classCode, String semester) throws RollsNotFoundException, ClassroomNotFoundException {
         List<RollEntity> rollsEntity = rollRepository.getClosedRollsFromClass(classCode, semester);
-
-        if (rollsEntity.isEmpty()) {
+        if(classRepository.getClassByCode(classCode) == null){
+            throw new ClassroomNotFoundException(classCode);
+        }else if (rollsEntity.isEmpty()) {
             throw new RollsNotFoundException(classCode, semester);
         }
 

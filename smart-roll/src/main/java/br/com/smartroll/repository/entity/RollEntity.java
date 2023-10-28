@@ -29,7 +29,7 @@ public class RollEntity {
     public LocalDateTime createdAt;
     @Column(name = "finished_at")
     public LocalDateTime finishedAt;
-    @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL)
     public List<PresenceEntity> presences;
 
     /**

@@ -308,4 +308,15 @@ public class SwaggerExamples {
                 "certificate": "iVBORw0KGgoAAAANSUhEUgAAAXAAAAIECAIAAACPIOIiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQA"
               }
           """;
+
+    public static final String POSTSCHEDULE = """
+            {
+                "classCode": "1",
+                "dayOfWeek": 3,
+                "startTime": "08:00:00",
+                "endTime": "10:00:00",
+                "longitude": "-49.060644",
+                "latitude": "-26.922570"
+            }    
+            """;
 }

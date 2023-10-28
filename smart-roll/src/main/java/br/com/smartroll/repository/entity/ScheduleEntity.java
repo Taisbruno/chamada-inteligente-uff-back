@@ -23,15 +23,23 @@ public class ScheduleEntity {
     @Column(name = "end_time", nullable = false)
     public Time endTime;
 
+    @Column(name = "longitude", nullable = false)
+    public String longitude;
+
+    @Column(name = "latitude", nullable = false)
+    public String latitude;
+
     public ScheduleEntity() {
         // Construtor padrão
     }
 
-    public ScheduleEntity(ClassEntity classEntity, int dayOfWeek, Time startTime, Time endTime) {
+    public ScheduleEntity(ClassEntity classEntity, int dayOfWeek, Time startTime, Time endTime, String longitude, String latitude) {
         this.classEntity = classEntity;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 }
 

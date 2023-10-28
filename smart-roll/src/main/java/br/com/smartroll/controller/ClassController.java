@@ -1,10 +1,9 @@
 package br.com.smartroll.controller;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
+import br.com.smartroll.exception.UserNotFoundException;
 import br.com.smartroll.model.ClassModel;
-import br.com.smartroll.model.RollModel;
 import br.com.smartroll.service.ClassService;
-import br.com.smartroll.service.RollService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.ClassesViews;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Controladora de turmas.
+ * Controlador de turmas.
  */
 @RestController
 @RequestMapping("/class")
@@ -37,6 +36,7 @@ public class ClassController {
      * @param registration Matrícula do usuário.
      * @return Uma representação JSON das turmas do usuário.
      * @throws ClassesNotFoundException Exceção lançada quando as turmas não são encontradas.
+     * @throws UserNotFoundException Exceção lançada quando o usuário não foi encontrado.
      */
     @ApiOperation(value = "Retorna todas as turmas junto a suas respectiva chamadas de um determinado usuário.")
     @ApiResponses(value = {
@@ -49,7 +49,7 @@ public class ClassController {
             @ApiResponse(responseCode = "404", description = "A turma não foi encontradda"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/classes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getClassesByUser(@Parameter(description = "Matrícula do usuário", example = "1") @RequestParam String registration) throws ClassesNotFoundException {
+    public String getClassesByUser(@Parameter(description = "Matrícula do usuário", example = "1") @RequestParam String registration) throws ClassesNotFoundException, UserNotFoundException {
         List<ClassModel> classesModels = classService.getClassesByUser(registration);
         ClassesViews classesViews = new ClassesViews(classesModels);
         return classesViews.toJson();

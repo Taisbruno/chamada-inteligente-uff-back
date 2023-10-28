@@ -6,12 +6,8 @@ import br.com.smartroll.service.PresenceService;
 import br.com.smartroll.utils.SwaggerExamples;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Example;
-import io.swagger.annotations.ExampleProperty;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +36,8 @@ public class PresenceController {
      * @throws InvalidJsonException Quando o JSON do corpo da requisição é inválido.
      * @throws RollNotFoundException Quando a chamada especificada não é encontrada.
      * @throws RollClosedException Quando a chamada está fechada.
+     * @throws StudentAlreadyPresentException Quando o aluno já está inscrito na chamada.
+     * @throws UserNotFoundException Quando o aluno não foi encontrado.
      */
     @ApiOperation(value = "Realiza a submissão de presença ou falta justificada com atestado em uma chamada e transmite via WebSocket a lista de alunos inscritos em tempo real ", notes = "Submete uma presença ou falta justificada com atestato médico. Caso tenha sido passado um corpo de json sem a chave 'certificate', a presença será registrada com campo 'isPresent' como 'true', caso contrário, este campo será salvo como 'false' e esta presença deve ser validada pelo professor posteriormente para fins de abono de falta. <br><br>Exemplo de JSON sem atestado:<br><pre>" +
             "{<br>" +
@@ -57,11 +55,12 @@ public class PresenceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado ou chamada não encontrada"),
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
+            @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada ou chamada já fechada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException {
         JSONObject requestBodyJson;
         try {
             if (requestBody != null) {

@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import br.com.smartroll.SmartRollsApplication;
 import br.com.smartroll.exception.*;
+import br.com.smartroll.exception.ClassroomNotFoundException;
 import br.com.smartroll.view.ExceptionView;
 import kong.unirest.json.JSONException;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -83,7 +84,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = {ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class, PresenceNotFoundException.class})
+    @ExceptionHandler(value = {ClassroomNotFoundException.class, ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class, PresenceNotFoundException.class, UserNotFoundException.class})
     public ResponseEntity<String> notFound(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.NOT_FOUND);
@@ -97,7 +98,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {JSONException.class, InvalidJsonException.class, RollClosedException.class})
+    @ExceptionHandler(value = {JSONException.class, InvalidJsonException.class, InvalidDayOfWeekException.class, InvalidTimeException.class, InvalidTimeFormatException.class})
     public ResponseEntity<String> badRequest(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.BAD_REQUEST);
@@ -142,7 +143,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class})
+    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class, ScheduleConflictException.class, RollClosedException.class})
     public ResponseEntity<String> conflict(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.CONFLICT);
