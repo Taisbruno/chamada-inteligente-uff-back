@@ -39,4 +39,14 @@ public interface IClassRepository extends JpaRepository<ClassEntity, Long> {
     @Query("SELECT r.classEntity.classCode FROM RollEntity r WHERE r.id = :rollId")
     String getClassCodeByRollId(@Param("rollId") Long rollId);
 
+    /**
+     * Retorna a entidade "Class" com base no código da classe.
+     *
+     * @param code O código da classe.
+     * @return A entidade "Class" correspondente ao código fornecido.
+     */
+    @Query("SELECT c FROM ClassEntity c WHERE c.classCode = :code")
+    ClassEntity getClassByCode(@Param("code") String code);
+
+
 }

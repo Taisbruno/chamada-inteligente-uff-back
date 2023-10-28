@@ -55,8 +55,7 @@ public class RollService {
         }
         RollEntity rollEntity = new RollEntity(rollModel.longitude, rollModel.latitude, rollModel.class_code);
         RollEntity createdEntity = rollRepository.createRoll(rollEntity);
-        RollModel createdRoll = new RollModel(createdEntity);
-        return createdRoll;
+        return new RollModel(createdEntity);
     }
 
     public void closeRoll(Long id) throws RollNotFoundException, RollClosedException {
