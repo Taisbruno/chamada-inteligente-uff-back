@@ -27,6 +27,7 @@ public class RollModel {
         this.id = String.valueOf(rollEntity.id);
         this.longitude = rollEntity.longitude;
         this.latitude = rollEntity.latitude;
+        this.class_code = rollEntity.classEntity.classCode;
         this.createdAt = String.valueOf(rollEntity.createdAt);
         this.finishedAt = String.valueOf(rollEntity.finishedAt);
         this.presences = new ArrayList<>();
