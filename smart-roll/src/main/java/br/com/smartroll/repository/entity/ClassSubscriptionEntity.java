@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Representa a entidade "ClassSubscription" no banco de dados.
  */
 @Entity
-@Table(name = "class_subscription")
+@Table(name = "classroom_subscription")
 public class ClassSubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
