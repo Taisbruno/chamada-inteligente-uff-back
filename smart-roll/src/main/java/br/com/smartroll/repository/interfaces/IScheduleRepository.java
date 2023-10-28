@@ -30,6 +30,7 @@ public interface IScheduleRepository extends JpaRepository<ScheduleEntity, Long>
      * @param endTime O horário de término a ser verificado.
      * @return Lista de agendamentos em conflito com o intervalo de tempo e dia da semana fornecidos.
      */
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.dayOfWeek = :dayOfWeek AND ((s.startTime <= :startTime AND s.endTime > :startTime) OR (s.startTime < :endTime AND s.endTime >= :endTime))")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.dayOfWeek = :dayOfWeek AND ((s.startTime <= :startTime AND s.endTime >= :startTime) OR (s.startTime <= :endTime AND s.endTime >= :endTime))")
     List<ScheduleEntity> findConflictingSchedules(@Param("dayOfWeek") int dayOfWeek, @Param("startTime") Time startTime, @Param("endTime") Time endTime);
+
 }

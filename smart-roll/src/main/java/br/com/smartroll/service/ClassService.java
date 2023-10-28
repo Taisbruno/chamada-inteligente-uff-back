@@ -1,11 +1,12 @@
 package br.com.smartroll.service;
 
 import br.com.smartroll.exception.ClassesNotFoundException;
+import br.com.smartroll.exception.UserNotFoundException;
 import br.com.smartroll.model.ClassModel;
 import br.com.smartroll.model.RollModel;
 import br.com.smartroll.repository.ClassRepository;
-import br.com.smartroll.repository.ClassSubscriptionRepository;
 import br.com.smartroll.repository.RollRepository;
+import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ClassService {
     private RollRepository rollRepository;
 
     @Autowired
-    private ClassSubscriptionRepository classSubRepository;
+    private UserRepository userRepository;
 
     /**
      * Recupera as classes com base no número de registro de um usuário.
@@ -37,8 +38,12 @@ public class ClassService {
      * @param registration O número de registro do usuário.
      * @return Uma lista de ClassModel representando as classes associadas ao usuário.
      * @throws ClassesNotFoundException Se nenhuma classe for encontrada para o registro fornecido.
+     * @throws UserNotFoundException Usuário não encontrado
      */
-    public List<ClassModel> getClassesByUser(String registration) throws ClassesNotFoundException {
+    public List<ClassModel> getClassesByUser(String registration) throws ClassesNotFoundException, UserNotFoundException {
+        if(userRepository.getUserByRegistration(registration) == null){
+            throw new UserNotFoundException(registration);
+        }
         List<ClassEntity> classes = classRepository.findClassesByUserRegistration(registration);
         if(classes.isEmpty()){
             throw new ClassesNotFoundException(registration);

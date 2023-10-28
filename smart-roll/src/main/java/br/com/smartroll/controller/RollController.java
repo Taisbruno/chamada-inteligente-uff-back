@@ -103,6 +103,8 @@ public class RollController {
      * @param classCode Código da turma
      * @param semester Semestre de interesse.
      * @return Uma visualização (RollsView) representando o histórico de chamadas.
+     * @throws RollsNotFoundException Caso chamadas associadas à turma não tenham sido encontradas
+     * @throws ClassroomNotFoundException Caso a turma não tenha sido encontrada
      */
     @ApiOperation(value = "Retorna o histórico de chamadas fechadas de uma determinada turma.")
     @ApiResponses(value = {
@@ -112,10 +114,10 @@ public class RollController {
                     examples = {@ExampleObject(value = SwaggerExamples.GETROLLSHISTORICEXAMPLE)})),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Chamadas associadas a esta turma não foram encontradas"),
+            @ApiResponse(responseCode = "404", description = "Chamadas associadas a esta turma não foram encontradas ou turma não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @GetMapping(value = "/rolls-historic/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getHistoricRollsFromClass(@Parameter(description = "Id da turma", example = "1") @RequestParam String classCode, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws RollsNotFoundException {
+    public String getHistoricRollsFromClass(@Parameter(description = "Id da turma", example = "1") @RequestParam String classCode, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws RollsNotFoundException, ClassroomNotFoundException {
         List<RollModel> rolls = service.getHistoricRollsFromClass(classCode, semester);
         HistoricRollsView rollsView = new HistoricRollsView(rolls);
         return rollsView.toJson();
@@ -127,7 +129,8 @@ public class RollController {
      *
      * @param requestBody JSON representando a chamada a ser criada.
      * @throws InvalidJsonException Caso o corpo da requisição contenha JSON inválido ou ausente.
-     * @return
+     * @throws ClassHasOpenRollException Caso a turma já possua chamadas em aberto.
+     * @throws ClassroomNotFoundException Caso a turma não exista
      */
     @ApiOperation(value = "Submete uma chamada relacionada a uma turma.")
     @ApiResponses(value = {
@@ -138,11 +141,12 @@ public class RollController {
             ),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "404", description = "Corpo do json mal formado"),
+            @ApiResponse(responseCode = "400", description = "Corpo do json mal formado"),
+            @ApiResponse(responseCode = "404", description = "Turma não encontrada"),
             @ApiResponse(responseCode = "409", description = "Chamada aberta já existente associada à turma"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @PostMapping(value = "/create-roll/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException {
+    public String postRollByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTROLL) @RequestBody String requestBody) throws InvalidJsonException, ClassHasOpenRollException, ClassroomNotFoundException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

@@ -38,6 +38,8 @@ public class ScheduleController {
      * @throws InvalidDayOfWeekException Exceção lançada quando o dia da semana não está de acordo com o formato do CRON do Spring.
      * @throws InvalidTimeException Exceção lançada quando o tempo escolhido é inválido.
      * @throws InvalidTimeFormatException Exceção lançada quando o formato de tempo é inválido
+     * @throws ScheduleConflictException Exceção lançada quando o agendamento criado conflita com o horário de um agendamento existente.
+     * @throws ClassroomNotFoundException Exceção lançada quando a turma não foi encontrada.
      */
     @ApiOperation(value = "Submete um agendamento de criação automática de chamadas relacionado a uma turma.", notes = "Certifique-se de que os horários estejam no formato Time, como por exemplo '18:00:00', e de que o dia da semana seja um inteiro de acordo com o padrão da expressão CRON do Spring, a saber:  \n0 ou 7 - Domingo\n" +
             " 1 - Segunda-feira\n" +
@@ -55,7 +57,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "409", description = "Agendamento já existente no horário escolhido"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
     @PostMapping(value = "/create-schedule/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postScheduleByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do agendamento a ser preenchido", example = SwaggerExamples.POSTSCHEDULE) @RequestBody String requestBody) throws InvalidJsonException, InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
+    public void postScheduleByClass(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo do agendamento a ser preenchido", example = SwaggerExamples.POSTSCHEDULE) @RequestBody String requestBody) throws InvalidJsonException, InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException, ClassroomNotFoundException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

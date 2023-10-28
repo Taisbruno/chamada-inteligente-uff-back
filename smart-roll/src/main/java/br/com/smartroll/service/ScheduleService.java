@@ -1,9 +1,6 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.InvalidDayOfWeekException;
-import br.com.smartroll.exception.InvalidTimeException;
-import br.com.smartroll.exception.InvalidTimeFormatException;
-import br.com.smartroll.exception.ScheduleConflictException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.ScheduleModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.RollRepository;
@@ -67,8 +64,13 @@ public class ScheduleService {
      * @throws InvalidDayOfWeekException se o dia da semana fornecido é inválido.
      * @throws InvalidTimeException se o horário fornecido é inválido.
      * @throws InvalidTimeFormatException se o formato do horário fornecido é inválido.
+     * @throws ScheduleConflictException se o agendamento criado conflita com o horário de um agendamento existente.
+     * @throws ClassNotFoundException se a turma não foi encontrada.
      */
-    public void createSchedule(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
+    public void createSchedule(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException, ClassroomNotFoundException {
+        if(classRepository.getClassByCode(scheduleModel.classCode) == null){
+            throw new ClassroomNotFoundException(scheduleModel.classCode);
+        }
         validateScheduleModel(scheduleModel);
         ScheduleEntity scheduleEntity = new ScheduleEntity(classRepository.getClassByCode(scheduleModel.classCode), scheduleModel.dayOfWeek, Time.valueOf(scheduleModel.startTime), Time.valueOf(scheduleModel.endTime), scheduleModel.longitude, scheduleModel.latitude);
         scheduleRepository.createSchedule(scheduleEntity);
