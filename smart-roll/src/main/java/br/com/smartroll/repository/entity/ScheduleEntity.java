@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.sql.Time;
 
 @Entity
-@Table(name = "class_schedule")
+@Table(name = "schedule")
 public class ScheduleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

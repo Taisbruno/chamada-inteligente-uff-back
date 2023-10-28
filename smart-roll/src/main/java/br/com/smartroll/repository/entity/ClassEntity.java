@@ -7,7 +7,7 @@ import java.util.List;
  * Representa a entidade "Class" no banco de dados.
  **/
 @Entity
-@Table(name = "course_class")
+@Table(name = "classroom")
 public class ClassEntity {
     @Id
     @Column(name = "class_code", nullable = false, unique = true, length = 50)

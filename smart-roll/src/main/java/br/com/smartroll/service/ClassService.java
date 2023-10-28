@@ -61,6 +61,7 @@ public class ClassService {
             for(RollEntity rollEntity : rollEntities){
                 RollModel rollModel = new RollModel(rollEntity);
                 rollModel.class_code = classEntity.classCode;
+                rollModel.isOpen = rollRepository.isOpen(rollEntity.id);
                 rollsModels.add(rollModel);
             }
             classModel = new ClassModel(
