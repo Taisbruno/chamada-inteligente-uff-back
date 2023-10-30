@@ -319,4 +319,28 @@ public class SwaggerExamples {
                 "latitude": "-26.922570"
             }    
             """;
+
+    public static final String GETSCHEDULES = """
+            {
+              "schedules": [
+                {
+                  "classCode": "string",
+                  "dayOfWeek": int,
+                  "startTime": "string",
+                  "endTime": "string",
+                  "longitude": "string",
+                  "latitude": "string"
+                }
+                ...
+                {
+                  "classCode": "string",
+                  "dayOfWeek": int,
+                  "startTime": "string",
+                  "endTime": "15:00:00",
+                  "longitude": "string",
+                  "latitude": "string"
+                }
+              ]
+            }
+            """;
 }

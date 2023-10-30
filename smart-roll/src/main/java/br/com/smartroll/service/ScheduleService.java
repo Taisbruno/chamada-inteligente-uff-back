@@ -17,6 +17,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -182,4 +183,49 @@ public class ScheduleService {
         }
     }
 
+    /**
+     * Exclui um agendamento com base no id.
+     * @param idSchedule id do agendamento.
+     * @throws ScheduleNotFoundException lançada quando o agendamento não foi encontrado.
+     */
+    public void deleteScheduleById(String idSchedule) throws ScheduleNotFoundException {
+        if(scheduleRepository.getScheduleById(idSchedule) == null){
+            throw new ScheduleNotFoundException(idSchedule);
+        }
+        scheduleRepository.deleteScheduleById(idSchedule);
+    }
+
+    /**
+     * Exclui todos os agendamentos associados a uma turma.
+     * @param codeClass código da turma.
+     * @throws ClassroomNotFoundException lançada quando turma não foi encontrada.
+     */
+    public void clearAllScheduleByCodeClass(String codeClass) throws ClassroomNotFoundException {
+        if(classRepository.getClassByCode(codeClass) == null){
+            throw new ClassroomNotFoundException(codeClass);
+        }
+        scheduleRepository.deleteAllSchedulesByClassCode(codeClass);
+    }
+
+    /**
+     * Retorna todos os agendamentos associados a uma turma.
+     * @param codeClass código da turma.
+     * @throws ClassroomNotFoundException lançada quando turma não foi encontrada.
+     * @return
+     */
+    public List<ScheduleModel> getAllScheduleByCodeClass(String codeClass) throws ClassroomNotFoundException, SchedulesNotFoundException {
+        if(classRepository.getClassByCode(codeClass) == null){
+            throw new ClassroomNotFoundException(codeClass);
+        }
+        List<ScheduleModel> scheduleModels = new ArrayList<>();
+        List<ScheduleEntity> scheduleEntities = scheduleRepository.getAllScheduleByCodeClass(codeClass);
+        if(scheduleEntities.isEmpty()){
+            throw new SchedulesNotFoundException(codeClass);
+        }
+        for(ScheduleEntity scheduleEntity : scheduleEntities){
+            ScheduleModel scheduleModel = new ScheduleModel(scheduleEntity);
+            scheduleModels.add(scheduleModel);
+        }
+        return scheduleModels;
+    }
 }

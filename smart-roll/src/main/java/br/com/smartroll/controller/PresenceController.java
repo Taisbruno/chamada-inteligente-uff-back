@@ -118,7 +118,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/invalidate-presence")
+    @PatchMapping(value = "/invalidate-presence")
     public void invalidatePresenceStatus(@Parameter(description = "Id da presença", example = "1") @RequestParam String id) throws PresenceNotFoundException {
         presenceService.invalidatePresenceStatus(id);
 
@@ -141,7 +141,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/validate-presence")
+    @PatchMapping(value = "/validate-presence")
     public void validatePresenceStatus(@Parameter(description = "Id da presença", example = "1") @RequestParam String id) throws PresenceNotFoundException {
         presenceService.validatePresenceStatus(id);
 
@@ -154,8 +154,8 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/update-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void putCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException {
+    @PatchMapping(value = "/insert-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void insertCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

@@ -6,8 +6,13 @@ import br.com.smartroll.model.ScheduleModel;
 import br.com.smartroll.service.ScheduleService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.RollView;
+import br.com.smartroll.view.SchedulesView;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,10 +20,9 @@ import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Controlador responsável por gerenciar as operações relacionadas aos agendamentos.
@@ -94,5 +98,62 @@ public class ScheduleController {
 
         ScheduleModel scheduleModel = new ScheduleModel(requestBodyJson.getString("classCode"), requestBodyJson.getInt("dayOfWeek"), requestBodyJson.getString("startTime"), requestBodyJson.getString("endTime"), requestBodyJson.getString("longitude"), requestBodyJson.getString("latitude"));
         scheduleService.createSchedule(scheduleModel);
+    }
+
+    /**
+     * Requisição para excluir um agendamento de chamadas de acordo com id.
+     * @param idSchedule o id do agendamento.
+     * @throws ScheduleNotFoundException agendamento não encontrado.
+     */
+    @ApiOperation(value = "Deleta um agendamento de chamadas de acordo com seu id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Agendamento não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @DeleteMapping(value = "/delete-schedule/")
+    public void deleteScheduleById(@Parameter(description = "Id do agendamento", example = "1") @RequestParam String idSchedule) throws ScheduleNotFoundException {
+        scheduleService.deleteScheduleById(idSchedule);
+    }
+
+    /**
+     * Requisição para excluir todos os agendamentos de chamada relacionados a um código de turma.
+     * @param codeClass código da turma.
+     * @throws ClassroomNotFoundException turma não encontrada.
+     */
+    @ApiOperation(value = "Limpa todos os agendamento de chamadas relacionados a uma turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Turma não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @DeleteMapping(value = "/clear-schedules/")
+    public void clearAllScheduleByCodeClass(@Parameter(description = "Código da turma", example = "1") @RequestParam String codeClass) throws ClassroomNotFoundException {
+        scheduleService.clearAllScheduleByCodeClass(codeClass);
+    }
+
+    /**
+     * Requisição para retornar todos oa gendamentos de chamada relacionados a uma tuma.
+     * @param codeClass código de turma.
+     * @return Json representando os agendamentos relacionados à turma.
+     * @throws ClassroomNotFoundException turma não encontrada.
+     * @throws SchedulesNotFoundException angendamentos associados a essa turma não encontrados.
+     */
+    @ApiOperation(value = "Retorna todos os agendamento de chamadas relacionados a uma turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETSCHEDULES)})),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Turma não encontrada ou agendamentos associados a esta turma não encontrados"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @GetMapping(value = "/list-schedules/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getAllScheduleByCodeClass(@Parameter(description = "Código da turma", example = "1") @RequestParam String codeClass) throws ClassroomNotFoundException, SchedulesNotFoundException {
+        List<ScheduleModel> scheduleModels = scheduleService.getAllScheduleByCodeClass(codeClass);
+        return new SchedulesView(scheduleModels).toJson();
     }
 }

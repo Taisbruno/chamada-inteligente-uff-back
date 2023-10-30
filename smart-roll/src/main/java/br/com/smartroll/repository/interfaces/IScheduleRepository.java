@@ -2,9 +2,11 @@ package br.com.smartroll.repository.interfaces;
 
 import br.com.smartroll.repository.entity.ScheduleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.sql.Time;
 import java.util.List;
 
@@ -33,4 +35,25 @@ public interface IScheduleRepository extends JpaRepository<ScheduleEntity, Long>
     @Query("SELECT s FROM ScheduleEntity s WHERE s.dayOfWeek = :dayOfWeek AND ((s.startTime <= :startTime AND s.endTime >= :startTime) OR (s.startTime <= :endTime AND s.endTime >= :endTime))")
     List<ScheduleEntity> findConflictingSchedules(@Param("dayOfWeek") int dayOfWeek, @Param("startTime") Time startTime, @Param("endTime") Time endTime);
 
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.id = :id")
+    ScheduleEntity getScheduleById(@Param("id") long id);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ScheduleEntity s WHERE s.id = :id")
+    void deleteScheduleById(@Param("id") long id);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM ScheduleEntity s WHERE s.classEntity.classCode = :classCode")
+    void deleteAllSchedulesByClassCode(@Param("classCode") String classCode);
+
+    /**
+     * Recupera todos os agendamentos associados a um determinado código de turma.
+     *
+     * @param codeClass O código da turma cujos agendamentos serão recuperados.
+     * @return Lista de agendamentos associados ao código da turma fornecido.
+     */
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.classEntity.classCode = :classCode")
+    List<ScheduleEntity> getAllScheduleByCodeClass(@Param("classCode") String codeClass);
 }

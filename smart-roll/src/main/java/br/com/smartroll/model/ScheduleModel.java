@@ -1,5 +1,7 @@
 package br.com.smartroll.model;
 
+import br.com.smartroll.repository.entity.ScheduleEntity;
+
 import java.sql.Time;
 
 /**
@@ -35,5 +37,14 @@ public class ScheduleModel {
         this.endTime = endTime;
         this.longitude = longitude;
         this.latitude = latitude;
+    }
+
+    public ScheduleModel(ScheduleEntity scheduleEntity) {
+        this.classCode = scheduleEntity.classEntity.classCode;
+        this.dayOfWeek = scheduleEntity.dayOfWeek;
+        this.startTime = String.valueOf(scheduleEntity.startTime);
+        this.endTime = String.valueOf(scheduleEntity.endTime);
+        this.longitude = scheduleEntity.longitude;
+        this.latitude = scheduleEntity.latitude;
     }
 }
