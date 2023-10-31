@@ -60,7 +60,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada ou chamada já fechada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException, StudentNotEnrolledInClassException {
         JSONObject requestBodyJson;
         try {
             if (requestBody != null) {
@@ -88,17 +88,17 @@ public class PresenceController {
         String rollId = requestBodyJson.getString("rollId");
         String message = requestBodyJson.getString("message");
 
-        PresenceModel presenceModelModel;
+        PresenceModel presenceModel;
 
         // Se houver certificado no corpo do json, será submetido uma presença inválida pendente de análise a ser validada pelo professor.
         if(requestBodyJson.has("certificate")){
             String medicalCertificate = requestBodyJson.getString("certificate");
-            presenceModelModel = new PresenceModel(registration, rollId, medicalCertificate, message);
+            presenceModel = new PresenceModel(registration, rollId, medicalCertificate, message);
         }else{ // Se não houver, será submetida uma presença válida.
-            presenceModelModel = new PresenceModel(registration, rollId, message);
+            presenceModel = new PresenceModel(registration, rollId, message);
         }
 
-        presenceService.submitPresence(presenceModelModel);
+        presenceService.submitPresence(presenceModel);
     }
 
     /**
@@ -118,7 +118,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/invalidate-presence")
+    @PatchMapping(value = "/invalidate-presence")
     public void invalidatePresenceStatus(@Parameter(description = "Id da presença", example = "1") @RequestParam String id) throws PresenceNotFoundException {
         presenceService.invalidatePresenceStatus(id);
 
@@ -141,7 +141,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/validate-presence")
+    @PatchMapping(value = "/validate-presence")
     public void validatePresenceStatus(@Parameter(description = "Id da presença", example = "1") @RequestParam String id) throws PresenceNotFoundException {
         presenceService.validatePresenceStatus(id);
 
@@ -154,8 +154,8 @@ public class PresenceController {
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/update-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void putCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException {
+    @PatchMapping(value = "/insert-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void insertCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {

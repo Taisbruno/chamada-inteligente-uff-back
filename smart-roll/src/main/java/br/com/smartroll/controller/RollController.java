@@ -70,7 +70,7 @@ public class RollController {
             @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
-    @PutMapping(value = "/close-roll")
+    @PatchMapping(value = "/close-roll")
     public void closeRoll(@Parameter(description = "Id da chamada", example = "1") @RequestParam String callId) throws RollNotFoundException, RollClosedException {
         service.closeRoll(Long.parseLong(callId));
     }

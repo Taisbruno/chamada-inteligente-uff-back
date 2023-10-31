@@ -28,11 +28,14 @@ public class ClassEntity {
     @Column(name = "total", nullable = false)
     public int total;
 
-    @OneToMany(mappedBy = "classEntity")
+    @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
     public List<ClassSubscriptionEntity> classSubscriptions;
 
     @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
     public List<RollEntity> rolls;
+
+    @OneToMany(mappedBy = "classEntity", cascade = CascadeType.ALL)
+    public List<ScheduleEntity> schedules;
 
     /**
      * Construtor padrão de ClassEntity.

@@ -81,4 +81,7 @@ public interface IRollRepository extends JpaRepository<RollEntity, Long> {
     @Query("SELECT r FROM RollEntity r JOIN r.classEntity c WHERE c.classCode = :classCode AND c.semester = :semester AND r.finishedAt IS NOT NULL")
     List<RollEntity> getClosedRollsFromClass(@Param("classCode") String classCode, @Param("semester") String semester);
 
+    @Query("SELECT r FROM RollEntity r WHERE r.finishedAt IS NULL")
+    List<RollEntity> findOpenRolls();
+
 }

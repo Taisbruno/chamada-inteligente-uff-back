@@ -1,6 +1,7 @@
 package br.com.smartroll.view;
 
 import br.com.smartroll.model.PresenceModel;
+import br.com.smartroll.repository.entity.PresenceEntity;
 import com.google.gson.annotations.SerializedName;
 
 public class PresenceView {
@@ -40,5 +41,21 @@ public class PresenceView {
         this.timePresent = presenceModel.timePresent;
         this.frequency = presenceModel.frequency;
         this.failed = presenceModel.failed;
+    }
+
+    /**
+     * Construtor alternativo para exibição de presenças em tempo real via WebSocket.
+     * @param name nome do aluno.
+     * @param presenceEntity entidade da presença.
+     */
+    public PresenceView(String name, PresenceEntity presenceEntity) {
+        this.id = String.valueOf(presenceEntity.id);
+        this.studentRegistration = presenceEntity.studentRegistration;
+        this.name = name;
+        this.medicalCertificate = presenceEntity.medicalCertificate;
+        this.message = presenceEntity.message;
+        this.isPresent = presenceEntity.isPresent;
+        this.entryTime = presenceEntity.entryTime;
+        this.exitTime = presenceEntity.exitTime;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Repositório que fornece uma camada de abstração sobre o repositório JPA IPresenceRepository.
@@ -72,33 +73,7 @@ public class PresenceRepository {
         presenceRepository.updateCertificate(id, certificate);
     }
 
-    /**
-     * Exclui um registro de presença do banco de dados usando um identificador.
-     *
-     * @param id identificador único do registro de presença a ser excluído.
-     */
-    public void deletePresence(Long id) {
-        presenceRepository.deleteById(id);
-    }
-
-    /**
-     * Atualiza um registro de presença existente no banco de dados.
-     *
-     * @param id identificador do registro de presença a ser atualizado.
-     * @param presenceEntity entidade contendo os novos dados de presença.
-     * @return entidade PresenceEntity atualizada, ou null se o registro não existir.
-     */
-    public PresenceEntity updatePresence(Long id, PresenceEntity presenceEntity) {
-        if (presenceRepository.existsById(id)) {
-            presenceEntity.id = id;
-            return presenceRepository.save(presenceEntity);
-        } else {
-            // Manipulação de erro, lançamento de exceção, etc.
-        }
-        return null; // ou lançar uma exceção, ou usar Optional<PresenceEntity>
-    }
-
-    public PresenceEntity savePresence(PresenceEntity presenceEntity) {
-        return presenceRepository.save(presenceEntity);
+    public List<PresenceEntity> getPresencesByRollId(long id) {
+        return presenceRepository.getPresencesByRollId(id);
     }
 }

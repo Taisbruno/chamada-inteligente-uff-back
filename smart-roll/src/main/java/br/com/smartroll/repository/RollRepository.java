@@ -48,15 +48,6 @@ public class RollRepository {
     }
 
     /**
-     * Exclui um registro de chamada do banco de dados usando um identificador.
-     *
-     * @param id identificador único do registro de chamada a ser excluído.
-     */
-    public void deleteRoll(Long id) {
-        rollRepository.deleteById(id);
-    }
-
-    /**
      * Atualiza um registro de chamada existente no banco de dados.
      *
      * @param id identificador do registro de chamada a ser atualizado.
@@ -100,5 +91,9 @@ public class RollRepository {
 
     public void closeOpenRollByClassCode(String classCode) {
         rollRepository.updateFinishedAtByClassCode(classCode);
+    }
+
+    public List<RollEntity> findOpenRolls() {
+        return rollRepository.findOpenRolls();
     }
 }

@@ -6,12 +6,14 @@ import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.PresenceEntity;
+import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
-import br.com.smartroll.view.StudentView;
+import br.com.smartroll.view.PresenceView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,23 @@ public class PresenceService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    public ConcurrentHashMap<String, List<StudentView>> activePresencesByRoll = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<String, List<PresenceView>> activePresencesByRoll = new ConcurrentHashMap<>();
+
+
+    @PostConstruct
+    public void initializeActivePresences() {
+        List<RollEntity> openRolls = rollRepository.findOpenRolls();
+
+        for (RollEntity roll : openRolls) {
+            Long rollId = roll.id;
+            List<PresenceEntity> presencesForRoll = presenceRepository.getPresencesByRollId(rollId);
+
+            for (PresenceEntity presence : presencesForRoll) {
+                submitStudent(presence, rollId.toString());
+            }
+        }
+    }
+
 
     /**
      * Método responsável por registrar uma presença de um aluno em uma chamada.
@@ -47,39 +65,51 @@ public class PresenceService {
      * @throws StudentAlreadyPresentException Se o aluno já estiver inscrito na presença.
      * @throws UserNotFoundException Se o usuário não for encontrado.
      */
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException {
-        if(rollRepository.getRoll(Long.parseLong(presenceModel.rollId)) == null){
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException, StudentNotEnrolledInClassException {
+        Long rollId = Long.parseLong(presenceModel.rollId);
+        if(rollRepository.getRoll(rollId) == null){
             throw new RollNotFoundException(presenceModel.rollId);
-        }else if(rollRepository.isRollClosed(Long.parseLong(presenceModel.rollId))){
+        }else if(rollRepository.isRollClosed(rollId)){
             throw new RollClosedException(presenceModel.rollId);
-        }else if(presenceRepository.isPresent(presenceModel.studentRegistration, Long.parseLong(presenceModel.rollId))){
+        }else if(presenceRepository.isPresent(presenceModel.studentRegistration, rollId)){
             throw new StudentAlreadyPresentException(presenceModel.studentRegistration, presenceModel.rollId);
         }else if(userRepository.getUserByRegistration(presenceModel.studentRegistration) == null){
             throw new UserNotFoundException(presenceModel.studentRegistration);
+        }else if(!userRepository.isStudentEnrolledInClass(presenceModel.studentRegistration, rollId)){
+            throw new StudentNotEnrolledInClassException(presenceModel.studentRegistration, presenceModel.rollId);
         }
 
         PresenceEntity presenceEntity = new PresenceEntity(presenceModel);
-        presenceRepository.createPresence(presenceEntity);
-        submitStudent(presenceModel.studentRegistration, presenceModel.rollId);
+        PresenceEntity createdPresenceEntity = presenceRepository.createPresence(presenceEntity);
+        submitStudent(createdPresenceEntity, presenceModel.rollId);
         notifyFrontEndAboutActivePresences(presenceModel.rollId);
     }
 
     /**
      * Método auxiliar para adicionar um aluno à lista de presenças ativas de uma chamada.
      *
-     * @param studentRegistration Registro do aluno.
-     * @param rollId ID da chamada.
+     * @param presenceEntity A entidade da presença.
+     * @param rollId O id da chamada.
      */
-    private void submitStudent(String studentRegistration, String rollId) {
-        UserEntity userEntity = userRepository.getUserByRegistration(studentRegistration);
-        StudentView student = new StudentView(userEntity.registration, userEntity.name);
+    private void submitStudent(PresenceEntity presenceEntity, String rollId) {
+        UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
+        PresenceView presence = new PresenceView(userEntity.name, presenceEntity);
 
-        activePresencesByRoll.compute(rollId, (key, students) -> {
-            if (students == null) {
-                students = new ArrayList<>();
+        activePresencesByRoll.compute(rollId, (key, presences) -> {
+            if (presences == null) {
+                presences = new ArrayList<>();
             }
-            students.add(student);
-            return students;
+
+            // Verificar se o aluno já está na lista
+            boolean isAlreadyPresent = presences.stream()
+                    .anyMatch(p -> p.studentRegistration.equals(presenceEntity.studentRegistration));
+
+            // Se o aluno não estiver na lista, adicione-o
+            if (!isAlreadyPresent) {
+                presences.add(presence);
+            }
+
+            return presences;
         });
     }
 
@@ -96,15 +126,15 @@ public class PresenceService {
             return; // Encerrar a função para não enviar mensagens para uma chamada fechada
         }
 
-        List<StudentView> activeStudentsForRoll = activePresencesByRoll.getOrDefault(rollId, new ArrayList<>());
+        List<PresenceView> activeStudentsForRoll = activePresencesByRoll.getOrDefault(rollId, new ArrayList<>());
         messagingTemplate.convertAndSend("/topic/presences/" + rollId, activeStudentsForRoll);
 
         // Adicionado print para depurar o rollId
         System.out.println("Calling notifyFrontEndAboutActivePresences with rollId: " + rollId);
         // Adicionado print para depurar a lista de estudantes ativos para esse rollId
         System.out.println("Number of active students for rollId " + rollId + ": " + activeStudentsForRoll.size());
-        for(StudentView student: activeStudentsForRoll){
-            System.out.println("Student: " + student.name + ", Registration: " + student.registration);
+        for(PresenceView student: activeStudentsForRoll){
+            System.out.println("Student: " + student.id + " name: "+ student.name + ", Registration: " + student.studentRegistration);
         }
         System.out.println("Message sent to /topic/presences/" + rollId);
     }

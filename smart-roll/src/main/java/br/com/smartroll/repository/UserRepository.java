@@ -4,6 +4,7 @@ import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.UserEntity;
 import br.com.smartroll.repository.interfaces.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -52,5 +53,9 @@ public class UserRepository {
 
     public List<UserEntity> getEnrolledStudentsByRoll(Long idRoll) {
         return userRepository.findUsersByRoll(idRoll);
+    }
+
+    public boolean isStudentEnrolledInClass(String studentRegistration, Long rollId){
+        return userRepository.isStudentEnrolledInClass(studentRegistration, rollId);
     }
 }

@@ -1,8 +1,6 @@
 package br.com.smartroll.controller;
 
-import br.com.smartroll.exception.ClassroomNotFoundException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.UsersNotFoundException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.StudentModel;
 import br.com.smartroll.service.UserService;
 import br.com.smartroll.utils.SwaggerExamples;
@@ -62,6 +60,34 @@ public class StudentController {
     }
 
     /**
+     * Requisição para retornar uma lista de alunos reprovados por falta em uma determinada disciplina.
+     *
+     * @param codeClass Código da classe/disciplina para a qual a consulta está sendo feita.
+     * @param semester Semestre de interesse para a consulta.
+     * @return JSON representando os alunos reprovados por falta na disciplina especificada para o semestre dado.
+     * @throws UsersNotFoundException Caso não sejam encontrados alunos para a combinação de classe e semestre especificados.
+     * @throws ClassroomNotFoundException Caso a turma não tenha sido encontrada.
+     * @throws RollsNotFoundException Caso não sejam encontradas chamadas associadas à turma.
+     * @throws FailedStudentsNotFoundException Caso não sejam encontrados alunos reprovados por falta na turma.
+     */
+    @ApiOperation(value = "Retorna todos os alunos reprovados em uma determinada turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETENROLLEDSTUDENTS)})),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @GetMapping(value = "/failed-class", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getFailedStudentsByClass(@Parameter(description = "Código da turma", example = "1") @RequestParam String codeClass, @Parameter(description = "Semestre de interesse", example = "2023.1") @RequestParam String semester) throws UsersNotFoundException, ClassroomNotFoundException, RollsNotFoundException, FailedStudentsNotFoundException {
+        List<StudentModel> students = service.getFailedStudentsByClassCode(codeClass, semester);
+        StudentsView studentsView = new StudentsView(students);
+        return studentsView.toJson();
+    }
+
+    /**
      * Requisição para retornar uma lista de alunos inscritos em uma chamada.
      * @param idRoll id da chanmada.
      * @return Json representando os alunos inscritos na chamada.
@@ -84,5 +110,4 @@ public class StudentController {
         StudentsView studentsView = new StudentsView(students);
         return studentsView.toJson();
     }
-
 }
