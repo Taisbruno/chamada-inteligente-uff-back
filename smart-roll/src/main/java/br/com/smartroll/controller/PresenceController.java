@@ -60,7 +60,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada ou chamada já fechada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException, StudentNotEnrolledInClassException {
         JSONObject requestBodyJson;
         try {
             if (requestBody != null) {
@@ -88,17 +88,17 @@ public class PresenceController {
         String rollId = requestBodyJson.getString("rollId");
         String message = requestBodyJson.getString("message");
 
-        PresenceModel presenceModelModel;
+        PresenceModel presenceModel;
 
         // Se houver certificado no corpo do json, será submetido uma presença inválida pendente de análise a ser validada pelo professor.
         if(requestBodyJson.has("certificate")){
             String medicalCertificate = requestBodyJson.getString("certificate");
-            presenceModelModel = new PresenceModel(registration, rollId, medicalCertificate, message);
+            presenceModel = new PresenceModel(registration, rollId, medicalCertificate, message);
         }else{ // Se não houver, será submetida uma presença válida.
-            presenceModelModel = new PresenceModel(registration, rollId, message);
+            presenceModel = new PresenceModel(registration, rollId, message);
         }
 
-        presenceService.submitPresence(presenceModelModel);
+        presenceService.submitPresence(presenceModel);
     }
 
     /**

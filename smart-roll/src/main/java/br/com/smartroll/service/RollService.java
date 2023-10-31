@@ -58,7 +58,7 @@ public class RollService {
         RollEntity rollEntity = new RollEntity(rollModel.longitude, rollModel.latitude, rollModel.class_code);
         RollEntity createdEntity = rollRepository.createRoll(rollEntity);
         RollModel newRollModel = new RollModel(createdEntity);
-        newRollModel.class_code = classRepository.getClassCodeByRollId(Long.valueOf(newRollModel.id));
+        newRollModel.class_code = classRepository.getClassCodeByRollId(Long.parseLong(newRollModel.id));
         return newRollModel;
     }
 
@@ -148,6 +148,7 @@ public class RollService {
                         .filter(p -> p.studentRegistration.equals(presenceEntity.studentRegistration))
                         .count();
                 presenceModel.frequency = ((double) count / rollsEntity.size()) * 100;
+                double realFrequency = ((double) count / rollsEntity.size()) * 100;
                 presenceModel.failed = !(presenceModel.frequency > 75);
                 rollModel.presences.add(presenceModel);
             }

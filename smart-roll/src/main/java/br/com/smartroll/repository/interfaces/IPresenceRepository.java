@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Repositório para operações CRUD e consultas personalizadas relacionadas a entidades de presença.
@@ -82,4 +83,13 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     @Modifying
     @Query("UPDATE PresenceEntity p SET p.exitTime = :exitTime WHERE p.roll.id = :rollId AND (p.isPresent = true OR p.medicalCertificate IS NOT NULL)")
     void markExitTimeForAllPresentInRoll(@Param("rollId") Long rollId, @Param("exitTime") String exitTime);
+
+    /**
+     * Busca todas as presenças associadas a um determinado ID de chamada.
+     *
+     * @param rollId O identificador da chamada para qual as presenças estão associadas.
+     * @return Lista de entidades de presença associadas ao ID de chamada fornecido.
+     */
+    @Query("SELECT p FROM PresenceEntity p WHERE p.roll.id = :rollId")
+    List<PresenceEntity> getPresencesByRollId(@Param("rollId") Long rollId);
 }

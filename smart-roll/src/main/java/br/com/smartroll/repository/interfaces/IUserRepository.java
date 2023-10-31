@@ -42,8 +42,21 @@ public interface IUserRepository extends JpaRepository<UserEntity, String> {
             @Param("classCode") String classCode,
             @Param("semester") String semester);
 
-
+    /**
+     * Retorna os alunos inscritos em uma chamada.
+     * @param idRoll o id da chamada.
+     * @return uma lista da entidade UserEntity.
+     */
     @Query("SELECT u FROM UserEntity u JOIN PresenceEntity p ON u.registration = p.studentRegistration WHERE p.roll.id = :idRoll")
     List<UserEntity> findUsersByRoll(@Param("idRoll") Long idRoll);
+
+    /**
+     * Verifica se um aluno está inscrito em uma turma com base na matrícula e no id da chamada.
+     * @param studentRegistration matrícula do aluno.
+     * @param rollId id da chamada.
+     * @return true se o aluno estiver inscrito e false se não estiver.
+     */
+    @Query("SELECT CASE WHEN COUNT(cs) > 0 THEN true ELSE false END FROM ClassSubscriptionEntity cs WHERE cs.userEntity.registration = :studentRegistration AND cs.classEntity.classCode = (SELECT r.classEntity.classCode FROM RollEntity r WHERE r.id = :rollId)")
+    boolean isStudentEnrolledInClass(@Param("studentRegistration") String studentRegistration, @Param("rollId") Long rollId);
 
 }

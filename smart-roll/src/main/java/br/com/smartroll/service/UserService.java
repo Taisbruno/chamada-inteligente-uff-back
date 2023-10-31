@@ -1,10 +1,9 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.ClassroomNotFoundException;
-import br.com.smartroll.exception.RollNotFoundException;
-import br.com.smartroll.exception.UsersNotFoundException;
+import br.com.smartroll.exception.*;
 import br.com.smartroll.model.StudentModel;
 import br.com.smartroll.repository.ClassRepository;
+import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.RollEntity;
@@ -31,6 +30,9 @@ public class UserService {
     @Autowired
     private RollRepository rollRepository;
 
+    @Autowired
+    private PresenceRepository presenceRepository;
+
     /**
      * Método para recuperar uma lista de estudantes inscritos com base no código da turma e no semestre.
      *
@@ -48,14 +50,7 @@ public class UserService {
         if(studentsEntity.isEmpty()){
             throw new UsersNotFoundException(classCode, semester);
         }
-        List<StudentModel> studentsModel = new ArrayList<>();
-        for(UserEntity userEntity : studentsEntity){
-            if(userEntity.type.equals("student")){
-                StudentModel studentModel = new StudentModel(userEntity.registration, userEntity.name, userEntity.email, userEntity.password);
-                studentsModel.add(studentModel);
-            }
-        }
-        return studentsModel;
+        return convertEntityToModel(studentsEntity);
     }
 
     /**
@@ -74,6 +69,53 @@ public class UserService {
         if(studentsEntity.isEmpty()){
             throw new UsersNotFoundException(idRoll);
         }
+        return convertEntityToModel(studentsEntity);
+    }
+
+    public List<StudentModel> getFailedStudentsByClassCode(String classCode, String semester) throws ClassroomNotFoundException, UsersNotFoundException, RollsNotFoundException, FailedStudentsNotFoundException {
+        if (classRepository.getClassByCode(classCode) == null) {
+            throw new ClassroomNotFoundException(classCode);
+        }
+
+        List<UserEntity> allStudents = userRepository.getEnrolledUsersByClassCode(classCode, semester);
+        if(allStudents.isEmpty()){
+            throw new UsersNotFoundException(classCode, semester);
+        }
+        List<UserEntity> failedStudents = new ArrayList<>();
+        int total = classRepository.getTotalByClassCode(classCode);
+
+        for (UserEntity student : allStudents) {
+            String studentRegistration = student.registration;
+
+            // Recuperar todas as chamadas para a turma e semestre fornecidos
+            List<RollEntity> rolls = rollRepository.getRollsFromClass(classCode, semester);
+            if(rolls.isEmpty()){
+                throw new RollsNotFoundException(classCode, semester);
+            }
+            // Contador para presenças válidas
+            int validPresences = 0;
+
+            for (RollEntity roll : rolls) {
+                // Verificar se o aluno tem uma presença registrada e válida para cada chamada
+                if (presenceRepository.isPresent(studentRegistration, roll.id)) {
+                    validPresences++;
+                }
+            }
+
+            // Verificar se o aluno não atende ao critério de presença
+            double attendanceRate = ((double) validPresences / rolls.size()) * 100;
+            double totalAttendanceRate = ((double) validPresences / total) * 100;
+            if (attendanceRate < 75 && totalAttendanceRate < 75) {
+                failedStudents.add(student);
+            }
+        }
+        if(failedStudents.isEmpty()){
+            throw new FailedStudentsNotFoundException(classCode, semester);
+        }
+        return convertEntityToModel(failedStudents);
+    }
+
+    private List<StudentModel> convertEntityToModel(List<UserEntity> studentsEntity){
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity user : studentsEntity){
             if(user.type.equals("student")) {
@@ -83,4 +125,5 @@ public class UserService {
         }
         return studentsModel;
     }
+
 }
