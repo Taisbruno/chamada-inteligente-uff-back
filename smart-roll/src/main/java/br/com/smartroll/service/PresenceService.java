@@ -42,6 +42,15 @@ public class PresenceService {
     public ConcurrentHashMap<String, List<PresenceView>> activePresencesByRoll = new ConcurrentHashMap<>();
 
 
+    /**
+     * Método de inicialização pós-construção que é executado automaticamente após a
+     * injeção de dependência ter sido concluída para preencher o mapa activePresencesByRoll.
+     * Este método pega todas as chamadas (rolls) abertas e para cada chamada,
+     * ele pega todas as presenças associadas e as adiciona ao mapa activePresencesByRoll como uma forma de backup
+     * da comunicação via Websocket em caso da aplicação parar.
+     *
+     * @PostConstruct assegura que este método seja executado depois que o bean foi inicializado.
+     */
     @PostConstruct
     public void initializeActivePresences() {
         List<RollEntity> openRolls = rollRepository.findOpenRolls();
@@ -56,6 +65,14 @@ public class PresenceService {
         }
     }
 
+    /**
+     * Este método é utilizado para buscar todas as presenças associadas a uma chamada específica.
+     *
+     * @param idRoll O identificador único da chamada para a qual as presenças são buscadas.
+     * @return Uma lista de modelos de presença (PresenceModel) associados à chamada especificada.
+     * @throws RollNotFoundException Se a chamada com o idRoll fornecido não for encontrada.
+     * @throws PresencesNotFoundException Se nenhuma presença for encontrada para a chamada especificada.
+     */
     public List<PresenceModel> getPresencesByRoll(String idRoll) throws RollNotFoundException, PresencesNotFoundException {
         Long id = Long.parseLong(idRoll);
         if(rollRepository.getRoll(id) == null){
