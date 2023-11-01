@@ -31,7 +31,7 @@ public class HistoricRollView {
     @SerializedName("presenceTimeAvarage")
     public String presenceTimeAvarage;
     @SerializedName("presences")
-    public List<PresenceView> presences = new ArrayList<>();
+    public List<HistoricPresenceView> presences = new ArrayList<>();
 
     public HistoricRollView(RollModel rollModel) {
         this.id = rollModel.id;
@@ -42,7 +42,7 @@ public class HistoricRollView {
         this.finishedAt = rollModel.finishedAt;
         this.isOpen = rollModel.isOpen;
         for(PresenceModel presenceModel : rollModel.presences){
-            PresenceView presenceView = new PresenceView(presenceModel);
+            HistoricPresenceView presenceView = new HistoricPresenceView(presenceModel);
             this.presences.add(presenceView);
         }
         this.studentsPresent = this.presences.size();

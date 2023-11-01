@@ -4,7 +4,10 @@ import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.repository.entity.PresenceEntity;
 import com.google.gson.annotations.SerializedName;
 
-public class PresenceView {
+/**
+ * View de presença para o histórico de chamadas ocorridas.
+ */
+public class HistoricPresenceView {
 
     @SerializedName("id")
     public String id;
@@ -22,8 +25,14 @@ public class PresenceView {
     public String entryTime;
     @SerializedName("exitTime")
     public String exitTime;
+    @SerializedName("timePresent")
+    public String timePresent;
+    @SerializedName("frequency")
+    public double frequency;
+    @SerializedName("failed")
+    public boolean failed;
 
-    public PresenceView(PresenceModel presenceModel) {
+    public HistoricPresenceView(PresenceModel presenceModel) {
         this.id = presenceModel.id;
         this.studentRegistration = presenceModel.studentRegistration;
         this.name = presenceModel.name;
@@ -32,21 +41,8 @@ public class PresenceView {
         this.isPresent = presenceModel.isPresent;
         this.entryTime = presenceModel.entryTime;
         this.exitTime = presenceModel.exitTime;
-    }
-
-    /**
-     * Construtor alternativo para exibição de presenças em tempo real via WebSocket.
-     * @param name nome do aluno.
-     * @param presenceEntity entidade da presença.
-     */
-    public PresenceView(String name, PresenceEntity presenceEntity) {
-        this.id = String.valueOf(presenceEntity.id);
-        this.studentRegistration = presenceEntity.studentRegistration;
-        this.name = name;
-        this.medicalCertificate = presenceEntity.medicalCertificate;
-        this.message = presenceEntity.message;
-        this.isPresent = presenceEntity.isPresent;
-        this.entryTime = presenceEntity.entryTime;
-        this.exitTime = presenceEntity.exitTime;
+        this.timePresent = presenceModel.timePresent;
+        this.frequency = presenceModel.frequency;
+        this.failed = presenceModel.failed;
     }
 }

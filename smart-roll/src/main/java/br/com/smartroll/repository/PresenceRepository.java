@@ -76,4 +76,8 @@ public class PresenceRepository {
     public List<PresenceEntity> getPresencesByRollId(long id) {
         return presenceRepository.getPresencesByRollId(id);
     }
+
+    public Long getIdRollByIdPresence(Long presenceId){
+        return presenceRepository.getIdRollByIdPresence(presenceId);
+    }
 }

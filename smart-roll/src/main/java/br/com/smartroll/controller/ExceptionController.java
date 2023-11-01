@@ -84,12 +84,11 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = {ClassroomNotFoundException.class, ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class, PresenceNotFoundException.class, UserNotFoundException.class, ScheduleNotFoundException.class, SchedulesNotFoundException.class, FailedStudentsNotFoundException.class})
+    @ExceptionHandler(value = {ClassroomNotFoundException.class, ClassesNotFoundException.class, UsersNotFoundException.class, RollNotFoundException.class, RollsNotFoundException.class, PresenceNotFoundException.class, UserNotFoundException.class, ScheduleNotFoundException.class, SchedulesNotFoundException.class, FailedStudentsNotFoundException.class, PresencesNotFoundException.class})
     public ResponseEntity<String> notFound(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.NOT_FOUND);
     }
-
 
     /**
      * Método que mapeia as exceções de má requisição.
