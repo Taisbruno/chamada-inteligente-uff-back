@@ -33,6 +33,10 @@ public class PresenceRepository {
         return presenceRepository.isPresent(registration, id);
     }
 
+    public boolean isSubscribed(String registration, Long id){
+        return presenceRepository.isSubscribed(registration, id);
+    }
+
     public boolean isRollOpenForPresence(long presenceId){
         return presenceRepository.isRollOpenForPresence(presenceId);
     }

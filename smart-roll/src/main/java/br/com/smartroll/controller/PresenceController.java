@@ -41,7 +41,7 @@ public class PresenceController {
      * @throws InvalidJsonException Quando o JSON do corpo da requisição é inválido.
      * @throws RollNotFoundException Quando a chamada especificada não é encontrada.
      * @throws RollClosedException Quando a chamada está fechada.
-     * @throws StudentAlreadyPresentException Quando o aluno já está inscrito na chamada.
+     * @throws StudentAlreadySubscribedException Quando o aluno já está inscrito na chamada.
      * @throws UserNotFoundException Quando o aluno não foi encontrado.
      */
     @ApiOperation(value = "Realiza a submissão de presença ou falta justificada com atestado em uma chamada e transmite via WebSocket a lista de alunos inscritos na chamada aberta em tempo real", notes = "Submete uma presença ou falta justificada com atestato médico e e transmite via WebSocket a lista de alunos inscritos com presença na chamada aberta em tempo real. <br><br>Para acessar o WebSocket, clientes devem se conectar em 'ws://topic/presences/{id}' para receber atualizações da lista de presença da chamada em tempo real.<br><br>Caso tenha sido passado um corpo de json sem a chave 'certificate', a presença será registrada com campo 'isPresent' como 'true', caso contrário, este campo será salvo como 'false' e esta presença deve ser validada pelo professor posteriormente para fins de abono de falta.\n" +
@@ -66,7 +66,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada ou chamada já fechada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException, StudentNotEnrolledInClassException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException {
         JSONObject requestBodyJson;
         try {
             if (requestBody != null) {

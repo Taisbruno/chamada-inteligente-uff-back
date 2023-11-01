@@ -142,7 +142,7 @@ public class ExceptionController implements ErrorController {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(value = {StudentAlreadyPresentException.class, ClassHasOpenRollException.class, ScheduleConflictException.class, RollClosedException.class, StudentNotEnrolledInClassException.class})
+    @ExceptionHandler(value = {StudentAlreadySubscribedException.class, ClassHasOpenRollException.class, ScheduleConflictException.class, RollClosedException.class, StudentNotEnrolledInClassException.class})
     public ResponseEntity<String> conflict(Exception exception){
         ExceptionView view = new ExceptionView(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT.name(), exception.getMessage());
         return new ResponseEntity<>(view.toJson(), HttpStatus.CONFLICT);
