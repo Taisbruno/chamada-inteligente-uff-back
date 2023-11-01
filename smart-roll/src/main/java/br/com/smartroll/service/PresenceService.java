@@ -8,6 +8,7 @@ import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
+import br.com.smartroll.view.HistoricPresenceView;
 import br.com.smartroll.view.PresenceView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -41,6 +42,15 @@ public class PresenceService {
     public ConcurrentHashMap<String, List<PresenceView>> activePresencesByRoll = new ConcurrentHashMap<>();
 
 
+    /**
+     * Método de inicialização pós-construção que é executado automaticamente após a
+     * injeção de dependência ter sido concluída para preencher o mapa activePresencesByRoll.
+     * Este método pega todas as chamadas (rolls) abertas e para cada chamada,
+     * ele pega todas as presenças associadas e as adiciona ao mapa activePresencesByRoll como uma forma de backup
+     * da comunicação via Websocket em caso da aplicação parar.
+     *
+     * @PostConstruct assegura que este método seja executado depois que o bean foi inicializado.
+     */
     @PostConstruct
     public void initializeActivePresences() {
         List<RollEntity> openRolls = rollRepository.findOpenRolls();
@@ -55,6 +65,32 @@ public class PresenceService {
         }
     }
 
+    /**
+     * Este método é utilizado para buscar todas as presenças associadas a uma chamada específica.
+     *
+     * @param idRoll O identificador único da chamada para a qual as presenças são buscadas.
+     * @return Uma lista de modelos de presença (PresenceModel) associados à chamada especificada.
+     * @throws RollNotFoundException Se a chamada com o idRoll fornecido não for encontrada.
+     * @throws PresencesNotFoundException Se nenhuma presença for encontrada para a chamada especificada.
+     */
+    public List<PresenceModel> getPresencesByRoll(String idRoll) throws RollNotFoundException, PresencesNotFoundException {
+        Long id = Long.parseLong(idRoll);
+        if(rollRepository.getRoll(id) == null){
+            throw new RollNotFoundException(idRoll);
+        }
+        List<PresenceEntity> presencesForRoll = presenceRepository.getPresencesByRollId(id);
+        if(presencesForRoll.isEmpty()){
+            throw new PresencesNotFoundException(idRoll);
+        }
+        List<PresenceModel> presenceModels = new ArrayList<>();
+        for(PresenceEntity presenceEntity : presencesForRoll){
+            UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
+            PresenceModel presenceModel = new PresenceModel(presenceEntity.id, presenceEntity.studentRegistration, presenceEntity.roll.id, presenceEntity.medicalCertificate, presenceEntity.message, presenceEntity.isPresent, presenceEntity.entryTime, presenceEntity.exitTime);
+            presenceModel.name = userEntity.name;
+            presenceModels.add(presenceModel);
+        }
+        return presenceModels;
+    }
 
     /**
      * Método responsável por registrar uma presença de um aluno em uma chamada.
@@ -69,7 +105,7 @@ public class PresenceService {
         Long rollId = Long.parseLong(presenceModel.rollId);
         if(rollRepository.getRoll(rollId) == null){
             throw new RollNotFoundException(presenceModel.rollId);
-        }else if(rollRepository.isRollClosed(rollId)){
+        }else if(rollRepository.isRollClosed(rollId) && presenceModel.medicalCertificate == null){
             throw new RollClosedException(presenceModel.rollId);
         }else if(presenceRepository.isPresent(presenceModel.studentRegistration, rollId)){
             throw new StudentAlreadyPresentException(presenceModel.studentRegistration, presenceModel.rollId);
@@ -134,7 +170,7 @@ public class PresenceService {
         // Adicionado print para depurar a lista de estudantes ativos para esse rollId
         System.out.println("Number of active students for rollId " + rollId + ": " + activeStudentsForRoll.size());
         for(PresenceView student: activeStudentsForRoll){
-            System.out.println("Student: " + student.id + " name: "+ student.name + ", Registration: " + student.studentRegistration);
+            System.out.println("Student: " + student.id + " name: "+ student.name + ", Registration: " + student.studentRegistration + ", isPresent: " + student.isPresent);
         }
         System.out.println("Message sent to /topic/presences/" + rollId);
     }
@@ -146,16 +182,32 @@ public class PresenceService {
      */
     public void invalidatePresenceStatus(String id) throws PresenceNotFoundException {
         long convertedId = Long.parseLong(id);
-        if(presenceRepository.getPresence(convertedId) == null){
+        PresenceEntity presenceEntity = presenceRepository.getPresence(convertedId);
+        if (presenceEntity == null) {
             throw new PresenceNotFoundException(id);
         }
-        if(presenceRepository.isRollOpenForPresence(convertedId)){
+        long rollId = presenceRepository.getIdRollByIdPresence(convertedId);
+
+        // Caso a chamada esteja aberta
+        if (presenceRepository.isRollOpenForPresence(convertedId)) {
+
             String exitTime = LocalDateTime.now().toString();
             presenceRepository.invalidateOpenPresence(convertedId, exitTime);
-        }else{
+            // Procurar e atualizar a presença na lista activePresencesByRoll
+            List<PresenceView> presences = activePresencesByRoll.getOrDefault(String.valueOf(rollId), new ArrayList<>());
+            for (PresenceView presence : presences) {
+                if (presence.id.equals(id)) {
+                    presence.isPresent = false;
+                    presence.exitTime = exitTime;
+                    break;
+                }
+            }
+        } else {
             presenceRepository.invalidateClosedPresence(convertedId);
         }
 
+        // Notificar o frontend sobre a mudança
+        notifyFrontEndAboutActivePresences(String.valueOf(rollId));
     }
 
     /**

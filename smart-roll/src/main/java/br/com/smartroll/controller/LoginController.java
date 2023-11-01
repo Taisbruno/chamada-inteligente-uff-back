@@ -44,7 +44,7 @@ public class LoginController {
     @ApiOperation(value = "Realiza autenticação do usuário baseado em seu cpf e senha")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class), examples = {
-                    @ExampleObject(value = SwaggerExamples.GETUSER) })),
+                    @ExampleObject(value = SwaggerExamples.GETUSER)})),
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })

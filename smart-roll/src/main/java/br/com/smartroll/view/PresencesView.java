@@ -1,7 +1,6 @@
 package br.com.smartroll.view;
 
 import br.com.smartroll.model.PresenceModel;
-import br.com.smartroll.model.RollModel;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 

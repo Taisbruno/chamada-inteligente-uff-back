@@ -92,4 +92,14 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
      */
     @Query("SELECT p FROM PresenceEntity p WHERE p.roll.id = :rollId")
     List<PresenceEntity> getPresencesByRollId(@Param("rollId") Long rollId);
+
+    /**
+     * Método para recuperar o ID da chamada (roll) associada a uma presença específica.
+     *
+     * @param presenceId O ID da presença para a qual o ID da chamada será recuperado.
+     * @return O ID da chamada associada à presença especificada.
+     */
+    @Query("SELECT p.roll.id FROM PresenceEntity p WHERE p.id = :presenceId")
+    Long getIdRollByIdPresence(@Param("presenceId") Long presenceId);
+
 }

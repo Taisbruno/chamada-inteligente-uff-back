@@ -320,6 +320,32 @@ public class SwaggerExamples {
             }    
             """;
 
+    public static final String GETPRESENCES = """
+            {
+              "presences": [
+                {
+                  "id": "string",
+                  "registration": "string",
+                  "name": "string",
+                  "message": "string",
+                  "isPresent": boolean,
+                  "entryTime": "string",
+                  "exitTime": "string"
+                },
+                ...
+                {
+                  "id": "string",
+                  "registration": "string",
+                  "name": "string",
+                  "message": "string",
+                  "isPresent": boolean,
+                  "entryTime": "string",
+                  "exitTime": "string"
+                }
+              ]
+            }
+            """;
+
     public static final String GETSCHEDULES = """
             {
               "schedules": [
