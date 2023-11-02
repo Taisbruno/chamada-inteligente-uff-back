@@ -98,17 +98,17 @@ public class PresenceService {
      * @param presenceModel Modelo contendo as informações da presença.
      * @throws RollNotFoundException Se a chamada especificada não for encontrada.
      * @throws RollClosedException Se a chamada especificada já estiver fechada.
-     * @throws StudentAlreadyPresentException Se o aluno já estiver inscrito na presença.
+     * @throws StudentAlreadySubscribedException Se o aluno já estiver inscrito na chamada.
      * @throws UserNotFoundException Se o usuário não for encontrado.
      */
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadyPresentException, UserNotFoundException, StudentNotEnrolledInClassException {
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException {
         Long rollId = Long.parseLong(presenceModel.rollId);
         if(rollRepository.getRoll(rollId) == null){
             throw new RollNotFoundException(presenceModel.rollId);
         }else if(rollRepository.isRollClosed(rollId) && presenceModel.medicalCertificate == null){
             throw new RollClosedException(presenceModel.rollId);
-        }else if(presenceRepository.isPresent(presenceModel.studentRegistration, rollId)){
-            throw new StudentAlreadyPresentException(presenceModel.studentRegistration, presenceModel.rollId);
+        }else if(presenceRepository.isSubscribed(presenceModel.studentRegistration, rollId)){
+            throw new StudentAlreadySubscribedException(presenceModel.studentRegistration, presenceModel.rollId);
         }else if(userRepository.getUserByRegistration(presenceModel.studentRegistration) == null){
             throw new UserNotFoundException(presenceModel.studentRegistration);
         }else if(!userRepository.isStudentEnrolledInClass(presenceModel.studentRegistration, rollId)){

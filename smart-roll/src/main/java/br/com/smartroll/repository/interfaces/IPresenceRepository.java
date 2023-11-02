@@ -18,6 +18,9 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
     @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM PresenceEntity p WHERE p.studentRegistration = :studentRegistration AND p.roll.id = :rollId AND p.isPresent = true")
     boolean isPresent(@Param("studentRegistration") String studentRegistration, @Param("rollId") Long rollId);
 
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM PresenceEntity p WHERE p.studentRegistration = :studentRegistration AND p.roll.id = :rollId")
+    boolean isSubscribed(@Param("studentRegistration") String studentRegistration, @Param("rollId") Long rollId);
+
     /**
      * Retorna uma presença com base no id da presença.
      * @param id o id da presença.
