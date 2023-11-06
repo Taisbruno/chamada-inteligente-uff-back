@@ -3,9 +3,9 @@
 O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina de Gerência de Projeto de Software - UFF para gerenciamento de uma chamada/lista de presença que está sendo desenvolvido para fins de um requisito parcial de avaliação, assim como concorre para ser implementado na Superintendência de Tecnologia da Informação (STI/UFF). 
 
 * **Objetivo do projeto**:
-  Fomentar o aprendizado de novas arquiteturas, tecnologias e métodos de desenvolvimento de produtos digitais através da experimentação.
+  Fomentar o aprendizado de novas arquiteturas, tecnologias e métodos de desenvolvimento de produtos digitais através da experimentação e aplicação de conceitos aprendidos em aula.
 
-* Data: 12/10/2023
+* Data: 05/11/2023
 * Versão atual: 1.0
 
 ## 1. Pré-Requisitos
@@ -171,4 +171,9 @@ Este repositório está estruturado da seguinte forma:
   * Public se ela é utiliza fora da classe.
 * Manter a implemetação o mais fiel possível à modelagem feita em UML presente no Confluence (ver link do Jira) deste projeto.
 
+## 9. Links relacionados
+
+Repositório referente ao Frontend do Projeto: https://github.com/Taisbruno/chamada-inteligente-uff
+
+Link do Github Issues do Projeto: https://github.com/users/Taisbruno/projects/1
 
