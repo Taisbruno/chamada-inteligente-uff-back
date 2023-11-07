@@ -2,11 +2,12 @@ package br.com.smartroll.repository;
 
 import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.interfaces.IPresenceRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repositório que fornece uma camada de abstração sobre o repositório JPA IPresenceRepository.

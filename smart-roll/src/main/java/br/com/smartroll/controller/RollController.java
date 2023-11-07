@@ -7,6 +7,9 @@ import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.HistoricRollsView;
 import br.com.smartroll.view.RollView;
 import br.com.smartroll.view.RollsView;
+
+import java.util.List;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,8 +24,6 @@ import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Controlador responsável por gerenciar as operações relacionadas às chamadas (rolls).
@@ -47,7 +48,8 @@ public class RollController {
                     mediaType = "application/json",
                     schema = @Schema(implementation = String.class),
                     examples = {@ExampleObject(value = SwaggerExamples.GETROLLEXAMPLE)})),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "A chamada com o rollId fornecido não foi encontrada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
@@ -66,8 +68,11 @@ public class RollController {
     @ApiOperation(value = "Finaliza uma chamada ativa, registrando a data e hora de conclusão.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
-            @ApiResponse(responseCode = "400", description = "Parâmetros inválidos ou ausentes"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
             @ApiResponse(responseCode = "404", description = "A chamada com o callId fornecido não foi encontrada"),
+            @ApiResponse(responseCode = "409", description = "A chamada já está fechada"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
     @PatchMapping(value = "/close-roll")
@@ -80,6 +85,7 @@ public class RollController {
      * @param classCode Código da turma
      * @param semester Semestre de interesse.
      * @return Uma visualização (RollsView) representando as chamadas de uma determinada turma.
+     * @throws RollsNotFoundException Lançada quando chamadas associadas à turma não foram encontradas.
      */
     @ApiOperation(value = "Retorna as chamadas de uma determinada turma.")
     @ApiResponses(value = {
@@ -139,6 +145,7 @@ public class RollController {
                     schema = @Schema(implementation = String.class),
                     examples = {@ExampleObject(value = SwaggerExamples.GETROLLEXAMPLE)})
             ),
+            @ApiResponse(responseCode = "201", description = "Status não utilizado"),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "400", description = "Corpo do json mal formado"),

@@ -1,11 +1,12 @@
 package br.com.smartroll.service;
 
-import br.com.smartroll.exception.IncorrectCredentialException;
-import br.com.smartroll.exception.UserUnauthorizedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.UserEntity;
+import br.com.smartroll.exception.IncorrectCredentialException;
+import br.com.smartroll.exception.UserUnauthorizedException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Classe de serviço responsável pelas operações de autenticação de usuário.

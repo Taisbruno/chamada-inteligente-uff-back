@@ -5,6 +5,9 @@ import br.com.smartroll.model.StudentModel;
 import br.com.smartroll.service.UserService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.StudentsView;
+
+import java.util.List;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 /**
  * Controlador para gerenciar operações relacionadas aos alunos (Students).

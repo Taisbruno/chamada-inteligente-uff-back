@@ -54,9 +54,10 @@ public class ScheduleController {
             " 6 - Sábado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "201", description = "Status não utilizado"),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
-            @ApiResponse(responseCode = "400", description = "Corpo do json mal formado"),
+            @ApiResponse(responseCode = "400", description = "Corpo do json mal formado; dia da semana, horário ou formato de horário incorretos"),
             @ApiResponse(responseCode = "404", description = "Turma não encontrada"),
             @ApiResponse(responseCode = "409", description = "Agendamento já existente no horário escolhido"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
@@ -108,6 +109,7 @@ public class ScheduleController {
     @ApiOperation(value = "Deleta um agendamento de chamadas de acordo com seu id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Agendamento não encontrado"),
@@ -125,6 +127,7 @@ public class ScheduleController {
     @ApiOperation(value = "Limpa todos os agendamento de chamadas relacionados a uma turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
             @ApiResponse(responseCode = "401", description = "Status não utilizado."),
             @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Turma não encontrada"),

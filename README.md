@@ -16,10 +16,8 @@ O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina 
 * [IntelliJ Community na última versão](https://www.jetbrains.com/idea/download/#section=windows)
 * [Java 17.0.1](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) - Distribuição: Oracle
 * Springboot 2.7.5 (Obtido diretamente pela IDE em conjunto com os subitens abaixo)
-  * Mockito 4.6.1 
-  * JUnit 5 
   * SpringFox 2 v. 3.0.0 
-  * Outras menores configuradas no build do Maven (POM.xml)
+  * Outras dependências configuradas no build do Maven (POM.xml)
 * [Maven 3.8.6](https://maven.apache.org/download.cgi)
 * [PostgreSQL na última versão](https://www.postgresql.org/download/)
 
@@ -28,7 +26,6 @@ O projeto Chamada Inteligente trata-se de um sistema desenvolvido na disciplina 
 * Em Sistema Operacional Windows
   * [Java 17.0.1](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) - Distribuição: Oracle
   * [Maven 3.8.6](https://maven.apache.org/download.cgi)
-  * [Python 3.9.12](https://www.python.org/downloads/)
 * [PostgreSQL na última versão](https://www.postgresql.org/download/)
 
 ## 2. Instruções de construção, execução e uso da API

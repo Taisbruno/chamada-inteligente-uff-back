@@ -8,17 +8,17 @@ import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
-import br.com.smartroll.view.HistoricPresenceView;
 import br.com.smartroll.view.PresenceView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 /**
  * Classe de serviço responsável pelas operações relacionadas à presença dos alunos.

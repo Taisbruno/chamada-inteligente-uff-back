@@ -4,7 +4,7 @@ import br.com.smartroll.exception.IncorrectCredentialException;
 import br.com.smartroll.exception.InvalidJsonException;
 import br.com.smartroll.exception.UserUnauthorizedException;
 import br.com.smartroll.view.UserView;
-import io.swagger.annotations.ApiParam;
+
 import kong.unirest.json.JSONException;
 import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import br.com.smartroll.repository.entity.UserEntity;
 import br.com.smartroll.service.LoginService;
 import br.com.smartroll.utils.SwaggerExamples;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -45,7 +46,10 @@ public class LoginController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class), examples = {
                     @ExampleObject(value = SwaggerExamples.GETUSER)})),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "201", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas, inexistentes ou incorretas"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "404", description = "Status não utilizado"),
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

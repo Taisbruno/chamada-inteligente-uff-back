@@ -1,14 +1,15 @@
 package br.com.smartroll.controller;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 import br.com.smartroll.SmartRollsApplication;
 import br.com.smartroll.exception.*;
 import br.com.smartroll.exception.ClassroomNotFoundException;
 import br.com.smartroll.view.ExceptionView;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import kong.unirest.json.JSONException;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;

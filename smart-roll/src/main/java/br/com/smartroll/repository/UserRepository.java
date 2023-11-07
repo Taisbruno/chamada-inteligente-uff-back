@@ -1,13 +1,12 @@
 package br.com.smartroll.repository;
 
-import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.UserEntity;
 import br.com.smartroll.repository.interfaces.IUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repositório que fornece uma camada de abstração sobre o repositório JPA IUserRepository.
