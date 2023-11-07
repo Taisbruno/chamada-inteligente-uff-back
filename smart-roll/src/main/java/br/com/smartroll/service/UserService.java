@@ -8,11 +8,12 @@ import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Classe de serviço responsável pelas operações relacionadas aos usuários.

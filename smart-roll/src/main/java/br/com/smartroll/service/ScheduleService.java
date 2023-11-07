@@ -7,18 +7,19 @@ import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.ScheduleRepository;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.ScheduleEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.stereotype.Service;
 
 /**
  * Classe de serviço responsável por manipular operações de agendamento.

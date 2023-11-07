@@ -2,8 +2,6 @@ package br.com.smartroll.model;
 
 import br.com.smartroll.repository.entity.ScheduleEntity;
 
-import java.sql.Time;
-
 /**
  * dayOfWeek
  * 0 ou 7 - Domingo

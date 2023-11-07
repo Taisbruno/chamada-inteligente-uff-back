@@ -2,11 +2,12 @@ package br.com.smartroll.repository;
 
 import br.com.smartroll.repository.entity.ScheduleEntity;
 import br.com.smartroll.repository.interfaces.IScheduleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Time;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repositório responsável pelas operações de persistência relacionadas a agendamentos.
