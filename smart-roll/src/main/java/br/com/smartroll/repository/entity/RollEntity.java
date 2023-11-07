@@ -27,8 +27,10 @@ public class RollEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     public LocalDateTime createdAt;
-    @Column(name = "finished_at")
+    @Column(name = "finished_at", nullable = true)
     public LocalDateTime finishedAt;
+    @Column(name = "scheduled_close_time", nullable = true)
+    public LocalDateTime scheduledCloseTime;
     @OneToMany(mappedBy = "roll", cascade = CascadeType.ALL)
     public List<PresenceEntity> presences;
 

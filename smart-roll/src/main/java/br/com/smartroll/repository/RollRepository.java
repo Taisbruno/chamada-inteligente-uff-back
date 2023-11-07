@@ -96,4 +96,8 @@ public class RollRepository {
     public List<RollEntity> findOpenRolls() {
         return rollRepository.findOpenRolls();
     }
+
+    public List<RollEntity> findRollsWithScheduledCloseTime() {
+        return rollRepository.findRollsWithScheduledCloseTime();
+    }
 }

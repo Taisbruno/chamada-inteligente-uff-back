@@ -11,20 +11,26 @@ import br.com.smartroll.repository.entity.PresenceEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Classe de serviço responsável pelas operações relacionadas a chamadas.
  */
 @Service
 public class RollService {
+
+    @Autowired
+    private TaskScheduler taskScheduler;
 
     @Autowired
     private RollRepository rollRepository;
@@ -38,6 +44,10 @@ public class RollService {
     @Autowired
     private PresenceRepository presenceRepository;
 
+    @PostConstruct
+    public void init() {
+        reScheduleUnfinishedRolls();
+    }
 
     public RollModel getRoll(Long id) throws RollNotFoundException {
         RollEntity rollEntity = rollRepository.getRoll(id);
@@ -62,6 +72,58 @@ public class RollService {
         newRollModel.class_code = classRepository.getClassCodeByRollId(Long.parseLong(newRollModel.id));
         return newRollModel;
     }
+
+    /**
+     * Agenda um horário para fechar uma chamada aberta automaticamente no mesmo dia.
+     *
+     * @param rollId       O identificador da chamada a ser aberta.
+     * @param closeTime    O horário em que a chamada deve ser fechada.
+     * @throws RollNotFoundException se a chamada não for encontrada.
+     */
+    public void closeRollWithScheduledClose(Long rollId, LocalTime closeTime) throws RollNotFoundException, InvalidTimeException {
+        RollEntity rollEntity = rollRepository.getRoll(rollId);
+        if (rollEntity == null) {
+            throw new RollNotFoundException(String.valueOf(rollId));
+        }
+
+        LocalDateTime closeDateTime = LocalDateTime.of(LocalDate.now(), closeTime);
+        if (closeDateTime.isBefore(rollEntity.createdAt)) {
+            throw new InvalidTimeException("Close time must be in the future.");
+        }
+
+        // Salvando o horário de agendamento para fechar a chamada aberta manualmente
+        rollEntity.scheduledCloseTime = closeDateTime;
+        rollRepository.createRoll(rollEntity); // Salva a entidade com o novo horário programado
+
+        scheduleCloseRoll(rollId, closeTime);
+    }
+
+    private void reScheduleUnfinishedRolls() {
+        List<RollEntity> rollsToBeClosed = rollRepository.findRollsWithScheduledCloseTime();
+        if(!rollsToBeClosed.isEmpty()){
+            for (RollEntity roll : rollsToBeClosed) {
+                scheduleCloseRoll(roll.id, roll.scheduledCloseTime.toLocalTime());
+            }
+        }
+    }
+
+    private void scheduleCloseRoll(Long rollId, LocalTime closeTime) {
+        LocalDateTime closeDateTime = LocalDateTime.of(LocalDate.now(), closeTime);
+
+        // Agenda o fechamento da chamada
+        taskScheduler.schedule(
+                () -> {
+                    try {
+                        closeRoll(rollId);
+                    } catch (RollNotFoundException | RollClosedException e) {
+                        // Aqui você pode querer fazer algum log ou tratamento de erro
+                        // dependendo de como você quer lidar com falhas no agendamento
+                    }
+                },
+                Date.from(closeDateTime.atZone(ZoneId.systemDefault()).toInstant())
+        );
+    }
+
 
     public void closeRoll(Long id) throws RollNotFoundException, RollClosedException {
         if(rollRepository.getRoll(id) == null){

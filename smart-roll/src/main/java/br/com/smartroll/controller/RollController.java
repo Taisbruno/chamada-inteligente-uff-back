@@ -8,6 +8,7 @@ import br.com.smartroll.view.HistoricRollsView;
 import br.com.smartroll.view.RollView;
 import br.com.smartroll.view.RollsView;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import io.swagger.annotations.ApiOperation;
@@ -180,5 +181,42 @@ public class RollController {
         RollModel createdRoll = service.createRoll(rollModel);
         createdRoll.isOpen = service.isOpen(Long.parseLong(createdRoll.id));
         return new RollView(createdRoll).toJson();
+    }
+
+    @ApiOperation(value = "Fecha uma chamada aberta com base em um horário agendado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = String.class),
+                    examples = {@ExampleObject(value = SwaggerExamples.GETROLLEXAMPLE)})
+            ),
+            @ApiResponse(responseCode = "201", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "400", description = "Corpo do json mal formado ou horário inválido"),
+            @ApiResponse(responseCode = "404", description = "Chamada não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno na requisição")})
+    @PatchMapping(value = "/close-roll-scheduled/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void closeRollWithScheduledClose(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da chamada a ser preenchido", example = SwaggerExamples.POSTENDTIMEROLL) @RequestBody String requestBody) throws InvalidJsonException, InvalidTimeException, RollNotFoundException {
+        JSONObject requestBodyJson = null;
+        try {
+            if (requestBody != null) {
+                requestBodyJson = new JSONObject(requestBody);
+            } else throw new InvalidJsonException("missing.");
+        }
+        catch (JSONException | InvalidJsonException e) {
+            throw new InvalidJsonException(" incorrect format.");
+        }
+        if(!requestBodyJson.has("rollId"))
+            throw new InvalidJsonException("expected \"rollId\" key.");
+        if(requestBodyJson.isNull("rollId"))
+            throw new InvalidJsonException("\"rollId\" can not be null.");
+        if(!requestBodyJson.has("endTime"))
+            throw new InvalidJsonException("expected \"endTime\" key.");
+        if(requestBodyJson.isNull("endTime"))
+            throw new InvalidJsonException("\"endTime\" can not be null.");
+        long rollId = Long.parseLong(requestBodyJson.getString("rollId"));
+        LocalTime endTime = LocalTime.parse(requestBodyJson.getString("endTime"));
+        service.closeRollWithScheduledClose(rollId, endTime);
     }
 }
