@@ -5,6 +5,9 @@ import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.service.PresenceService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.PresencesView;
+
+import java.util.List;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,8 +22,6 @@ import kong.unirest.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Controlador responsável por gerenciar as operações relacionadas às presenças.
@@ -43,6 +44,7 @@ public class PresenceController {
      * @throws RollClosedException Quando a chamada está fechada.
      * @throws StudentAlreadySubscribedException Quando o aluno já está inscrito na chamada.
      * @throws UserNotFoundException Quando o aluno não foi encontrado.
+     * @throws StudentNotEnrolledInClassException Quando o aluno não está inscrito na turma.
      */
     @ApiOperation(value = "Realiza a submissão de presença ou falta justificada com atestado em uma chamada e transmite via WebSocket a lista de alunos inscritos na chamada aberta em tempo real", notes = "Submete uma presença ou falta justificada com atestato médico e e transmite via WebSocket a lista de alunos inscritos com presença na chamada aberta em tempo real. <br><br>Para acessar o WebSocket, clientes devem se conectar em 'ws://topic/presences/{id}' para receber atualizações da lista de presença da chamada em tempo real.<br><br>Caso tenha sido passado um corpo de json sem a chave 'certificate', a presença será registrada com campo 'isPresent' como 'true', caso contrário, este campo será salvo como 'false' e esta presença deve ser validada pelo professor posteriormente para fins de abono de falta.\n" +
             "<br><br>Exemplo de JSON sem atestado:<br><pre>" +
@@ -63,7 +65,10 @@ public class PresenceController {
                     @ExampleObject(value = SwaggerExamples.GETPRESENCES)})),
             @ApiResponse(responseCode = "404", description = "Aluno não encontrado ou chamada não encontrada"),
             @ApiResponse(responseCode = "400", description = "Corpo da mensagem mal formado"),
-            @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada ou chamada já fechada"),
+            @ApiResponse(responseCode = "201", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada, chamada já fechada ou aluno não inscrito na turma"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException {
@@ -121,8 +126,10 @@ public class PresenceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida e WebSocket notificado em /topic/presences/{id} com Json de lista de presenças da chamada ativa em questão", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class), examples = {
                     @ExampleObject(value = SwaggerExamples.GETPRESENCES)})),
-            @ApiResponse(responseCode = "400", description = "Status não utilizado"),
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
     @PatchMapping(value = "/invalidate-presence", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -144,8 +151,10 @@ public class PresenceController {
     @ApiOperation(value = "Valida o status de presença de um aluno inscrito em uma chamada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
-            @ApiResponse(responseCode = "400", description = "Status não utilizado"),
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
     @PatchMapping(value = "/validate-presence")
@@ -154,11 +163,20 @@ public class PresenceController {
 
     }
 
+    /**
+     * Insere um atestado médico em uma presença existente criada para fins de justificar uma falta em uma chamada.
+     * @param requestBody o corpo da requisição.
+     * @throws PresenceNotFoundException lançada quando presença não foi encontrada.
+     * @throws InvalidJsonException lançada quando json é inválido.
+     */
     @ApiOperation(value = "Insere um atestado médico em uma presença de um aluno inscrito em uma chamada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida"),
             @ApiResponse(responseCode = "400", description = "Corpo do json mal formado"),
             @ApiResponse(responseCode = "404", description = "Presença não encontrada"),
+            @ApiResponse(responseCode = "204", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
     @PatchMapping(value = "/insert-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -187,13 +205,21 @@ public class PresenceController {
         presenceService.updateCertificate(Long.parseLong(id), certificate);
     }
 
+    /**
+     * Retorna as presenças relacionadas a uma chamada com base no id.
+     * @param id id da chamada.
+     * @return view de presença.
+     * @throws RollNotFoundException lançada quando não foi encontrada a chamada especificada.
+     * @throws PresencesNotFoundException lançada quando não foram encontradas presenças associadas a essa chamada.
+     */
     @ApiOperation(value = "Retorna as presenças de uma determinada chamada.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida", content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = String.class),
                     examples = {@ExampleObject(value = SwaggerExamples.GETPRESENCES)})),
-            @ApiResponse(responseCode = "400", description = "Status não utilizado"),
+            @ApiResponse(responseCode = "401", description = "Status não utilizado."),
+            @ApiResponse(responseCode = "403", description = "Status não utilizado."),
             @ApiResponse(responseCode = "404", description = "Chamada não encontrada ou presenças associadas à chamada não encontradas"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })

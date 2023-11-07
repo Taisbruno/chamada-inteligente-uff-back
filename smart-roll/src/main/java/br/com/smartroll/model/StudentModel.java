@@ -1,6 +1,5 @@
 package br.com.smartroll.model;
 
-import java.util.ArrayList;
 
 public class StudentModel extends UserModel {
 
