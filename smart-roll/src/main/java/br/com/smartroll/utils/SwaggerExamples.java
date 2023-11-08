@@ -58,6 +58,17 @@ public class SwaggerExamples {
 
   /**
    * RollController.
+   * Exemplo de corpo de json entrada para postRollByClass.
+   */
+  public final static String POSTENDTIMEROLL = """
+      {
+        "rollId": "1",
+        "endTime": "10:00:00"
+      }
+        """;
+
+  /**
+   * RollController.
    * Exemplo de retorno de json para getRoll.
    */
   public final static String GETROLLEXAMPLE = """

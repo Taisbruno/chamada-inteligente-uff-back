@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,6 +23,14 @@ public interface IRollRepository extends JpaRepository<RollEntity, Long> {
      */
     @Query("SELECT r FROM RollEntity r WHERE r.id = ?1")
     RollEntity getRoll(Long id);
+
+    /**
+     * Retorna todas as chamadas com um horário de fechamento agendado que ainda não foram fechadas.
+     *
+     * @return uma lista de RollEntity que precisam ser reagendadas para fechamento.
+     */
+    @Query("SELECT r FROM RollEntity r WHERE r.scheduledCloseTime IS NOT NULL AND r.finishedAt IS NULL")
+    List<RollEntity> findRollsWithScheduledCloseTime();
 
     /**
      * Verifica se a chamada com o ID especificado está aberta.
