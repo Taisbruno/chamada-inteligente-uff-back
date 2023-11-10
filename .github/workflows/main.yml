@@ -17,7 +17,7 @@ jobs:
       with:
         java-version: 17
     - name: Run Lint
-      run: mvn lint
+      run: mvn checkstyle:check
       working-directory: ./smart-roll
 
   test:
