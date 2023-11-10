@@ -1,9 +1,10 @@
-name: Deploy CI/CD
+name: Deploy
 
 on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   test:
