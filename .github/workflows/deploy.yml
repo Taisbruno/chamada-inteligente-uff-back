@@ -45,32 +45,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: packaged-jar
-          path: ./deploy
-
-      - name: Deploy via SSH Deploy
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.AWS_EC2_HOST }}
-          REMOTE_USER: ${{ secrets.AWS_EC2_USERNAME }}
-          REMOTE_PORT: ${{ secrets.AWS_EC2_PORT }}
-          SOURCE: "./deploy/"
-          TARGET: "/var/myapp"
-
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: packaged-jar
-  #     - name: Deploy to EC2
-  #       uses: easingthemes/ssh-deploy@main
-  #       with:
-  #         host: ${{ secrets.AWS_EC2_HOST }}
-  #         username: ${{ secrets.AWS_EC2_USERNAME }}
-  #         key: ${{ secrets.AWS_EC2_SSH_KEY }}
-  #         port: ${{ secrets.AWS_EC2_PORT }}
-  #         source: "*.jar"
-  #         target: "/var/myapp"
+      - name: Copy file via scp
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
+          source: "*.jar"
+          target: "/var/myapp"
