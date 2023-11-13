@@ -38,19 +38,39 @@ jobs:
           path: ./smart-roll/target/*.jar
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: packaged-jar
-      - name: Copy file via scp
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          port: ${{ secrets.AWS_EC2_PORT }}
-          source: "*.jar"
-          target: "/var/myapp"
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: packaged-jar
+
+    - name: SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.AWS_EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Copy file via scp
+      run: |
+        scp -i ~/.ssh/id_rsa -P ${{ secrets.AWS_EC2_PORT }} *.jar ec2-user@${{ secrets.AWS_EC2_HOST }}:/var/myapp/
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: packaged-jar
+  #     - name: Copy file via scp
+  #       uses: appleboy/scp-action@master
+  #       with:
+  #         host: ${{ secrets.AWS_EC2_HOST }}
+  #         username: ${{ secrets.AWS_EC2_USERNAME }}
+  #         key: ${{ secrets.AWS_EC2_SSH_KEY }}
+  #         port: ${{ secrets.AWS_EC2_PORT }}
+  #         source: "*.jar"
+  #         target: "/var/myapp"
