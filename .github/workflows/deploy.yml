@@ -46,16 +46,17 @@ jobs:
         with:
           name: packaged-jar
 
-      - name: SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Copy file via scp
-        run: |
-          scp -i ~/.ssh/id_rsa -P ${{ secrets.AWS_EC2_PORT }} *.jar ec2-user@${{ secrets.AWS_EC2_HOST }}:/var/myapp/
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          port: ${{ secrets.AWS_EC2_PORT }}
+          script: |
+            mkdir -p /var/myapp
+            # O comando abaixo assume que o arquivo .jar está no diretório de trabalho atual
+            mv *.jar /var/myapp/
 
   # deploy:
   #   needs: build
