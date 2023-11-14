@@ -67,4 +67,5 @@ jobs:
           EC2_USERNAME: ${{ secrets.AWS_EC2_USERNAME }}
           EC2_PORT: ${{ secrets.AWS_EC2_PORT }}
         run: |
+          ssh -i ~/.ssh/id_rsa -p $EC2_PORT $EC2_USERNAME@$EC2_HOST "rm -f /var/myapp/*.jar"
           scp -i ~/.ssh/id_rsa -P $EC2_PORT -o StrictHostKeyChecking=no *.jar $EC2_USERNAME@$EC2_HOST:/var/myapp/
