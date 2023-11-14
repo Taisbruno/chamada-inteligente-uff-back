@@ -68,21 +68,3 @@ jobs:
           EC2_PORT: ${{ secrets.AWS_EC2_PORT }}
         run: |
           scp -i ~/.ssh/id_rsa -P $EC2_PORT -o StrictHostKeyChecking=no *.jar $EC2_USERNAME@$EC2_HOST:/var/myapp/
-          
-  # deploy:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: packaged-jar
-  #     - name: Copy file via scp
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.AWS_EC2_HOST }}
-  #         username: ${{ secrets.AWS_EC2_USERNAME }}
-  #         key: ${{ secrets.AWS_EC2_SSH_KEY }}
-  #         port: ${{ secrets.AWS_EC2_PORT }}
-  #         source: "*.jar"
-  #         target: "/var/myapp"
