@@ -45,12 +45,44 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: packaged-jar
-      - name: Copy file via scp
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USERNAME }}
-          key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          port: ${{ secrets.AWS_EC2_PORT }}
-          source: "*.jar"
-          target: "/var/myapp"
+
+      - name: Set up SSH key
+        env:
+          SSH_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add EC2 instance to known_hosts
+        env:
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+        run: |
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Transfer files via SCP
+        env:
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.AWS_EC2_USERNAME }}
+          EC2_PORT: ${{ secrets.AWS_EC2_PORT }}
+        run: |
+          scp -i ~/.ssh/id_rsa -P $EC2_PORT -o StrictHostKeyChecking=no *.jar $EC2_USERNAME@$EC2_HOST:/var/myapp/
+          
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download Artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: packaged-jar
+  #     - name: Copy file via scp
+  #       uses: appleboy/scp-action@master
+  #       with:
+  #         host: ${{ secrets.AWS_EC2_HOST }}
+  #         username: ${{ secrets.AWS_EC2_USERNAME }}
+  #         key: ${{ secrets.AWS_EC2_SSH_KEY }}
+  #         port: ${{ secrets.AWS_EC2_PORT }}
+  #         source: "*.jar"
+  #         target: "/var/myapp"
