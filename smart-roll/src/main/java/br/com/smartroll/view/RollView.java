@@ -19,6 +19,8 @@ public class RollView {
     public String finishedAt;
     @SerializedName("isOpen")
     public boolean isOpen;
+    @SerializedName("scheduleCloseTime")
+    public String scheduledCloseTime;
 
     public RollView(RollModel rollModel) {
         this.id = rollModel.id;
@@ -28,6 +30,7 @@ public class RollView {
         this.createdAt = rollModel.createdAt;
         this.finishedAt = rollModel.finishedAt;
         this.isOpen = rollModel.isOpen;
+        this.scheduledCloseTime = rollModel.scheduledCloseTime;
     }
 
     /**
