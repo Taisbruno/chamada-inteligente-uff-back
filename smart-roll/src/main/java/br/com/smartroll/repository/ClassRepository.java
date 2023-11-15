@@ -39,6 +39,11 @@ public class ClassRepository {
         return classRepository.getTotalByClassCode(code);
     }
 
+    public int getTotalStudentsByClassCode(String code){
+        return classRepository.getTotalStudentsByClassCode(code);
+    }
+
+
     public String getClassCodeByRollId(long id){
         return classRepository.getClassCodeByRollId(id);
     }
