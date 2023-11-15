@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-
   database:
     image: postgres
     container_name: database_postgres
@@ -14,6 +13,28 @@ services:
       - POSTGRES_DB=${DB_NAME}
     volumes:
       - pgdata:/data/postgres
+
+  app:
+    build: .
+    ports:
+      - "8443:8443"
+    depends_on:
+      - database
+    environment:
+      - DB_URL=jdbc:postgresql://database:5432/${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+  script_runner:
+    image: postgres
+    container_name: script_runner
+    depends_on:
+      - app
+    volumes:
+      - ./tools:/tools
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    entrypoint: /bin/bash -c "sleep 15 && psql -h database -U ${DB_USER} -d ${DB_NAME} -a -f /tools/database-scripts.sql"
 
 volumes:
   pgdata:
