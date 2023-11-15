@@ -104,15 +104,15 @@
         </dependency>
         <!-- AWS S3 -->
         <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3</artifactId>
-            <version>2.21.23</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.11.1000</version>
         </dependency>
         <!-- Environment variables -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
-            <version>5.2.2</version>
+            <version>3.0.0</version>
         </dependency>
         <!--Lib para PostgreSQL -->
         <dependency>

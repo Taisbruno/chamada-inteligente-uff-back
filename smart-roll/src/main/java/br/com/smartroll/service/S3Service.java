@@ -1,3 +1,5 @@
+package br.com.smartroll.service;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -37,17 +39,19 @@ public class S3Service {
                             .build();
     }
 
-    public String uploadBase64File(String base64File, String fileName) throws IOException {
+    public String uploadBase64File(String base64File, String fileName, String mimeType) throws IOException {
         byte[] fileBytes = Base64.getDecoder().decode(base64File);
         InputStream fileInputStream = new ByteArrayInputStream(fileBytes);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(fileBytes.length);
-        metadata.setContentType("application/pdf"); // Supondo que seja PDF
+        metadata.setContentType(mimeType); // Supondo que seja PDF
 
-        s3client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, fileInputStream, metadata));
+        s3client.putObject(new PutObjectRequest(bucketName, fileName, fileInputStream, metadata));
         fileInputStream.close();
 
-        return s3client.getUrl(BUCKET_NAME, fileName).toString();
+        System.out.println(s3client.getUrl(bucketName, fileName).toString());
+
+        return s3client.getUrl(bucketName, fileName).toString();
     }
 }

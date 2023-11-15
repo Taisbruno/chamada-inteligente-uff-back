@@ -316,6 +316,8 @@ public class SwaggerExamples {
   public static final String PUTCERTIFICATE = """
               {
                 "id": "1",
+                "studentRegistration": "1",
+                "filename": "arquivo_atestado.pdf",
                 "certificate": "iVBORw0KGgoAAAANSUhEUgAAAXAAAAIECAIAAACPIOIiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQA"
               }
           """;
