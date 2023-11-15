@@ -25,6 +25,17 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
 
+  script_runner:
+    image: postgres
+    container_name: script_runner
+    depends_on:
+      - app
+    volumes:
+      - ./tools:/tools
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    entrypoint: /bin/bash -c "sleep 15 && psql -h database -U ${DB_USER} -d ${DB_NAME} -a -f /tools/database-scripts.sql"
+
 volumes:
   pgdata:
     driver: local
