@@ -50,8 +50,6 @@ public class S3Service {
         s3client.putObject(new PutObjectRequest(bucketName, fileName, fileInputStream, metadata));
         fileInputStream.close();
 
-        System.out.println(s3client.getUrl(bucketName, fileName).toString());
-
         return s3client.getUrl(bucketName, fileName).toString();
     }
 }

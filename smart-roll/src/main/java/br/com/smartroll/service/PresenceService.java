@@ -240,8 +240,6 @@ public class PresenceService {
 
         String extension = filename.split("\\.")[1];
 
-        System.out.println(extension);
-
         if (extension.equals("jpg") || extension.equals("jpeg")) {
             mimeType = "image/jpeg";
         } else if (extension.equals("png")) {
@@ -249,8 +247,6 @@ public class PresenceService {
         }
 
         String newFilename = "medical-certificate_" + studentRegistration + "_" + id + "." + extension;
-
-        System.out.println(newFilename);
 
         String certificateUrl = s3Service.uploadBase64File(certificate, newFilename, mimeType);
 
