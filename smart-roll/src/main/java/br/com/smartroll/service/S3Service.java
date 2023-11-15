@@ -45,7 +45,7 @@ public class S3Service {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(fileBytes.length);
-        metadata.setContentType(mimeType); // Supondo que seja PDF
+        metadata.setContentType(mimeType);
 
         s3client.putObject(new PutObjectRequest(bucketName, fileName, fileInputStream, metadata));
         fileInputStream.close();
