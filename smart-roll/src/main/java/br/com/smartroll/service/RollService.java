@@ -172,7 +172,6 @@ public class RollService {
             RollModel rollModel = new RollModel(rollEntity);
             rollModel.isOpen = rollRepository.isOpen(rollEntity.id);
             rollModel.class_code = classRepository.getClassCodeByRollId(rollEntity.id);
-            rollModel.presencePercentage = ((double) rollsEntity.size() / classRepository.getTotalByClassCode(classCode)) * 100;
 
             // Cálculo da média de tempo de presença
             long totalPresenceTimeInSeconds = 0; // Em segundos
@@ -202,6 +201,7 @@ public class RollService {
             String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
             rollModel.presenceTimeAvarage = formattedTime;
+            rollModel.presencePercentage = ((double) numberOfStudentsPresent / (double) classRepository.getTotalStudentsByClassCode(classCode)) * 100;
 
             for (PresenceEntity presenceEntity : rollEntity.presences) {
                 PresenceModel presenceModel = new PresenceModel(presenceEntity);
