@@ -232,7 +232,8 @@ public class PresenceService {
         if(presenceRepository.getPresence(id) == null){
             throw new PresenceNotFoundException(String.valueOf(id));
         }
-        presenceRepository.updateCertificate(id, certifcate);
-    }
+        String certificateUrl = s3Service.uploadBase64File(certifcate, "medical-certificate-" + id + ".pdf");
 
+        presenceRepository.updateCertificate(id, certificateUrl);
+    }
 }
