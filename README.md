@@ -62,6 +62,8 @@ Pré-requisitos
 Certifique-se de que o Docker esteja instalado em seu sistema e esteja em execução. Se não tiver o Docker, você pode baixá-lo e instalá-lo a partir do [site oficial do Docker](https://www.docker.com/products/docker-desktop/).
 É necessário estar na raíz do projeto para executar os comandos citados logo mais abaixo.
 
+Crie um arquivo ```.env``` e nele coloque as mesmas variáveis que existem no arquivo ```.env.example```, com seus devidos valores.
+
 Passo 1 - Execute o comando (Esse comando construirá a imagem Docker da aplicação, baseando-se nas instruções definidas no arquivo docker-compose.yml):
 ```
 docker-compose build
