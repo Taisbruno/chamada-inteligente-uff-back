@@ -102,7 +102,18 @@
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
         </dependency>
-
+        <!-- AWS S3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.11.1000</version>
+        </dependency>
+        <!-- Environment variables -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.0.0</version>
+        </dependency>
         <!--Lib para PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>

@@ -6,6 +6,7 @@ import br.com.smartroll.service.PresenceService;
 import br.com.smartroll.utils.SwaggerExamples;
 import br.com.smartroll.view.PresencesView;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.swagger.annotations.ApiOperation;
@@ -180,7 +181,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição")
     })
     @PatchMapping(value = "/insert-certificate", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void insertCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException {
+    public void insertCertificate(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da requisição a ser preenchido", example = SwaggerExamples.PUTCERTIFICATE) @RequestBody String requestBody) throws PresenceNotFoundException, InvalidJsonException, IOException {
         JSONObject requestBodyJson = null;
         try {
             if (requestBody != null) {
@@ -199,10 +200,20 @@ public class PresenceController {
             throw new InvalidJsonException("expected \"certificate\" key.");
         if(requestBodyJson.isNull("certificate"))
             throw new InvalidJsonException("\"certificate\" can not be null.");
+        if(!requestBodyJson.has("filename"))
+            throw new InvalidJsonException("expected \"filename\" key.");
+        if(requestBodyJson.isNull("filename"))
+            throw new InvalidJsonException("\"filename\" can not be null.");
+        if(!requestBodyJson.has("studentRegistration"))
+            throw new InvalidJsonException("expected \"studentRegistration\" key.");
+        if(requestBodyJson.isNull("studentRegistration"))
+            throw new InvalidJsonException("\"studentRegistration\" can not be null.");
 
         String id = requestBodyJson.getString("id");
         String certificate = requestBodyJson.getString("certificate");
-        presenceService.updateCertificate(Long.parseLong(id), certificate);
+        String filename = requestBodyJson.getString("filename");
+        String studentRegistration = requestBodyJson.getString("studentRegistration");
+        presenceService.updateCertificate(Long.parseLong(id), certificate, filename, studentRegistration);
     }
 
     /**
