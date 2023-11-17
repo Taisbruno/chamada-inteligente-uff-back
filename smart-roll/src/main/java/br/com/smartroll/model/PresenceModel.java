@@ -13,6 +13,7 @@ public class PresenceModel {
     public String rollId;
     public String classCode;
     public String medicalCertificate;
+    public String filename;
     public String message;
     public boolean isPresent;
     public String entryTime;
@@ -29,10 +30,11 @@ public class PresenceModel {
         this.entryTime = LocalDateTime.now().toString();
     }
 
-    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String message){
+    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String filename, String message){
         this.studentRegistration = studentRegistration;
         this.rollId = rollId;
         this.medicalCertificate = medicalCertificate;
+        this.filename = filename;
         this.message = message;
         this.isPresent = false;
         this.entryTime = LocalDateTime.now().toString();

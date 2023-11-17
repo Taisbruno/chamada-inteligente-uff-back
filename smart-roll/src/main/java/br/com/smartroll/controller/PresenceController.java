@@ -58,6 +58,7 @@ public class PresenceController {
             "{<br>" +
             "    \"studentRegistration\": \"string\",<br>" +
             "    \"certificate\": \"string\",<br>" +
+            "    \"filename\": \"string\",<br>" +
             "    \"rollId\": \"string\",<br>" +
             "    \"message\": \"string\"<br>" +
             "}<br><pre>")
@@ -72,7 +73,7 @@ public class PresenceController {
             @ApiResponse(responseCode = "409", description = "Aluno já inscrito na chamada, chamada já fechada ou aluno não inscrito na turma"),
             @ApiResponse(responseCode = "500", description = "Erro interno na requisição") })
     @PostMapping(value = "/create-presence", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException {
+    public void postPresence(@ApiParam(name = "requestBody", type = MediaType.APPLICATION_JSON_VALUE, value = "Corpo da presença em uma chamada a ser preenchido", example = SwaggerExamples.POSTPRESENCE) @RequestBody String requestBody) throws InvalidJsonException, RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException, IOException {
         JSONObject requestBodyJson;
         try {
             if (requestBody != null) {
@@ -104,8 +105,16 @@ public class PresenceController {
 
         // Se houver certificado no corpo do json, será submetido uma presença inválida pendente de análise a ser validada pelo professor.
         if(requestBodyJson.has("certificate")){
+
+            if(!requestBodyJson.has("filename"))
+                throw new InvalidJsonException("expected \"filename\" key.");
+            if(requestBodyJson.isNull("message"))
+                throw new InvalidJsonException("\"filename\" can not be null.");
+
+
             String medicalCertificate = requestBodyJson.getString("certificate");
-            presenceModel = new PresenceModel(registration, rollId, medicalCertificate, message);
+            String filename = requestBodyJson.getString("filename");
+            presenceModel = new PresenceModel(registration, rollId, medicalCertificate, filename, message);
         }else{ // Se não houver, será submetida uma presença válida.
             presenceModel = new PresenceModel(registration, rollId, message);
         }
