@@ -25,11 +25,12 @@ public class S3Service {
     private String bucketName;
 
     public S3Service() {
-        String awsAccessKey = System.getenv("AWS_ACCESS_KEY_ID");
-        String awsSecretKey = System.getenv("AWS_SECRET_ACCESS_KEY");
-        String awsRegion = System.getenv("AWS_REGION");
+        Dotenv dotenv = Dotenv.load();
+        String awsAccessKey = dotenv.get("AWS_ACCESS_KEY_ID");
+        String awsSecretKey = dotenv.get("AWS_SECRET_ACCESS_KEY");
+        String awsRegion = dotenv.get("AWS_REGION");
 
-        this.bucketName = System.getenv("AWS_S3_BUCKET");
+        this.bucketName = dotenv.get("AWS_S3_BUCKET");
 
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
         this.s3client = AmazonS3ClientBuilder.standard()

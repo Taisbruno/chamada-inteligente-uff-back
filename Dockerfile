@@ -4,6 +4,8 @@ COPY smart-roll/pom.xml /usr/src/myapp/
 
 COPY smart-roll/src /usr/src/myapp/src
 
+COPY .env /usr/src/myapp/
+
 WORKDIR /usr/src/myapp
 
 RUN apt-get update && apt-get install -y maven
