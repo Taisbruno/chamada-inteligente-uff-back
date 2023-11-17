@@ -108,7 +108,7 @@ public class PresenceController {
 
             if(!requestBodyJson.has("filename"))
                 throw new InvalidJsonException("expected \"filename\" key.");
-            if(requestBodyJson.isNull("message"))
+            if(requestBodyJson.isNull("filename"))
                 throw new InvalidJsonException("\"filename\" can not be null.");
 
 
