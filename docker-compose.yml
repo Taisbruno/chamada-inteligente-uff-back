@@ -38,7 +38,7 @@ services:
       - ./tools:/tools
     environment:
       - PGPASSWORD=${DB_PASSWORD}
-    entrypoint: /bin/bash -c "sleep 15 && psql -h database -U ${DB_USER} -d ${DB_NAME} -a -f /tools/database-scripts.sql"
+    entrypoint: /bin/bash -c "sleep 20 && psql -h database -U ${DB_USER} -d ${DB_NAME} -a -f /tools/database-scripts.sql"
 
 volumes:
   pgdata:
