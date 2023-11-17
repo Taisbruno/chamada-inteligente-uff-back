@@ -102,7 +102,7 @@ public class PresenceService {
      * @throws StudentAlreadySubscribedException Se o aluno já estiver inscrito na chamada.
      * @throws UserNotFoundException Se o usuário não for encontrado.
      */
-    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException {
+    public void submitPresence(PresenceModel presenceModel) throws RollNotFoundException, RollClosedException, StudentAlreadySubscribedException, UserNotFoundException, StudentNotEnrolledInClassException, IOException {
         Long rollId = Long.parseLong(presenceModel.rollId);
         if(rollRepository.getRoll(rollId) == null){
             throw new RollNotFoundException(presenceModel.rollId);
@@ -114,6 +114,11 @@ public class PresenceService {
             throw new UserNotFoundException(presenceModel.studentRegistration);
         }else if(!userRepository.isStudentEnrolledInClass(presenceModel.studentRegistration, rollId)){
             throw new StudentNotEnrolledInClassException(presenceModel.studentRegistration, presenceModel.rollId);
+        }
+
+        if (presenceModel.medicalCertificate != null) {
+            String certificateUrl = uploadCertificate(Long.parseLong(presenceModel.rollId), presenceModel.medicalCertificate, presenceModel.filename, presenceModel.studentRegistration);
+            presenceModel.medicalCertificate = certificateUrl;
         }
 
         PresenceEntity presenceEntity = new PresenceEntity(presenceModel);
@@ -228,12 +233,26 @@ public class PresenceService {
      * Responsável por inserir um atestado médico a uma presença.
      * @param id o id da presença.
      * @param certificate a string do atestado médico em base64.
+     * @param filename o nome do arquivo que foi enviado.
+     * @param studentRegistration matrícula do aluno que submeteu o atestado.
      */
     public void updateCertificate(long id, String certificate, String filename, String studentRegistration) throws PresenceNotFoundException, IOException {
         if(presenceRepository.getPresence(id) == null){
             throw new PresenceNotFoundException(String.valueOf(id));
         }
 
+        String certificateUrl = uploadCertificate(id, certificate, filename, studentRegistration);
+        presenceRepository.updateCertificate(id, certificateUrl);
+    }
+
+    /**
+     * Responsável por realizar o upload de um arquivo para o S3 e retornar a URL de acesso.
+     * @param id o id da presença.
+     * @param certificate a string do atestado médico em base64.
+     * @param filename o nome do arquivo que foi enviado.
+     * @param studentRegistration matrícula do aluno que submeteu o atestado.
+     */
+    public String uploadCertificate(long id, String certificate, String filename, String studentRegistration ) throws IOException {
         S3Service s3Service = new S3Service();
 
         String mimeType = "application/pdf";
@@ -248,8 +267,7 @@ public class PresenceService {
 
         String newFilename = "medical-certificate_" + studentRegistration + "_" + id + "." + extension;
 
-        String certificateUrl = s3Service.uploadBase64File(certificate, newFilename, mimeType);
-
-        presenceRepository.updateCertificate(id, certificateUrl);
+        return s3Service.uploadBase64File(certificate, newFilename, mimeType);
     }
+
 }

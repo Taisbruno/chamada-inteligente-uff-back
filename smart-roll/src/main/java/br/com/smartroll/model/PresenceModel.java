@@ -13,6 +13,7 @@ public class PresenceModel {
     public String rollId;
     public String classCode;
     public String medicalCertificate;
+    public String filename;
     public String message;
     public boolean isPresent;
     public String entryTime;
@@ -29,10 +30,11 @@ public class PresenceModel {
         this.entryTime = LocalDateTime.now().toString();
     }
 
-    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String message){
+    public PresenceModel(String studentRegistration, String rollId, String medicalCertificate, String filename, String message){
         this.studentRegistration = studentRegistration;
         this.rollId = rollId;
         this.medicalCertificate = medicalCertificate;
+        this.filename = filename;
         this.message = message;
         this.isPresent = false;
         this.entryTime = LocalDateTime.now().toString();
@@ -61,10 +63,15 @@ public class PresenceModel {
         this.message = presenceEntity.message;
         this.isPresent = presenceEntity.isPresent;
         this.entryTime = String.valueOf(presenceEntity.entryTime);
-        this.exitTime = String.valueOf(presenceEntity.exitTime);
+
+        if(presenceEntity.exitTime != null) {
+            this.exitTime = String.valueOf(presenceEntity.exitTime);
+        } else {
+            this.exitTime = entryTime;
+        }
         // Calculate the duration between entry and exit time
-        LocalDateTime entry = LocalDateTime.parse(presenceEntity.entryTime);
-        LocalDateTime exit = LocalDateTime.parse(presenceEntity.exitTime);
+        LocalDateTime entry = LocalDateTime.parse(this.entryTime);
+        LocalDateTime exit = LocalDateTime.parse(this.exitTime);
         Duration duration = Duration.between(entry, exit);
         // Convert the duration to a formatted string (e.g., "02:15:30" for 2 hours, 15 minutes, and 30 seconds)
         long hours = duration.toHours();
