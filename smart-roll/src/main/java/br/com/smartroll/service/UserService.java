@@ -6,6 +6,7 @@ import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.UserRepository;
+import br.com.smartroll.repository.entity.ClassEntity;
 import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
 
@@ -51,7 +52,7 @@ public class UserService {
         if(studentsEntity.isEmpty()){
             throw new UsersNotFoundException(classCode, semester);
         }
-        return convertEntityToModel(studentsEntity);
+        return convertEntityToModel(studentsEntity, classCode, semester);
     }
 
     /**
@@ -70,7 +71,8 @@ public class UserService {
         if(studentsEntity.isEmpty()){
             throw new UsersNotFoundException(idRoll);
         }
-        return convertEntityToModel(studentsEntity);
+        ClassEntity classEntity = classRepository.getClassByCode(classRepository.getClassCodeByRollId(Long.parseLong(idRoll)));
+        return convertEntityToModel(studentsEntity, classEntity.classCode, classEntity.semester);
     }
 
     public List<StudentModel> getFailedStudentsByClassCode(String classCode, String semester) throws ClassroomNotFoundException, UsersNotFoundException, RollsNotFoundException, FailedStudentsNotFoundException {
@@ -113,18 +115,35 @@ public class UserService {
         if(failedStudents.isEmpty()){
             throw new FailedStudentsNotFoundException(classCode, semester);
         }
-        return convertEntityToModel(failedStudents);
+        return convertEntityToModel(failedStudents, classCode, semester);
     }
 
-    private List<StudentModel> convertEntityToModel(List<UserEntity> studentsEntity){
+    private List<StudentModel> convertEntityToModel(List<UserEntity> studentsEntity, String classCode, String semester){
         List<StudentModel> studentsModel = new ArrayList<>();
         for(UserEntity user : studentsEntity){
             if(user.type.equals("student")) {
                 StudentModel studentModel = new StudentModel(user.registration, user.name, user.email, user.password);
+                calculateFrequencyAndFailed(studentModel, user.registration, classCode, semester);
                 studentsModel.add(studentModel);
             }
         }
         return studentsModel;
+    }
+
+    private void calculateFrequencyAndFailed(StudentModel studentModel, String studentRegistration, String classCode, String semester) {
+        List<RollEntity> rolls = rollRepository.getClosedRollsFromClass(classCode, semester);
+        int totalRolls = rolls.size();
+        int attendedRolls = 0;
+
+        for (RollEntity roll : rolls) {
+            if (presenceRepository.isPresent(studentRegistration, roll.id)) {
+                attendedRolls++;
+            }
+        }
+
+        double frequency = totalRolls > 0 ? (double) attendedRolls / totalRolls * 100 : 0;
+        studentModel.frequency = frequency;
+        studentModel.failed = frequency < 75;
     }
 
 }

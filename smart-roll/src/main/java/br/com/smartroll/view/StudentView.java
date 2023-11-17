@@ -14,6 +14,12 @@ public class StudentView {
     @SerializedName("name")
     public String name;
 
+    @SerializedName("frequency")
+    public double frequency;
+
+    @SerializedName("failed")
+    public boolean failed;
+
     /**
      * Construtor de StudentView com base em um modelo de estudante.
      * Inicializa a visualização do estudante usando os dados do modelo fornecido.
@@ -23,17 +29,7 @@ public class StudentView {
     public StudentView(StudentModel studentModel) {
         this.registration = studentModel.registrationNumber;
         this.name = studentModel.name;
-    }
-
-    /**
-     * Construtor alternativo de StudentView com base em um número de registro e um nome.
-     * Permite a criação direta de uma visualização de estudante sem necessidade de um modelo completo.
-     *
-     * @param registrationNumber O número de registro do estudante.
-     * @param name O nome do estudante.
-     */
-    public StudentView(String registrationNumber, String name) {
-        this.registration = registrationNumber;
-        this.name = name;
+        this.frequency = studentModel.frequency;
+        this.failed = studentModel.failed;
     }
 }
