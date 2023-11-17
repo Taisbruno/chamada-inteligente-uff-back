@@ -1,0 +1,33 @@
+name: SSH Debugging
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH (if not present)
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Set up SSH key
+        env:
+          SSH_KEY: ${{ secrets.AWS_EC2_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" | base64 --decode > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add EC2 instance to known_hosts
+        env:
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+        run: |
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        env:
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.AWS_EC2_USERNAME }}
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_HOST "echo 'SSH connection successful!'"

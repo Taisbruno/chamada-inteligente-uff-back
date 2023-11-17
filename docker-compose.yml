@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres
+    container_name: database_postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pgdata:/data/postgres
+
+  app:
+    build: .
+    ports:
+      - "8443:8443"
+    depends_on:
+      - database
+    environment:
+      - DB_URL=jdbc:postgresql://database:5432/${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+
+  script_runner:
+    image: postgres
+    container_name: script_runner
+    depends_on:
+      - app
+    volumes:
+      - ./tools:/tools
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    entrypoint: /bin/bash -c "sleep 15 && psql -h database -U ${DB_USER} -d ${DB_NAME} -a -f /tools/database-scripts.sql"
+
+volumes:
+  pgdata:
+    driver: local

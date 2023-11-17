@@ -54,7 +54,33 @@ Apesar do projeto ser facilmente construído e executado através do Maven, este
 mvn clean compile exec:java
 ```
 
-### 2.3. Usando a API
+### 2.3. Executando com Docker localmente
+
+Para rodar uma aplicação Java usando Docker, alguns passos precisam ser seguidos.
+
+Pré-requisitos
+Certifique-se de que o Docker esteja instalado em seu sistema e esteja em execução. Se não tiver o Docker, você pode baixá-lo e instalá-lo a partir do [site oficial do Docker](https://www.docker.com/products/docker-desktop/).
+É necessário estar na raíz do projeto para executar os comandos citados logo mais abaixo.
+
+Crie um arquivo ```.env``` e nele coloque as mesmas variáveis que existem no arquivo ```.env.example```, com seus devidos valores.
+
+Passo 1 - Execute o comando (Esse comando construirá a imagem Docker da aplicação, baseando-se nas instruções definidas no arquivo docker-compose.yml):
+```
+docker-compose build
+```
+
+Passo 2 - Execute o comando (Esse comando iniciará a execução dos serviços definidos no docker-compose.yml, incluindo a aplicação Java, em modo 'detached', permitindo que se continue utilizando o terminal): 
+```
+docker-compose up -d
+```
+
+Passo 3 - No navegador, acesse a URL: http://localhost:8443/
+
+
+Obs: Para interromper a execução do container, execute o comando ```docker-compose down```. Esse comando irá parar e remover os contêineres criados pelo docker-compose up.
+
+
+### 2.4. Usando a API
 
 Uma vez com a API levantada no sistema, o uso dela se da através de HTTP ou HTTPS dependendo da configuração utilizada. Se a configuração não for de produção, acesse a página `/swagger-ui/` para visualizar os comandos da API.
 
@@ -74,7 +100,7 @@ postgresql://<user>:<password>@<host>:<port>/<database-name>
 
 Uma vez com o PostgreSQL implantado localmente ou em máquina externa, o banco de dados do projeto pode ter a criação de tabelas através biblioteca JPA por meio das anotações nas entidades definidas em ./src/main/java/repository/entity/, porém, certifique-se de antes ter rodado o script de criação do banco `smart_rolls`, bem como criação do usuário superuser padrão do projeto com usuário `smart` e senha `smart2552` contido em ./tools/database-scripts.sql.
 
-Vale a pena enfatizar que o script de criação do banco de dados agrega um usuário administrador para o banco com a seguinte credencial:
+Vale enfatizar que o script de criação do banco de dados agrega um usuário administrador para o banco com a seguinte credencial:
 
 * username: smart
 * senha: smart2552

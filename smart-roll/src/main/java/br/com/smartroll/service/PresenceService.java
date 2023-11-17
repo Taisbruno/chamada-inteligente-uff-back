@@ -10,6 +10,7 @@ import br.com.smartroll.repository.entity.RollEntity;
 import br.com.smartroll.repository.entity.UserEntity;
 import br.com.smartroll.view.PresenceView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -226,13 +227,29 @@ public class PresenceService {
     /**
      * Responsável por inserir um atestado médico a uma presença.
      * @param id o id da presença.
-     * @param certifcate a string do atestado médico em base64.
+     * @param certificate a string do atestado médico em base64.
      */
-    public void updateCertificate(long id, String certifcate) throws PresenceNotFoundException {
+    public void updateCertificate(long id, String certificate, String filename, String studentRegistration) throws PresenceNotFoundException, IOException {
         if(presenceRepository.getPresence(id) == null){
             throw new PresenceNotFoundException(String.valueOf(id));
         }
-        presenceRepository.updateCertificate(id, certifcate);
-    }
 
+        S3Service s3Service = new S3Service();
+
+        String mimeType = "application/pdf";
+
+        String extension = filename.split("\\.")[1];
+
+        if (extension.equals("jpg") || extension.equals("jpeg")) {
+            mimeType = "image/jpeg";
+        } else if (extension.equals("png")) {
+            mimeType = "image/png";
+        }
+
+        String newFilename = "medical-certificate_" + studentRegistration + "_" + id + "." + extension;
+
+        String certificateUrl = s3Service.uploadBase64File(certificate, newFilename, mimeType);
+
+        presenceRepository.updateCertificate(id, certificateUrl);
+    }
 }

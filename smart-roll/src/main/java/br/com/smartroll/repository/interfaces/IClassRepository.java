@@ -31,6 +31,14 @@ public interface IClassRepository extends JpaRepository<ClassEntity, Long> {
     Integer getTotalByClassCode(@Param("code") String code);
 
     /**
+     * Retorna o total de alunos de uma determinada turma.
+     * @param code o código da turma.
+     * @return um inteiro com o total de alunos.
+     */
+    @Query("SELECT COUNT(*) FROM ClassSubscriptionEntity c JOIN UserEntity u on c.registration = u.registration WHERE class_code = '3' AND u.type != 'teacher'")
+    Integer getTotalStudentsByClassCode(@Param("code") String code);
+
+    /**
      * Retorna o valor da coluna 'classCode' com base no ID da chamada (RollEntity).
      *
      * @param rollId O ID da chamada (RollEntity).
