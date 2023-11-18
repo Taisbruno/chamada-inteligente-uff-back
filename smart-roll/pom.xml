@@ -105,8 +105,8 @@
         <!-- AWS S3 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.11.1000</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.470</version>
         </dependency>
         <!-- Environment variables -->
         <dependency>
