@@ -25,6 +25,9 @@ BEGIN
 END 
 $$;
 
+-- Definir o fuso horário para o de Brasília (BRT)
+SET TIME ZONE 'America/Sao_Paulo';
+
 -- Inserting User
 INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES 
 ('1', 'João da Silva', '1111', 'joao@example.com', 'joaospassword', 'student'),
@@ -40,12 +43,12 @@ INSERT INTO myuser (registration, name, cpf, email, password, type) VALUES
 
 -- Inserting Course Classes
 INSERT INTO classroom (class_code, discipline_code, discipline, teacher, semester, total) VALUES 
-('1', 'dcode1', 'Qualidade e Teste de Software', 'Beatriz de Souza Matos', '2023.1', 30),
-('2', 'dcode2', 'Gerencia de Projeto e Manutenção de Software', 'Beatriz de Souza Matos', '2023.1', 30),
-('3', 'dcode3', 'Programação de Computadores I', 'Beatriz de Souza Matos', '2023.1', 30),
-('4', 'dcode4', 'Programação de Computadores II', 'Patrick Neves', '2023.1', 30),
-('5', 'dcode5', 'Banco de Dados I', 'Daniel Oliveira', '2023.1', 30),
-('6', 'dcode6', 'Computação e Sociedade', 'Marcos Vinicius Lima', '2023.1', 30);
+('1', 'dcode1', 'Qualidade e Teste de Software', 'Beatriz de Souza Matos', '2023.1', 32),
+('2', 'dcode2', 'Gerencia de Projeto e Manutenção de Software', 'Beatriz de Souza Matos', '2023.1', 32),
+('3', 'dcode3', 'Programação de Computadores I', 'Beatriz de Souza Matos', '2023.1', 32),
+('4', 'dcode4', 'Programação de Computadores II', 'Patrick Neves', '2023.1', 32),
+('5', 'dcode5', 'Banco de Dados I', 'Daniel Oliveira', '2023.1', 32),
+('6', 'dcode6', 'Computação e Sociedade', 'Marcos Vinicius Lima', '2023.1', 32);
 
 -- Inserting Class Subscription
 INSERT INTO classroom_subscription (registration, semester, class_code) VALUES 

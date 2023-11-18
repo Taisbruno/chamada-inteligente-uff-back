@@ -3,6 +3,7 @@ package br.com.smartroll.service;
 import br.com.smartroll.exception.*;
 import br.com.smartroll.model.PresenceModel;
 import br.com.smartroll.model.RollModel;
+import br.com.smartroll.model.StudentModel;
 import br.com.smartroll.repository.ClassRepository;
 import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
@@ -224,15 +225,26 @@ public class RollService {
             UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
             presenceModel.name = userEntity.name;
 
-            long count = rollEntity.presences.stream()
-                    .filter(p -> p.studentRegistration.equals(presenceEntity.studentRegistration))
-                    .count();
-            presenceModel.frequency = ((double) count / rollsEntity.size()) * 100;
-            presenceModel.failed = !(presenceModel.frequency > 75);
+            int totalClasses = classRepository.getTotalByClassCode(classCode);
+            int totalRolls = rollsEntity.size();
+            int attendedRolls = 0;
+
+            for (RollEntity roll : rollsEntity) {
+                if (roll.presences.stream().
+                        anyMatch(presence -> userEntity.registration.equals(presence.studentRegistration) && presence.isPresent)) {
+                    attendedRolls++;
+                }
+            }
+
+            double frequency = totalRolls > 0 ? (double) attendedRolls / totalRolls * 100 : 0;
+            double totalToFail = 0.25 * totalClasses;
+            int missedClasses = totalRolls - attendedRolls;
+
+            presenceModel.frequency = frequency;
+            presenceModel.failed = missedClasses > totalToFail;
             rollModel.presences.add(presenceModel);
         }
         rollModel.presencePercentage = ((double) rollModel.presences.size() / classRepository.getTotalStudentsByClassCode(classCode)) * 100;
     }
-
 
 }
