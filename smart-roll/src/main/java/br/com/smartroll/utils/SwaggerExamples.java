@@ -212,20 +212,24 @@ public class SwaggerExamples {
    * Exemplo de retorno de json para getEnrolledStudentsByClass.
    */
   public final static String GETENROLLEDSTUDENTS = """
-      {
-        "classmates": [
           {
-            "registration": "string",
-            "name": "string"
-          },
-          ...
-          {
-            "registration": "string",
-            "name": "string"
+            "classmates": [
+              {
+                "registration": "string",
+                "name": "string"
+                "frequency": double,
+                "failed": boolean
+              },
+              ...
+              {
+                "registration": "string",
+                "name": "string"
+                "frequency": double,
+                "failed": boolean
+              }
+            ]
           }
-        ]
-      }
-      """;
+          """;
 
   /**
    * ClassController.

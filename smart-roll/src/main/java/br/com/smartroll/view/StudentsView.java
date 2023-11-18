@@ -22,7 +22,7 @@ public class StudentsView {
      */
     public StudentsView(List<StudentModel> studentsModel) {
         for(StudentModel studentModel : studentsModel){
-            StudentView studentView = new StudentView(studentModel.registrationNumber, studentModel.name);
+            StudentView studentView = new StudentView(studentModel);
             students.add(studentView);
         }
     }

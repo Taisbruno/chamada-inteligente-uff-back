@@ -160,11 +160,7 @@ public class RollService {
 
     public List<RollModel> getHistoricRollsFromClass(String classCode, String semester) throws RollsNotFoundException, ClassroomNotFoundException {
         List<RollEntity> rollsEntity = rollRepository.getClosedRollsFromClass(classCode, semester);
-        if(classRepository.getClassByCode(classCode) == null){
-            throw new ClassroomNotFoundException(classCode);
-        }else if (rollsEntity.isEmpty()) {
-            throw new RollsNotFoundException(classCode, semester);
-        }
+        verifyClassAndRollExistence(classCode, rollsEntity, semester);
 
         List<RollModel> rollModels = new ArrayList<>();
 
@@ -173,51 +169,70 @@ public class RollService {
             rollModel.isOpen = rollRepository.isOpen(rollEntity.id);
             rollModel.class_code = classRepository.getClassCodeByRollId(rollEntity.id);
 
-            // Cálculo da média de tempo de presença
-            long totalPresenceTimeInSeconds = 0; // Em segundos
-            int numberOfStudentsPresent = 0;
+            rollModel.presenceTimeAvarage = calculateAveragePresenceTime(rollEntity.presences);
+            calculateFrequencyAndPresence(rollModel, rollEntity, classCode, rollsEntity);
 
-            for (PresenceEntity presenceEntity : rollEntity.presences) {
-                if (presenceEntity.isPresent) {
-                    try {
-                        LocalDateTime entryTime = LocalDateTime.parse(presenceEntity.entryTime);
-                        LocalDateTime exitTime = LocalDateTime.parse(presenceEntity.exitTime);
-                        Duration duration = Duration.between(entryTime, exitTime);
-
-                        totalPresenceTimeInSeconds += duration.getSeconds();
-                        numberOfStudentsPresent++;
-                    } catch (DateTimeParseException ex) {
-                        System.out.println("OIE " + ex.getErrorIndex() + ex.getParsedString());
-                    }
-                }
-            }
-
-            long averagePresenceTimeInSeconds = numberOfStudentsPresent == 0 ? 0 : totalPresenceTimeInSeconds / numberOfStudentsPresent;
-
-            // Convertendo média de segundos para horas, minutos e segundos
-            long hours = averagePresenceTimeInSeconds / 3600;
-            long minutes = (averagePresenceTimeInSeconds % 3600) / 60;
-            long seconds = averagePresenceTimeInSeconds % 60;
-            String formattedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-
-            rollModel.presenceTimeAvarage = formattedTime;
-            rollModel.presencePercentage = ((double) numberOfStudentsPresent / (double) classRepository.getTotalStudentsByClassCode(classCode)) * 100;
-
-            for (PresenceEntity presenceEntity : rollEntity.presences) {
-                PresenceModel presenceModel = new PresenceModel(presenceEntity);
-                UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
-                presenceModel.name = userEntity.name;
-                long count = rollEntity.presences.stream()
-                        .filter(p -> p.studentRegistration.equals(presenceEntity.studentRegistration))
-                        .count();
-                presenceModel.frequency = ((double) count / rollsEntity.size()) * 100;
-                double realFrequency = ((double) count / rollsEntity.size()) * 100;
-                presenceModel.failed = !(presenceModel.frequency > 75);
-                rollModel.presences.add(presenceModel);
-            }
             rollModels.add(rollModel);
         }
         return rollModels;
     }
+
+    private void verifyClassAndRollExistence(String classCode, List<RollEntity> rollsEntity, String semester) throws ClassroomNotFoundException, RollsNotFoundException {
+        if (classRepository.getClassByCode(classCode) == null) {
+            throw new ClassroomNotFoundException(classCode);
+        } else if (rollsEntity.isEmpty()) {
+            throw new RollsNotFoundException(classCode, semester);
+        }
+    }
+
+    private String calculateAveragePresenceTime(List<PresenceEntity> presences) {
+        long totalPresenceTimeInSeconds = 0;
+        int numberOfStudentsPresent = 0;
+
+        for (PresenceEntity presence : presences) {
+            if (presence.isPresent) {
+                try {
+                    LocalDateTime entryTime = LocalDateTime.parse(presence.entryTime);
+                    LocalDateTime exitTime = LocalDateTime.parse(presence.exitTime);
+                    Duration duration = Duration.between(entryTime, exitTime);
+
+                    totalPresenceTimeInSeconds += duration.getSeconds();
+                    numberOfStudentsPresent++;
+                } catch (DateTimeParseException ex) {
+                    System.out.println("Erro de Parse: " + ex.getErrorIndex() + ex.getParsedString());
+                }
+            }
+        }
+
+        if (numberOfStudentsPresent == 0) return "00:00:00";
+
+        long averagePresenceTimeInSeconds = totalPresenceTimeInSeconds / numberOfStudentsPresent;
+        return formatTime(averagePresenceTimeInSeconds);
+    }
+
+    private String formatTime(long timeInSeconds) {
+        long hours = timeInSeconds / 3600;
+        long minutes = (timeInSeconds % 3600) / 60;
+        long seconds = timeInSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+
+    private void calculateFrequencyAndPresence(RollModel rollModel, RollEntity rollEntity, String classCode, List<RollEntity> rollsEntity) {
+        for (PresenceEntity presenceEntity : rollEntity.presences) {
+            PresenceModel presenceModel = new PresenceModel(presenceEntity);
+            UserEntity userEntity = userRepository.getUserByRegistration(presenceEntity.studentRegistration);
+            presenceModel.name = userEntity.name;
+
+            long count = rollEntity.presences.stream()
+                    .filter(p -> p.studentRegistration.equals(presenceEntity.studentRegistration))
+                    .count();
+            presenceModel.frequency = ((double) count / rollsEntity.size()) * 100;
+            presenceModel.failed = !(presenceModel.frequency > 75);
+            rollModel.presences.add(presenceModel);
+        }
+        rollModel.presencePercentage = ((double) rollModel.presences.size() / classRepository.getTotalStudentsByClassCode(classCode)) * 100;
+    }
+
 
 }
