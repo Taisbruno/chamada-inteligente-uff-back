@@ -132,6 +132,7 @@ public class UserService {
 
     private void calculateFrequencyAndFailed(StudentModel studentModel, String studentRegistration, String classCode, String semester) {
         List<RollEntity> rolls = rollRepository.getClosedRollsFromClass(classCode, semester);
+        int totalClasses = classRepository.getTotalByClassCode(classCode);
         int totalRolls = rolls.size();
         int attendedRolls = 0;
 
@@ -143,7 +144,11 @@ public class UserService {
 
         double frequency = totalRolls > 0 ? (double) attendedRolls / totalRolls * 100 : 0;
         studentModel.frequency = frequency;
-        studentModel.failed = frequency < 75;
+
+        double totalToFail = 0.25 * totalClasses;
+        int missedClasses = totalRolls - attendedRolls;
+
+        studentModel.failed = missedClasses > totalToFail;
     }
 
 }
