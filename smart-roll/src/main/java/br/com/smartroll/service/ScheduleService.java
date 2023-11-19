@@ -157,7 +157,7 @@ public class ScheduleService {
      */
     private void validateScheduleModel(ScheduleModel scheduleModel) throws InvalidDayOfWeekException, InvalidTimeException, InvalidTimeFormatException, ScheduleConflictException {
         // Verificar dia da semana
-        if (scheduleModel.dayOfWeek < 0 || scheduleModel.dayOfWeek > 7 || scheduleModel.dayOfWeek == 1) {
+        if (scheduleModel.dayOfWeek < 0 || scheduleModel.dayOfWeek > 7) {
             throw new InvalidDayOfWeekException("Invalid day of the week provided. It should be 0, 7 for Sunday or between 2 and 6 for other days.");
         }
 
