@@ -143,3 +143,11 @@ Repositório referente ao Frontend do Projeto: https://github.com/Taisbruno/cham
 
 Link do Github Issues do Projeto: https://github.com/users/Taisbruno/projects/1
 
+## 7. Integrantes
+
+- Tais Bruno Rabelo
+- Hugo Vieira Bianquini
+- Natalia Bruno Rabelo
+- Pedro Xavier
+- Adriano Souza
+- André Balbi
