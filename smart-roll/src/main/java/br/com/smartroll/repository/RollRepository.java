@@ -93,6 +93,11 @@ public class RollRepository {
         rollRepository.updateFinishedAtByClassCode(classCode);
     }
 
+    public RollEntity getOpenRoll(String classCode) {
+        RollEntity rollEntity = rollRepository.getOpenRoll(classCode);
+        return rollEntity;
+    }
+
     public List<RollEntity> findOpenRolls() {
         return rollRepository.findOpenRolls();
     }

@@ -3,6 +3,7 @@ package br.com.smartroll.service;
 import br.com.smartroll.exception.*;
 import br.com.smartroll.model.ScheduleModel;
 import br.com.smartroll.repository.ClassRepository;
+import br.com.smartroll.repository.PresenceRepository;
 import br.com.smartroll.repository.RollRepository;
 import br.com.smartroll.repository.ScheduleRepository;
 import br.com.smartroll.repository.entity.RollEntity;
@@ -38,6 +39,9 @@ public class ScheduleService {
 
     @Autowired
     private ClassRepository classRepository;
+
+    @Autowired
+    private PresenceRepository presenceRepository;
 
     /**
      * Inicializa o serviço e agenda todos os agendamentos existentes.
@@ -120,7 +124,8 @@ public class ScheduleService {
      */
     private void createRollsBasedOnSchedule(ScheduleEntity schedule) {
         if (!rollRepository.hasOpenRollsForClass(schedule.classEntity.classCode)) {
-            RollEntity rollEntity = new RollEntity(schedule.longitude, schedule.latitude, schedule.classEntity.classCode);
+            LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now(), schedule.endTime.toLocalTime());
+            RollEntity rollEntity = new RollEntity(schedule.longitude, schedule.latitude, schedule.classEntity.classCode, endDateTime);
             rollRepository.createRoll(rollEntity);
         }
     }
@@ -131,7 +136,12 @@ public class ScheduleService {
      * @param schedule o agendamento com base no qual os Rolls devem ser fechados.
      */
     private void closeRollBasedOnSchedule(ScheduleEntity schedule) {
-        rollRepository.closeOpenRollByClassCode(schedule.classEntity.classCode);
+        RollEntity rollEntity = rollRepository.getOpenRoll(schedule.classEntity.classCode);
+
+        if (rollEntity != null) {
+            rollRepository.closeRoll(rollEntity.id);
+            presenceRepository.markExitTimeForAllPresentInRoll(rollEntity.id);
+        }
     }
 
     /**
