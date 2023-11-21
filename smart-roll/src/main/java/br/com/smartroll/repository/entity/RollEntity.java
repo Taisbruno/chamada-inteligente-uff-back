@@ -52,4 +52,12 @@ public class RollEntity {
         this.classEntity = new ClassEntity();
         this.classEntity.classCode = classCode;
     }
+
+    public RollEntity(String longitude, String latitude, String classCode, LocalDateTime scheduledCloseTime) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.classEntity = new ClassEntity();
+        this.classEntity.classCode = classCode;
+        this.scheduledCloseTime = scheduledCloseTime;
+    }
 }
