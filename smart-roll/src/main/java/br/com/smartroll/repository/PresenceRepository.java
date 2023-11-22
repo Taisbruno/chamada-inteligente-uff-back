@@ -51,7 +51,7 @@ public class PresenceRepository {
     }
 
     public void validatePresence(String id) {
-        presenceRepository.validatePresence(Long.parseLong(id));
+        presenceRepository.validatePresence(Long.parseLong(id), LocalDateTime.now().toString());
     }
 
     public void markExitTimeForAllPresentInRoll(Long rollId){

@@ -38,6 +38,7 @@ public class PresenceModel {
         this.message = message;
         this.isPresent = false;
         this.entryTime = LocalDateTime.now().toString();
+        this.exitTime = LocalDateTime.now().toString();
     }
 
     public PresenceModel(long id, String studentRegistration, long rollId, String medicalCertificate, String message, boolean isPresent, String entryTime, String exitTime){
