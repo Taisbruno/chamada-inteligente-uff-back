@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -63,8 +64,8 @@ public interface IPresenceRepository extends JpaRepository<PresenceEntity, Long>
      */
     @Transactional
     @Modifying
-    @Query("UPDATE PresenceEntity p SET p.isPresent = true WHERE p.id = :id")
-    void validatePresence(@Param("id") long id);
+    @Query("UPDATE PresenceEntity p SET p.isPresent = true, p.exitTime = :exitTime WHERE p.id = :id")
+    void validatePresence(@Param("id") long id, @Param("exitTime") String exitTime);
 
     /**
      * Insere um certificado em uma presença com base no id da presença.
